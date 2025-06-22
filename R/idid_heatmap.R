@@ -20,12 +20,28 @@ idid_heatmap <- function(data,
                          var_2,
                          keep_labels = TRUE) {
   cross_section <- missing(var_2)
+  name_var_weight <- deparse(substitute(var_weight))
+
+  data[["bin"]] <-
+    cut(
+      log10(data[[name_var_weight]] * nrow(data)),
+      breaks = c(-Inf, -1.7, -1, -0.3, 0.3, 1, 1.7, Inf),
+      labels =
+        c("More than 50x smaller",
+          "Between 10x and 50x smaller",
+          "Between 2x and 10x smaller",
+          "Between 2x smaller and 2x larger",
+          "Between 2x and 10x larger",
+          "Between 10x and 50x larger",
+          "More than 50x larger"),
+      include.lowest = TRUE
+    )
 
   graph <- data |>
     ggplot2::ggplot(ggplot2::aes(
       x = {{ var_1 }},
       y = if(cross_section) 1 else {{ var_2 }},
-      fill = {{ var_weight }})
+      fill = bin)
     ) +
     ggplot2::geom_tile() +
     ggplot2::labs(
@@ -64,7 +80,10 @@ idid_heatmap <- function(data,
       panel.spacing.x = ggplot2::unit(1.3, "lines")
     ) +
     #palette
-    ggplot2::scale_fill_gradientn(colors = c("#FBE2C5", "#d46c76", "#3e196e"))
+    ggplot2::scale_fill_manual(
+      values = c("#2B5558", "#62A89C", "#E5E0C6", "#DB8950", "#A13D27")
+    )
+    # ggplot2::scale_fill_gradientn(colors = c("#FBE2C5", "#d46c76", "#3e196e"))
     # ggplot2::scale_fill_gradientn(colors = c("#FAF7F5", "#CDC6CC", "#041258"))
     # ggplot2::scale_fill_gradientn(colors = c("#FEF5EC", "#E14144", "#041258"))
 

@@ -4,7 +4,7 @@
 \alias{idid_heatmap}
 \title{Heatmap of Identifying Variation Weights}
 \usage{
-idid_heatmap(data, weights_vect, indiv_name, time_name)
+idid_heatmap(data, var_weight, var_1, var_2, keep_labels = TRUE)
 }
 \arguments{
 \item{data}{A regression object.}
