@@ -39,7 +39,7 @@ idid_weights <- function(reg, var_interest) {
 #' @export
 #' @exportS3Method
 idid_weights.lm <- function(reg, var_interest) {
-  data <- reg$model
+  df <- eval(reg$call$data)
   var_names <- names(reg$model)
   controls <- ifelse(
     length(var_names) <= 2,
@@ -48,11 +48,14 @@ idid_weights.lm <- function(reg, var_interest) {
   )
 
   x_per <-
-    lm(formula =  paste(var_interest, controls, sep = " ~ "), data = data) |>
+    lm(formula =  paste(var_interest, controls, sep = " ~ "), data = df) |>
     residuals()
+
   y_per <-
-    lm(formula =  paste(var_names[1], controls, sep = " ~ "), data = data) |>
+    lm(formula =  paste(var_names[1], controls, sep = " ~ "), data = df) |>
     residuals()
+
+  median_y_per <- median(abs(y_per))
 
   weight <- residuals(lm(x_per ~ 1))^2
   weight <- weight/sum(weight)
