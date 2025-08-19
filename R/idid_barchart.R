@@ -14,7 +14,7 @@
 #' An invisibly returned object using ggplot2. The function will error if
 #' any of the provided variables are unavailable in `reg$model`.
 #' @export
-idid_heatmap <- function(reg,
+idid_barchart <- function(reg,
                          var_interest,
                          var_1,
                          var_2,
@@ -39,13 +39,22 @@ idid_heatmap <- function(reg,
       include.lowest = TRUE
     )
 
-  graph <- df |>
-    ggplot2::ggplot(ggplot2::aes(
-      x = {{ var_1 }},
-      y = if(cross_section) 1 else {{ var_2 }},
-      fill = bin)
-    ) +
-    ggplot2::geom_tile() +
+  if (cross_section) {
+    graph <- df |>
+      ggplot2::ggplot(ggplot2::aes(x = {{ var_1 }}, fill = bin)) +
+      ggplot2::geom_bar() +
+      ggplot2::coord_flip()
+  } else {
+    graph <- df |>
+      ggplot2::ggplot(ggplot2::aes(
+        x = {{ var_1 }},
+        y = {{ var_2 }},
+        fill = bin)
+      ) +
+      ggplot2::geom_tile()
+  }
+
+  graph <- graph +
     ggplot2::labs(
       title = "Identifying Variation Weights",
       fill = "Identifying Variation Weights",
@@ -55,7 +64,7 @@ idid_heatmap <- function(reg,
     # theme and palette
     ididvar::theme_idid() +
     ggplot2::scale_fill_manual(
-      values = c("#2B5558", "#62A89C", "#E5E0C6", "#DB8950", "#A13D27", "black")
+      values = c("#1E383A", "#2B5558", "#62A89C", "#E5E0C6", "#DB8950", "#A13D27", "#612214")
     )
 
   # if (!cross_section) graph <- graph + ggplot2::coord_fixed()
