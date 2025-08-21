@@ -9,10 +9,11 @@ reg_test |>
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 
-dat <- ggplot2::mpg |>
+dat <- eval(reg_test$call$data) |>
   dplyr::mutate(
-    weights = idid_weights(lm(cty ~ displ, ggplot2::mpg), "displ"),
-    weight_cat = idid_weights_cat(weights),
+    weight = idid_weights(reg_test, "displ"),
+    weight_cat = idid_weights_cat(weight),
+    contrib = (weight > idid_contrib_threshold(reg_test, "displ")),
     md = paste(model, trans, sep = "_")
   )
 
@@ -23,15 +24,19 @@ dat <- ggplot2::mpg |>
 
 idid_drop_change(reg_test, "displ", 0.1) |> dplyr::tibble()
 
-lapply(seq(0.1, 0.9, 0.1), idid_drop_change, reg = reg_test, var_interest = "displ") |> do.call(what = rbind)
+lapply(seq(0.1, 0.9, 0.05), idid_drop_change, reg = reg_test, var_interest = "displ") |> do.call(what = rbind)
 
 purrr::map(seq(0.2, 0.9, 0.1), idid_drop_change, reg = reg_test, var_interest = "displ") |>
   purrr::list_rbind() |>
   ggplot2::ggplot(ggplot2::aes(x = prop_drop, y = abs(prop_change_se))) +
   ggplot2::geom_line()
 
+contrib_threshold <- idid_contrib_threshold(reg_test, "displ", threshold_change = 0.2)
 
-idid_heatmap_contrib(reg_test, "displ", var_1 = year, var_2 = md, keep_labels = FALSE) +
+idid_contrib_viz(reg_test, "displ", var_1 = year, var_2 = md, keep_labels = FALSE) +
+  ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
+
+idid_viz(reg_test, "displ", year, md, keep_labels = FALSE) +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 
