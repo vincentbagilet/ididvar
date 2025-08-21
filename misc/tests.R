@@ -5,13 +5,14 @@ reg_test <- ggplot2::mpg |>
   lm(formula = cty ~ displ + drv)
 
 reg_test |>
-  idid_heatmap("displ", year, md, keep_labels = FALSE) +
+  idid_weights_viz("displ", year, md, keep_labels = FALSE) +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 
 dat <- ggplot2::mpg |>
   dplyr::mutate(
     weights = idid_weights(lm(cty ~ displ, ggplot2::mpg), "displ"),
+    weight_cat = idid_weights_cat(weights),
     md = paste(model, trans, sep = "_")
   )
 
@@ -19,7 +20,6 @@ dat <- ggplot2::mpg |>
 #   ggplot2::ggplot(ggplot2::aes(x = displ, y = cty)) +
 #   ggplot2::geom_point()+
 #   ggplot2::geom_smooth(method = "lm")
-
 
 idid_drop_change(reg_test, "displ", 0.1) |> dplyr::tibble()
 

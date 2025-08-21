@@ -1,4 +1,4 @@
-#' Heatmap of Identifying Variation Weights
+#' Graph of of Identifying Variation Weights
 #'
 #' @description
 #' Makes a heatmap to visualize the identifying variation weights
@@ -14,38 +14,31 @@
 #' An invisibly returned object using ggplot2. The function will error if
 #' any of the provided variables are unavailable in `reg$model`.
 #' @export
-idid_heatmap <- function(reg,
-                         var_interest,
-                         var_1,
-                         var_2,
-                         keep_labels = TRUE) {
+idid_weights_viz <- function(reg,
+                             var_interest,
+                             var_1,
+                             var_2,
+                             keep_labels = TRUE) {
   df <- eval(reg$call$data)
   df[["weights"]] <- ididvar::idid_weights(reg, var_interest)
+  df[["bin"]] <- ididvar::idid_weights_cat(df[["weights"]])
 
-  cross_section <- missing(var_2)
+  if (missing(var_2)) {
+    graph <- df |>
+      ggplot2::ggplot(ggplot2::aes(x = {{ var_1 }}, fill = bin)) +
+      ggplot2::geom_bar() +
+      ggplot2::coord_flip()
+  } else {
+    graph <- df |>
+      ggplot2::ggplot(ggplot2::aes(
+        x = {{ var_1 }},
+        y = {{ var_2 }},
+        fill = bin)
+      ) +
+      ggplot2::geom_tile()
+  }
 
-  df[["bin"]] <-
-    cut(
-      log10(df[["weights"]] * nrow(df)),
-      breaks = c(-Inf, -1.7, -1, -0.3, 0.3, 1, 1.7, Inf),
-      labels =
-        c("More than 50x smaller",
-          "Between 10x and 50x smaller",
-          "Between 2x and 10x smaller",
-          "Between 2x smaller and 2x larger",
-          "Between 2x and 10x larger",
-          "Between 10x and 50x larger",
-          "More than 50x larger"),
-      include.lowest = TRUE
-    )
-
-  graph <- df |>
-    ggplot2::ggplot(ggplot2::aes(
-      x = {{ var_1 }},
-      y = if(cross_section) 1 else {{ var_2 }},
-      fill = bin)
-    ) +
-    ggplot2::geom_tile() +
+  graph <- graph +
     ggplot2::labs(
       title = "Identifying Variation Weights",
       fill = "Identifying Variation Weights",
@@ -55,7 +48,7 @@ idid_heatmap <- function(reg,
     # theme and palette
     ididvar::theme_idid() +
     ggplot2::scale_fill_manual(
-      values = c("#2B5558", "#62A89C", "#E5E0C6", "#DB8950", "#A13D27", "black")
+      values = c("#1E383A", "#2B5558", "#62A89C", "#E5E0C6", "#DB8950", "#A13D27", "#612214")
     )
 
   # if (!cross_section) graph <- graph + ggplot2::coord_fixed()
@@ -68,7 +61,6 @@ idid_heatmap <- function(reg,
         axis.ticks.y = ggplot2::element_blank()
       )
   }
-
 
   return(graph)
 }
