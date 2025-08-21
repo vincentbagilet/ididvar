@@ -11,7 +11,7 @@
 #'
 #' @returns
 #' A ggplot object representing contribution heatmap. The function will print a warning message if `threshold_diff` is too low and not enough data would remain by dropping non-contributing cases.
-
+#' @export
 idid_heatmap_contrib <- function(reg,
                                  var_interest,
                                  threshold_diff = 0.05,
@@ -28,7 +28,7 @@ idid_heatmap_contrib <- function(reg,
   prop_keep <- 1
   while (small_diff) {
     prop_keep <- prop_keep - 0.01
-    small_diff <- ididvar::idid_diff_drop(reg, var_interest, prop_keep = prop_keep, threshold_diff = threshold_diff)$small_diff
+    small_diff <- ididvar::idid_drop_change(reg, var_interest, prop_keep = prop_keep, threshold_diff = threshold_diff)$small_diff
   }
 
   weight_threshold <- df[[floor(prop_keep*nrow(df)), "weights"]]

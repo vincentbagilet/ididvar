@@ -1,17 +1,26 @@
-idid_contrib <- function(reg, var_interest) {
+idid_contrib <- function(reg,
+                         var_interest,
+                         threshold_change = 0.05,
+                         step_drop = 0.1) {
+
   df <- eval(reg$call$data)
-  fml <- reg$call$formula
+  df[["weights"]] <- ididvar::idid_weights(reg, var_interest)
+  cross_section <- missing(var_2)
 
-  df$idid_weights <- ididvar::idid_weight(reg, var_interest)
+  #compute the prop of obs to keep/drop without changing the estimates
+  #by more than threshold_change
+  small_change <- TRUE
+  prop_drop <- 0
+  while (small_change) {
+    prop_drop <- prop_drop + step_drop
+    small_change <- ididvar::idid_drop_change(reg, var_interest, prop_drop = prop_drop, threshold_change = threshold_change)$small_change
+  }
 
-  #keep high weights
-  prop_keep <- 0.1
-  df_sliced <- df[order(df$idid_weights),] |>
-    tail(n = nrow(df)*prop_keep)
+  weight_threshold <- df[[floor(prop_drop*nrow(df)), "weights"]]
 
-  #compute new estimate
-  reg_sliced <- lm(fml, data = df_sliced)
-  coef_sliced <- reg_sliced$coefficients[[var_interest]]
-  coef_full <- reg$coefficients[[var_interest]]
-  var_est <- (coef_full - coef_sliced)/coef_full
+  message(paste("The weight threshold is", round(weight_threshold, 4)))
+
+  df[["contrib"]] <- (df[["weights"]] < weight_threshold)
+  df[["contrib_name"]] <- ifelse(df[["contrib"]], "Contributing", "Non-contributing")
+
 }

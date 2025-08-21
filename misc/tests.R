@@ -21,14 +21,13 @@ dat <- ggplot2::mpg |>
 #   ggplot2::geom_smooth(method = "lm")
 
 
-idid_diff_drop(reg_test, "displ", 0.2) |> dplyr::tibble()
+idid_drop_change(reg_test, "displ", 0.1) |> dplyr::tibble()
 
-lapply(seq(0.2, 0.9, 0.1), idid_diff_drop, reg = reg_test, var_interest = "displ") |> do.call(what = rbind)
+lapply(seq(0.1, 0.9, 0.1), idid_drop_change, reg = reg_test, var_interest = "displ") |> do.call(what = rbind)
 
-purrr::map(seq(0.2, 0.9, 0.1), idid_diff_drop, reg = reg_test, var_interest = "displ") |>
-  dplyr::bind_rows() |>
-  dplyr::tibble() |>
-  ggplot2::ggplot(ggplot2::aes(x = prop_keep, y = var_se)) +
+purrr::map(seq(0.2, 0.9, 0.1), idid_drop_change, reg = reg_test, var_interest = "displ") |>
+  purrr::list_rbind() |>
+  ggplot2::ggplot(ggplot2::aes(x = prop_drop, y = abs(prop_change_se))) +
   ggplot2::geom_line()
 
 
