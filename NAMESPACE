@@ -3,6 +3,7 @@
 export(idid_contrib_threshold)
 export(idid_contrib_viz)
 export(idid_drop_change)
+export(idid_drop_change_viz)
 export(idid_weights)
 export(idid_weights_cat)
 export(idid_weights_viz)

@@ -23,12 +23,14 @@ idid_contrib_threshold <- function(reg,
   prop_drop <- 0
   while (small_change) {
     prop_drop <- prop_drop + search_step
-    small_change <- ididvar::idid_drop_change(
+    drop_change <- ididvar::idid_drop_change(
       reg,
       var_interest,
-      prop_drop = prop_drop,
-      threshold_change = threshold_change
-    )$small_change
+      prop_drop = prop_drop
+    )
+
+    small_change <- (abs(drop_change$prop_change_est) < threshold_change &
+                     abs(drop_change$prop_change_se) < threshold_change)
   }
 
   weights_ordered <- weights[order(weights)]

@@ -14,7 +14,7 @@
 theme_idid <- function() {
   ggplot2::theme_minimal() %+replace%
     ggplot2::theme(
-      # text = ggplot2::element_text(family = "arial"),
+      # text = ggplot2::element_text(family = "lato"),
       panel.grid.major = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank(),
       #legend
@@ -27,6 +27,7 @@ theme_idid <- function() {
       legend.title = ggplot2::element_text(size = ggplot2::rel(0.88)),
       legend.title.position = "top",
       legend.text = ggplot2::element_text(size = ggplot2::rel(0.78)),
+      plot.title.position = "plot",
       strip.placement = "outside",
       strip.text = ggplot2::element_text(
         size = ggplot2::rel(0.95),

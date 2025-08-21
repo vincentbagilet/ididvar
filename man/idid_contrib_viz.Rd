@@ -10,6 +10,7 @@ idid_contrib_viz(
   var_1,
   var_2,
   contrib_threshold,
+  threshold_change = 0.05,
   keep_labels = TRUE,
   ...
 )

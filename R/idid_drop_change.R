@@ -7,7 +7,6 @@
 #' @param reg A regression result object.
 #' @param var_interest The variable to examine on `reg`.
 #' @param prop_drop Proportion of observations to drop
-#' @param threshold_change What constitutes an implausible difference or uncertainty? Optional.
 #'
 #+
 #' If the differences or standard errors are large, drop their corresponding observation from the dataset.
@@ -21,8 +20,7 @@
 #' @export
 idid_drop_change <- function(reg,
                              var_interest,
-                             prop_drop,
-                             threshold_change = 0.05) {
+                             prop_drop) {
   df <- eval(reg$call$data)
   # fml <- reg$call$formula
 
@@ -54,9 +52,6 @@ idid_drop_change <- function(reg,
     prop_change_est = (est_full - est_sliced)/est_full,
     prop_change_se = (se_full - se_sliced)/se_full
   )
-
-  out[["small_change"]] = (abs(out$prop_change_est) < threshold_change &
-                           abs(out$prop_change_se) < threshold_change)
 
   return(out)
 }

@@ -4,16 +4,14 @@
 \alias{idid_drop_change}
 \title{Variation in estimate when dropping low weight observations}
 \usage{
-idid_drop_change(reg, var_interest, prop_drop, threshold_change = 0.05)
+idid_drop_change(reg, var_interest, prop_drop)
 }
 \arguments{
 \item{reg}{A regression result object.}
 
 \item{var_interest}{The variable to examine on \code{reg}.}
 
-\item{prop_drop}{Proportion of observations to drop}
-
-\item{threshold_change}{What constitutes an implausible difference or uncertainty? Optional.
+\item{prop_drop}{Proportion of observations to drop
 
 If the differences or standard errors are large, drop their corresponding observation from the dataset.
 The function uses these in \code{ididvar::idid_weights}.}

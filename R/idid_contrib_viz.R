@@ -17,12 +17,18 @@ idid_contrib_viz <- function(reg,
                              var_1,
                              var_2,
                              contrib_threshold,
+                             threshold_change = 0.05,
                              keep_labels = TRUE,
                              ...) {
 
   if (missing(contrib_threshold)) {
-    contrib_threshold <- ididvar::idid_contrib_threshold(reg,
-                                                         var_interest, ...)
+    message("Searching for the contribution threshold")
+    contrib_threshold <- ididvar::idid_contrib_threshold(
+      reg,
+      var_interest,
+      threshold_change = threshold_change,
+      ...
+    )
   }
 
   df <- eval(reg$call$data)
@@ -34,7 +40,8 @@ idid_contrib_viz <- function(reg,
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_1 }}, fill = contrib_name)) +
       ggplot2::geom_bar() +
-      ggplot2::coord_flip()
+      ggplot2::coord_flip() +
+      ggplot2::labs(y = "Number of observations")
   } else {
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
@@ -47,11 +54,9 @@ idid_contrib_viz <- function(reg,
 
   graph <- graph +
     ggplot2::labs(
-      title = 'Observations "containing enough variation" for identification',
-      # subtitle = paste('Without the "non-contributing" observations, point estimate and s.e. would vary by less than ', round(threshold_diff*100, 2), "%", sep = ""),
-      fill = NULL,
-      y = NULL,
-      x = NULL
+      title = "Set of observations contributing to identification",
+      subtitle = paste('Without the "non-contributing" observations, point estimate and s.e. would vary by less than ', round(threshold_change*100, 2), "%", sep = ""),
+      fill = NULL
     ) +
     # theme and palette
     ididvar::theme_idid() +
