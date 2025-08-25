@@ -1,9 +1,8 @@
-#' Identifying Variation Weights
+#' Compute Identifying Variation Weights
 #'
 #' @description
-#' A generic function used to compute regression weights
-#' describing the amount of variation that is used for the identification of
-#' a treatment effect.
+#' Compute regression weights describing the amount of variation used for
+#' identification.
 #'
 #' @details
 #' The weights correspond to the normalized leverage of each observation for
@@ -19,6 +18,12 @@
 #' A numeric vector representing the identifying variation weights.
 #'
 #' @export
+#'
+#' @examples
+#' reg_test <- ggplot2::economics |>
+#'  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+#'
+#' idid_weights(reg_test, "pce")
 idid_weights <- function(reg, var_interest) {
   x_per <-
     update(reg, as.formula(paste(var_interest, "~ . -", var_interest))) |>

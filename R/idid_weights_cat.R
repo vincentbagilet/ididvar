@@ -1,9 +1,10 @@
-#' Convert numeric vector of weights to categorical label
+#' Create categories for identifying variation weights
 #'
 #' @description
-#' Categorize weights based on their size relative to the total weight.
+#' Categorize weights based on their size relative to the average weight.
 #'
-#' @param weights A numeric (positive) vector.
+#' @param weights A numeric vector of identifying variation weights.
+#' Generally produced by the \code{ididvar::idid_weights} function.
 #'
 #' @returns
 #' A factor with levels "More than 50x smaller", "Between 10x and 50x smaller",
@@ -15,7 +16,7 @@
 idid_weights_cat <- function(weights) {
     cut(
       log10(weights * length(weights)),
-      breaks = c(-Inf, -1.7, -1, -0.3, 0.3, 1, 1.7, Inf),
+      breaks = log10(c(0, 1/50, 1/10, 1/2, 2, 10, 50, Inf)),
       labels =
         c("More than 50x smaller",
           "Between 10x and 50x smaller",

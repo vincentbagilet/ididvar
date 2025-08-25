@@ -9,7 +9,8 @@ idid_drop_change_viz(
   var_interest,
   search_step = 0.05,
   search_start = search_step,
-  search_end = 1 - search_step
+  search_end = 1 - search_step,
+  threshold_change = 0.05
 )
 }
 \arguments{

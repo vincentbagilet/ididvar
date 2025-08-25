@@ -34,13 +34,13 @@ idid_contrib_viz <- function(reg,
   df <- eval(reg$call$data)
   df[["weights"]] <- ididvar::idid_weights(reg, var_interest)
   df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
-  df[["contrib_name"]] <- ifelse(df[["contrib"]], "Contributing", "Non-contributing")
+  df[["contrib_name"]] <- ifelse(df[["contrib"]], "Contributes", "Does not contribute")
 
   if (missing(var_2)) {
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_1 }}, fill = contrib_name)) +
-      ggplot2::geom_bar() +
-      ggplot2::coord_flip() +
+      ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
+      # ggplot2::coord_flip() +
       ggplot2::labs(y = "Number of observations")
   } else {
     graph <- df |>

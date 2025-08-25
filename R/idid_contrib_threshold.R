@@ -33,8 +33,8 @@ idid_contrib_threshold <- function(reg,
                      abs(drop_change$prop_change_se) < threshold_change)
   }
 
-  weights_ordered <- weights[order(weights)]
-  weight_threshold <- weights_ordered[[floor(prop_drop * length(weights_ordered))]]
+  weights_sorted <- sort(weights)
+  weight_threshold <- weights_sorted[[floor(prop_drop * length(weights_sorted))]]
 
   return(weight_threshold)
 }

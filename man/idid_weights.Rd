@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_weights.R
 \name{idid_weights}
 \alias{idid_weights}
-\title{Identifying Variation Weights}
+\title{Compute Identifying Variation Weights}
 \usage{
 idid_weights(reg, var_interest)
 }
@@ -15,9 +15,8 @@ idid_weights(reg, var_interest)
 A numeric vector representing the identifying variation weights.
 }
 \description{
-A generic function used to compute regression weights
-describing the amount of variation that is used for the identification of
-a treatment effect.
+Compute regression weights describing the amount of variation used for
+identification.
 }
 \details{
 The weights correspond to the normalized leverage of each observation for
@@ -25,4 +24,10 @@ the variable of interest after partialling out all controls.
 
 The function invokes particular methods which depend on the class of the
 first argument.
+}
+\examples{
+reg_test <- ggplot2::economics |>
+ lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+
+idid_weights(reg_test, "pce")
 }

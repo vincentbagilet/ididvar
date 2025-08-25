@@ -5,7 +5,9 @@ reg_test <- ggplot2::mpg |>
   lm(formula = cty ~ displ + drv)
 
 reg_test |>
-  idid_weights_viz("displ", year, md, keep_labels = FALSE) +
+  idid_weights_viz("displ", manufacturer, year)
+
++
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 
@@ -36,7 +38,7 @@ contrib_threshold <- idid_contrib_threshold(reg_test, "displ", threshold_change 
 idid_contrib_viz(reg_test, "displ", var_1 = year, var_2 = md, keep_labels = FALSE) +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
-idid_viz(reg_test, "displ", manufacturer, md, keep_labels = FALSE)
+# idid_viz(reg_test, "displ", manufacturer, md, keep_labels = FALSE)
 
 +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
@@ -59,6 +61,23 @@ dat <- ggplot2::mpg |>
 ### Additional tests
 
 idid_drop_change_viz(reg_test, "displ")
+
+idid_grouping_var(reg_test, "displ", names(ggplot2::mpg))
+
+idid_weights_viz(reg_test, "displ", year, manufacturer)
+
+dat$weight |> idid_lorentz_viz()
+
+
+dat |>
+  dplyr::arrange(weight) |>
+  dplyr::mutate(
+    obs_nb = dplyr::row_number(),
+    cum_sum = cumsum(weight)
+  ) |>
+  ggplot2::ggplot(ggplot2::aes(x = obs_nb, y = cum_sum)) +
+  ggplot2::geom_line()
+
 
 
 

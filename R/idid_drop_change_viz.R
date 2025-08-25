@@ -19,7 +19,8 @@ idid_drop_change_viz <- function(reg,
                                  var_interest,
                                  search_step = 0.05,
                                  search_start = search_step,
-                                 search_end = 1 - search_step) {
+                                 search_end = 1 - search_step,
+                                 threshold_change = 0.05) {
   drop_change_df <- seq(search_start, search_end, 0.05) |>
     lapply(
       idid_drop_change,
@@ -39,7 +40,7 @@ idid_drop_change_viz <- function(reg,
   rbind(drop_change_est, drop_change_se) |>
     ggplot2::ggplot(ggplot2::aes(x = prop_drop, y = abs(prop_change*100))) +
     ggplot2::geom_line(size = 0.8) +
-    ggplot2::geom_hline(yintercept = 0.05, linetype = "dashed") +
+    ggplot2::geom_hline(yintercept = threshold_change*100, linetype = "dashed") +
     ggplot2::facet_wrap(~ measure) +
     ididvar::theme_idid()  %+replace%
     ggplot2::theme(
