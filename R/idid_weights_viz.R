@@ -54,6 +54,8 @@ idid_weights_viz <- function(reg,
       ifelse(sum_df[["log_weight"]] < log10(1/50), -2,
         ifelse(sum_df[["log_weight"]] > log10(50), 2, sum_df[["log_weight"]]))
 
+    sum_df[1, "log_weight_trunc"] <- 1000000
+
     graph <- sum_df |>
       ggplot2::ggplot(ggplot2::aes(
         x = var_x_name,
@@ -64,7 +66,9 @@ idid_weights_viz <- function(reg,
       ggplot2::geom_tile() +
       # ggplot2::geom_text() +
       ggplot2::scale_fill_stepsn(
-        colours = c("#19304d", "#3f5473", "#798cad", "#fae7d3", "#c3847e", "#a75254", "#84141e"),
+        colours = c( "#AD3D00", "#FBE2C5", "#300D49"),
+        # colours = c("#913300", "#c68b63", "#fbe2c5", "#b18a9d", "#673275"),
+        # colours = c("#19304d", "#3f5473", "#798cad", "#fae7d3", "#c3847e", "#a75254", "#84141e"),
         # breaks = 1:7,
         breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
         labels = c("0", "1/50×","1/10×","1/2×","2×","10×", "50×", "Inf"),

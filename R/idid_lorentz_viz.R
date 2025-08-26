@@ -1,3 +1,15 @@
+#' Idid-lorentz plot
+#'
+#' @description
+#' A short description...
+#'
+#' @param weights A numeric vector (e.g., weights or probabilities).
+#' @param prop_weights Optional. One of `0`, `1`, or values in-between. The contribution threshold above which to display contributions ("tail") individually.
+#'
+#' @returns
+#' An idiD Lörentz plot
+#'
+#' @export
 idid_lorentz_viz <- function(weights, prop_weights = 0.25) {
   weights_sorted <- sort(weights)
   cum_sum <- cumsum(weights_sorted)
@@ -11,7 +23,13 @@ idid_lorentz_viz <- function(weights, prop_weights = 0.25) {
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = obs_nb, y = lorenz)) +
-    ggplot2::geom_line() +
+    ggplot2::geom_line(linewidth = 1.2, color = "#300D49") +
+    ggplot2::geom_segment(
+      ggplot2::aes(x = 0, y = 0, xend = nrow(df), yend = 1),
+      linetype = "dashed",
+      linewidth = 0.2,
+      color = "#300D49"
+    ) +
     ididvar::theme_idid() +
     ggplot2::labs(
       title = "Lorenz curve of weights",

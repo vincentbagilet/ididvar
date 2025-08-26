@@ -5,7 +5,7 @@ reg_test <- ggplot2::mpg |>
   lm(formula = cty ~ displ + drv)
 
 reg_test |>
-  idid_weights_viz("displ", manufacturer, year)
+  idid_weights_viz("displ", year, manufacturer)
 
 +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
@@ -66,7 +66,7 @@ idid_grouping_var(reg_test, "displ", names(ggplot2::mpg))
 
 idid_weights_viz(reg_test, "displ", year, manufacturer)
 
-dat$weight |> idid_lorentz_viz()
+dat$weights |> idid_lorentz_viz()
 
 
 dat |>
