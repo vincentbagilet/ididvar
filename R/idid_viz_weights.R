@@ -4,6 +4,11 @@
 #' Makes a graph to visualize the identifying variation weights (a heatmap or
 #' a bar chart, depending on the number of dimensions specified)
 #'
+#' @details
+#' If there is more than on observation by group (i.e. for one category in
+#' var_x or in var_x x var_y), individual weights are added for that group,
+#' removing missing values.
+#'
 #' @inheritParams idid_weights
 #' @param var_x A variable in the data set used in \code{reg} to plot on the
 #' x-axis.
@@ -24,11 +29,21 @@
 #' @export
 #'
 #' @examples
-#' reg_test <- ggplot2::economics |>
-#'  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+#' # example with a lm regression and one dimension
+#' reg_ex_lm <- ggplot2::economics |>
+#'   transform(year = substr(date, 1, 4) |> as.numeric()) |>
+#'   lm(formula = unemploy ~ pce + uempmed + psavert + pop + year)
 #'
-#' idid_weights(reg_test, "pce") |>
-#'  head()
+#' idid_viz_weights(reg_ex_lm, "pce", var_x = year) +
+#'   ggplot2::labs(x = NULL)
+#'
+#' # example with a fixest regression and two dimensions
+#' reg_ex_fixest <- ggplot2::txhousing |>
+#'   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+#'
+#' idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+#'   ggplot2::labs(x = NULL, y = NULL)
+#'
 idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
@@ -36,6 +51,8 @@ idid_viz_weights <- function(reg,
                              keep_labels = TRUE) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
+  df <- df[!is.na(df$weight), ]
+  df[1, "weight"] <- NA
 
   if (missing(var_y)) {
     graph <- df |>
@@ -48,8 +65,10 @@ idid_viz_weights <- function(reg,
     sum_df <-
       stats::aggregate(
         df$weight,
-        by = list(var_x_name = df[[substitute(var_x)]], var_y_name = df[[substitute(var_y)]]),
-        FUN = sum
+        by = list(var_x_name = df[[substitute(var_x)]],
+                  var_y_name = df[[substitute(var_y)]]),
+        FUN = sum,
+        na.rm = TRUE
       )
 
     names(sum_df)[3] <- "weight"
@@ -76,10 +95,9 @@ idid_viz_weights <- function(reg,
         colours = c( "#AD3D00", "#FBE2C5", "#300D49"),
         # colours = c("#913300", "#c68b63", "#fbe2c5", "#b18a9d", "#673275"),
         # colours = c("#19304d", "#3f5473", "#798cad", "#fae7d3", "#c3847e", "#a75254", "#84141e"),
-        # breaks = 1:7,
         breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
-        labels = c("0", "1/50x", "1/2x", "2x", "10x", "50x", "Inf"),
-        # limits = c(-2, 2),
+        labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
+        limits = c(-2, 2),
         na.value = "#0f1d2e"
       ) +
       ggplot2::labs(
@@ -92,19 +110,10 @@ idid_viz_weights <- function(reg,
   graph <- graph +
     ggplot2::labs(
       title = "Distribution of Identifying Variation Weights"
-      # fill = "Identifying Variation Weights"
     ) +
     # theme and palette
     ididvar::theme_idid()
-    # ggplot2::scale_fill_manual(
-    #   # values = c("#1E383A", "#2B5558", "#62A89C", "#E5E0C6", "#DB8950", "#A13D27", "#612214")
-    #   # values = c("#fbe2c5", "#e8a79e", "#b97588", "#885075", "#562a62", "#290737", "#210124"),
-    #   values = c("#1D3557", "#3f5473", "#7d8593", "#fae7d3", "#c3847e", "#a75254", "#84141e")
-    # )
 
-  # if (!cross_section) graph <- graph + ggplot2::coord_fixed()
-
-  # if (length(unique(data[[deparse(substitute(var_y))]])) > 60 & !keep_labels) {
   if (!keep_labels) {
     graph <- graph +
       ggplot2::labs(y = NULL) +

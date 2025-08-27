@@ -33,10 +33,25 @@ each group.
 Makes a graph to visualize the identifying variation weights (a heatmap or
 a bar chart, depending on the number of dimensions specified)
 }
+\details{
+If there is more than on observation by group (i.e. for one category in
+var_x or in var_x x var_y), individual weights are added for that group,
+removing missing values.
+}
 \examples{
-reg_test <- ggplot2::economics |>
- lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+# example with a lm regression and one dimension
+reg_ex_lm <- ggplot2::economics |>
+  transform(year = substr(date, 1, 4) |> as.numeric()) |>
+  lm(formula = unemploy ~ pce + uempmed + psavert + pop + year)
 
-idid_weights(reg_test, "pce") |>
- head()
+idid_viz_weights(reg_ex_lm, "pce", var_x = year) +
+  ggplot2::labs(x = NULL)
+
+# example with a fixest regression and two dimensions
+reg_ex_fixest <- ggplot2::txhousing |>
+  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+
+idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+  ggplot2::labs(x = NULL, y = NULL)
+
 }

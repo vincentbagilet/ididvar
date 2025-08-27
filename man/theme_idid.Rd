@@ -12,3 +12,14 @@ The specified \code{theme} object.
 \description{
 A function to return a custom ggplot2 theme.
 }
+\examples{
+ggplot2::mpg |>
+  ggplot2::ggplot(ggplot2::aes(x = displ, hwy, color = cyl)) +
+  ggplot2::geom_point() +
+  ggplot2::labs(
+    title = "A wonderful title",
+    subtitle = "Something to add"
+  ) +
+  theme_idid()
+
+}

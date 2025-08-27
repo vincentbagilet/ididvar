@@ -7,9 +7,14 @@ template:
     heading_font: {google: "Lato"}
     primary: "#300D49"
 
+title: "ididvar"
 authors:
   Vincent Bagilet:
     href: https://vincentbagilet.github.io/
+
+figures:
+  dpi: 200
+  fig.asp: 1.2
 
 navbar:
   structure:
