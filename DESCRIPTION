@@ -3,7 +3,7 @@ Title: Identifying the Identifying Variation in a Regression
 Version: 0.0.0.9000
 Authors@R: 
     person("Vincent", "Bagilet", , "vincent.bagilet@ens.fr", role = c("aut", "cre"))
-Description: Provides a set of tools to identify where the identifying variation in a regression comes from
+Description: Provides a set of tools to identify where the identifying variation in a regression comes from.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

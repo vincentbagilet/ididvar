@@ -7,24 +7,23 @@
 idid_drop_change(reg, var_interest, prop_drop)
 }
 \arguments{
-\item{reg}{A regression result object.}
+\item{reg}{A regression object.}
 
-\item{var_interest}{The variable to examine on \code{reg}.}
+\item{var_interest}{A string. The name of the main variable of interest.}
 
-\item{prop_drop}{Proportion of observations to drop
-
-If the differences or standard errors are large, drop their corresponding observation from the dataset.
-The function uses these in \code{ididvar::idid_weights}.}
+\item{prop_drop}{Proportion of observations to drop}
 }
 \value{
-A dataframe of interest:
+A dataframe with one row and 3 columns:
 \itemize{
-\item \code{prop_drop}: the proportion (of total data) dropped by calling this method.
-\item \code{var_est}: relative change between \code{est} with and without large values
-\item \code{var_se}: relative change between their standard errors
+\item \code{prop_drop}: the proportion of data dropped
+\item \code{prop_change_est}: the relative change between the full sample and
+droped estimates
+\item \code{prop_change_se}: the relative change between the full sample and
+droped s.e.
 }
 }
 \description{
-Computes a variation of the point estimate and standard errors of the variable
-of interest when dropping low weight observations.
+Computes a variation of the point estimate and standard errors of the
+variable of interest when dropping low weight observations.
 }

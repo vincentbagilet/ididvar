@@ -1,22 +1,20 @@
 #' Variation in estimate when dropping low weight observations
 #'
 #' @description
-#' Computes a variation of the point estimate and standard errors of the variable
-#' of interest when dropping low weight observations.
+#' Computes a variation of the point estimate and standard errors of the
+#' variable of interest when dropping low weight observations.
 #'
-#' @param reg A regression result object.
-#' @param var_interest The variable to examine on `reg`.
+#' @inheritParams idid_weights
 #' @param prop_drop Proportion of observations to drop
 #'
-#+
-#' If the differences or standard errors are large, drop their corresponding observation from the dataset.
-#' The function uses these in `ididvar::idid_weights`.
-#'
 #' @returns
-#' A dataframe of interest:
-#' - `prop_drop`: the proportion (of total data) dropped by calling this method.
-#' - `var_est`: relative change between \code{est} with and without large values
-#' - `var_se`: relative change between their standard errors
+#' A dataframe with one row and 3 columns:
+#' - `prop_drop`: the proportion of data dropped
+#' - `prop_change_est`: the relative change between the full sample and
+#' droped estimates
+#' - `prop_change_se`: the relative change between the full sample and
+#' droped s.e.
+#'
 #' @export
 idid_drop_change <- function(reg,
                              var_interest,

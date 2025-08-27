@@ -9,7 +9,7 @@ idid_weights(reg, var_interest)
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The treatment or main variable of interest.}
+\item{var_interest}{A string. The name of the main variable of interest.}
 }
 \value{
 A numeric vector representing the identifying variation weights.

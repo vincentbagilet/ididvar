@@ -1,16 +1,24 @@
-#' Find a weight threshold below which observations do not contribute
+#' Find a weight threshold below which observations "do not contribute"
 #'
 #' @description
 #' Find a weight threshold below which removing observations does not change
 #' the point estimate or the standard error of the estimate of interest by more
 #' than a given proportion.
 #'
-#' @inheritParams idid_weights
-#' @param threshold_change A number (between 0 and 1).
-#' The maximum size of change in predictions allowed after dropping participants (i.e., weighting participants 0). Optional. Default is `0.05`, which means up to 5% of observations can be dropped without exceeding the threshold change.
-#' @param search_step A fraction of observations or weight values. Optional. Default is `0.05`.
+#' This function applies \code{ididvar::idid_drop_change} for a series of
+#' proportions of observations removed, increasing this proportion by
+#' \code{search_step} while the variation in the estimate and s.e. as compared
+#' to the full sample is less than \code{threshold_change}.
 #'
-#' @returns The last value from the weights at the point where no more participants could be "dropped" without significantly altering the estimates. It's returned invisibly, i.e., it's only visible if you call this function with `invisible()` around `idid_contrib_threshold` in your code.
+#' @inheritParams idid_drop_change
+#' @param threshold_change A double (between 0 and 1). The change threshold in
+#' estimate and s.e. when dropping observations.
+#' @param search_step A double (between 0 and 1). The additional proportion of
+#' observations to drop in each iteration of the loop.
+#'
+#' @returns A numeric. The largest weight below which one can drop observations
+#' without altering the estimate by more than a proportion of
+#' \code{threshold_change}.
 #'
 #' @export
 idid_contrib_threshold <- function(reg,

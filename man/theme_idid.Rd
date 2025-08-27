@@ -2,15 +2,12 @@
 % Please edit documentation in R/theme_idid.R
 \name{theme_idid}
 \alias{theme_idid}
-\title{Create a theme with minimal background and a customized legend}
+\title{Create a custom theme for \code{ididvar} visualizations}
 \usage{
 theme_idid()
 }
-\arguments{
-\item{None}{}
-}
 \value{
-The specified \code{theme} object. This will error invisibly if used incorrectly.
+The specified \code{theme} object.
 }
 \description{
 A function to return a custom ggplot2 theme.

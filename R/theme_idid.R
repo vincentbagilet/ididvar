@@ -1,21 +1,25 @@
-#' Create a theme with minimal background and a customized legend
+#' Create a custom theme for \code{ididvar} visualizations
 #'
 #' @description
 #' A function to return a custom ggplot2 theme.
 #'
-#' @param None
-#'
 #' @importFrom ggplot2 %+replace%
 #'
 #' @returns
-#' The specified `theme` object. This will error invisibly if used incorrectly.
+#' The specified `theme` object.
 #'
 #' @export
 theme_idid <- function() {
-  ggplot2::theme_minimal(base_family = c("Helvetica", "Verdana", "Arial")) %+replace%
+  ggplot2::theme_minimal(
+    base_family = c("Helvetica", "Verdana", "Arial")
+  ) %+replace%
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(0.5, 0.5, 0.5, 0.5), "cm"),
-      plot.title = ggplot2::element_text(face = "bold", hjust = 0, size = ggplot2::rel(1.6)),
+      plot.title = ggplot2::element_text(
+        face = "bold",
+        hjust = 0,
+        size = ggplot2::rel(1.6)
+      ),
       plot.subtitle = ggplot2::element_text(
         hjust = 0,
         size = ggplot2::rel(1.1),

@@ -5,9 +5,10 @@
 #' a bar chart, depending on the number of dimensions specified)
 #'
 #' @inheritParams idid_weights
-#' @param var_x A variable in the data set used in \code{reg}.
-#' @param var_y A variable in the data set used in \code{reg}. If not specified,
-#' produces a bar chart.
+#' @param var_x A variable in the data set used in \code{reg} to plot on the
+#' x-axis.
+#' @param var_y A variable in the data set used in \code{reg} to plot on the
+#' y-axis (optional). If not specified, produces a bar chart.
 #' @param keep_labels A boolean (optional). If FALSE, remove y labels and ticks.
 #'
 #' @returns
@@ -38,7 +39,7 @@ idid_viz_weights <- function(reg,
   } else {
     # df[["bin"]] <- ididvar::idid_weights_cat(df[["weight"]])
     sum_df <-
-      aggregate(
+      stats::aggregate(
         df$weight,
         by = list(var_x_name = df[[substitute(var_x)]], var_y_name = df[[substitute(var_y)]]),
         FUN = sum
@@ -72,7 +73,7 @@ idid_viz_weights <- function(reg,
         # colours = c("#19304d", "#3f5473", "#798cad", "#fae7d3", "#c3847e", "#a75254", "#84141e"),
         # breaks = 1:7,
         breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
-        labels = c("0", "1/50×","1/10×","1/2×","2×","10×", "50×", "Inf"),
+        labels = c("0", "1/50x", "1/2x", "2x", "10x", "50x", "Inf"),
         limits = c(-2, 2),
         na.value = "#0f1d2e"
       ) +

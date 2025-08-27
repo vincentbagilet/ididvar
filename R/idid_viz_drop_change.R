@@ -1,26 +1,29 @@
-#' Drop change
+#' Visualize changes in point estimate and s.e. when dropping observation
 #'
 #' @description
-#' A short description...
+#' Make a faceted line graph describing the percentage variation of the point
+#' estimate and s.e. of interest as a function of the proportion of
+#' observations dropped.
 #'
-#' @param reg A linear model. Optional.
-#' @param var_interest A single variable. Optionally, a vector of variables if `reg_is_poly` is TRUE in the linear model used for prediction.
-#' @param search_step One of `0`, `'0'`, `Inf` or `.Machine$double.xmax`. Currently unused; must be specified if it isn't one of these values or an error will occur. Optional.
-#' @param search_start A positive number between 0 and .99 (inclusive). Optional.
-#' @param search_end A positive number between 1 and .9999 (inclusive) and different from `search_start`. Currently unused; must not be equal to `.Machine$double.xmax` or an error will occur. Optional.
+#' @inheritParams idid_drop_change
+#' @inheritParams idid_contrib_threshold
+#' @param search_start A numeric (between 0 and 1). Proportion of observation to
+#' drop in the first step of the loop in \code{idid_contrib_threshold}.
+#' @param search_end A numeric (between 0 and 1). Proportion of observation to
+#' drop in the last step of the loop in \code{idid_contrib_threshold}.
 #'
 #' @returns
-#' If successful, a plot is made with lines representing the proportion of change in the measure(s) of interest at various drop thresholds as compared to the full sample from one end to the other. Invisible otherwise.
+#' A ggplot2 object.
 #'
 #' @importFrom ggplot2 %+replace%
 #'
 #' @export
 idid_viz_drop_change <- function(reg,
                                  var_interest,
+                                 threshold_change = 0.05,
                                  search_step = 0.05,
                                  search_start = search_step,
-                                 search_end = 1 - search_step,
-                                 threshold_change = 0.05) {
+                                 search_end = 1 - search_step) {
   drop_change_df <- seq(search_start, search_end, 0.05) |>
     lapply(
       idid_drop_change,

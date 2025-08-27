@@ -12,7 +12,7 @@
 #' first argument.
 #'
 #' @param reg A regression object.
-#' @param var_interest A string. The treatment or main variable of interest.
+#' @param var_interest A string. The name of the main variable of interest.
 #'
 #' @returns
 #' A numeric vector representing the identifying variation weights.
@@ -26,7 +26,10 @@
 #' idid_weights(reg_test, "pce")
 idid_weights <- function(reg, var_interest) {
   x_per <-
-    update(reg, as.formula(paste(var_interest, "~ . -", var_interest))) |>
+    update(
+      reg,
+      stats::as.formula(paste(var_interest, "~ . -", var_interest))
+    ) |>
     residuals()
 
   weight <- (x_per - mean(x_per, na.rm = TRUE))^2

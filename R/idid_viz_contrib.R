@@ -1,12 +1,30 @@
-#' Compute heatmap contribution weights
+#' Visualization of observations contributing to estimation
 #'
-#' @description Create a heatmap showing which observations contribute to the identification of certain variables.
+#' @description
+#' Make a graph to visualize observations that can be dropped without
+#' changing the point estimate or the standard error of the estimate of
+#' interest by more than a given proportion (\code{threshold_change}).
+#'
+#' Makes a heatmap or a bar chart, depending on the number of dimensions
+#' specified.
 #'
 #' @inheritParams idid_viz_weights
-#' @param threshold_diff (Optional) A numeric value between 0 and 1 representing the maximum proportion of data points that can be removed before we suspect that our estimate is changing more than by a `threshold_diff` percentage.
+#' @inheritParams idid_contrib_threshold
+#' @param contrib_threshold A numeric (optional). Weight below which
+#' observations are deemed to be non-contributing.
+#' If not provided, will be determined by running
+#' \code{ididvar::idid_contrib_threshold}
 #'
 #' @returns
-#' A ggplot object representing contribution heatmap. The function will print a warning message if `threshold_diff` is too low and not enough data would remain by dropping non-contributing cases.
+#' A ggplot2 graph of observations contributing to estimation.
+#'
+#' If var_y is specified, returns a heatmap whose color describes whether a
+#' given observation does not contribute (i.e. can be dropped, along with all
+#' lower weight observations, without substantially altering the estimate)
+#'
+#' If var_y is not specified, returns a bar chart representing the number of
+#' observations that can be dropped in each group.
+#'
 #' @export
 idid_viz_contrib <- function(reg,
                              var_interest,
@@ -14,8 +32,7 @@ idid_viz_contrib <- function(reg,
                              var_y,
                              contrib_threshold,
                              threshold_change = 0.05,
-                             keep_labels = TRUE,
-                             ...) {
+                             keep_labels = TRUE) {
 
   if (missing(contrib_threshold)) {
     message("Searching for the contribution threshold")

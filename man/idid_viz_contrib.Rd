@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_viz_contrib.R
 \name{idid_viz_contrib}
 \alias{idid_viz_contrib}
-\title{Compute heatmap contribution weights}
+\title{Visualization of observations contributing to estimation}
 \usage{
 idid_viz_contrib(
   reg,
@@ -11,27 +11,45 @@ idid_viz_contrib(
   var_y,
   contrib_threshold,
   threshold_change = 0.05,
-  keep_labels = TRUE,
-  ...
+  keep_labels = TRUE
 )
 }
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The treatment or main variable of interest.}
+\item{var_interest}{A string. The name of the main variable of interest.}
 
-\item{var_x}{A variable in the data set used in \code{reg}.}
+\item{var_x}{A variable in the data set used in \code{reg} to plot on the
+x-axis.}
 
-\item{var_y}{A variable in the data set used in \code{reg}. If not specified,
-produces a bar chart.}
+\item{var_y}{A variable in the data set used in \code{reg} to plot on the
+y-axis (optional). If not specified, produces a bar chart.}
+
+\item{contrib_threshold}{A numeric (optional). Weight below which
+observations are deemed to be non-contributing.
+If not provided, will be determined by running
+\code{ididvar::idid_contrib_threshold}}
+
+\item{threshold_change}{A double (between 0 and 1). The change threshold in
+estimate and s.e. when dropping observations.}
 
 \item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
-
-\item{threshold_diff}{(Optional) A numeric value between 0 and 1 representing the maximum proportion of data points that can be removed before we suspect that our estimate is changing more than by a \code{threshold_diff} percentage.}
 }
 \value{
-A ggplot object representing contribution heatmap. The function will print a warning message if \code{threshold_diff} is too low and not enough data would remain by dropping non-contributing cases.
+A ggplot2 graph of observations contributing to estimation.
+
+If var_y is specified, returns a heatmap whose color describes whether a
+given observation does not contribute (i.e. can be dropped, along with all
+lower weight observations, without substantially altering the estimate)
+
+If var_y is not specified, returns a bar chart representing the number of
+observations that can be dropped in each group.
 }
 \description{
-Create a heatmap showing which observations contribute to the identification of certain variables.
+Make a graph to visualize observations that can be dropped without
+changing the point estimate or the standard error of the estimate of
+interest by more than a given proportion (\code{threshold_change}).
+
+Makes a heatmap or a bar chart, depending on the number of dimensions
+specified.
 }

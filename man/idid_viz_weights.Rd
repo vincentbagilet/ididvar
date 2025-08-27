@@ -9,12 +9,13 @@ idid_viz_weights(reg, var_interest, var_x, var_y, keep_labels = TRUE)
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The treatment or main variable of interest.}
+\item{var_interest}{A string. The name of the main variable of interest.}
 
-\item{var_x}{A variable in the data set used in \code{reg}.}
+\item{var_x}{A variable in the data set used in \code{reg} to plot on the
+x-axis.}
 
-\item{var_y}{A variable in the data set used in \code{reg}. If not specified,
-produces a bar chart.}
+\item{var_y}{A variable in the data set used in \code{reg} to plot on the
+y-axis (optional). If not specified, produces a bar chart.}
 
 \item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
 }

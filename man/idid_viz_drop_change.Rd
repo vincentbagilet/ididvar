@@ -2,31 +2,39 @@
 % Please edit documentation in R/idid_viz_drop_change.R
 \name{idid_viz_drop_change}
 \alias{idid_viz_drop_change}
-\title{Drop change}
+\title{Visualize changes in point estimate and s.e. when dropping observation}
 \usage{
 idid_viz_drop_change(
   reg,
   var_interest,
+  threshold_change = 0.05,
   search_step = 0.05,
   search_start = search_step,
-  search_end = 1 - search_step,
-  threshold_change = 0.05
+  search_end = 1 - search_step
 )
 }
 \arguments{
-\item{reg}{A linear model. Optional.}
+\item{reg}{A regression object.}
 
-\item{var_interest}{A single variable. Optionally, a vector of variables if \code{reg_is_poly} is TRUE in the linear model used for prediction.}
+\item{var_interest}{A string. The name of the main variable of interest.}
 
-\item{search_step}{One of \code{0}, \code{'0'}, \code{Inf} or \code{.Machine$double.xmax}. Currently unused; must be specified if it isn't one of these values or an error will occur. Optional.}
+\item{threshold_change}{A double (between 0 and 1). The change threshold in
+estimate and s.e. when dropping observations.}
 
-\item{search_start}{A positive number between 0 and .99 (inclusive). Optional.}
+\item{search_step}{A double (between 0 and 1). The additional proportion of
+observations to drop in each iteration of the loop.}
 
-\item{search_end}{A positive number between 1 and .9999 (inclusive) and different from \code{search_start}. Currently unused; must not be equal to \code{.Machine$double.xmax} or an error will occur. Optional.}
+\item{search_start}{A numeric (between 0 and 1). Proportion of observation to
+drop in the first step of the loop in \code{idid_contrib_threshold}.}
+
+\item{search_end}{A numeric (between 0 and 1). Proportion of observation to
+drop in the last step of the loop in \code{idid_contrib_threshold}.}
 }
 \value{
-If successful, a plot is made with lines representing the proportion of change in the measure(s) of interest at various drop thresholds as compared to the full sample from one end to the other. Invisible otherwise.
+A ggplot2 object.
 }
 \description{
-A short description...
+Make a faceted line graph describing the percentage variation of the point
+estimate and s.e. of interest as a function of the proportion of
+observations dropped.
 }
