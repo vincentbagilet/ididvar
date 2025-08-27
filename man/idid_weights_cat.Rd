@@ -2,12 +2,13 @@
 % Please edit documentation in R/idid_weights_cat.R
 \name{idid_weights_cat}
 \alias{idid_weights_cat}
-\title{Convert numeric vector of weights to categorical label}
+\title{Create categories for identifying variation weights}
 \usage{
 idid_weights_cat(weights)
 }
 \arguments{
-\item{weights}{A numeric (positive) vector.}
+\item{weights}{A numeric vector of identifying variation weights.
+Generally produced by the \code{ididvar::idid_weights} function.}
 }
 \value{
 A factor with levels "More than 50x smaller", "Between 10x and 50x smaller",
@@ -16,5 +17,5 @@ A factor with levels "More than 50x smaller", "Between 10x and 50x smaller",
 "More than 50x larger", indicating the relative size of each element.
 }
 \description{
-Categorize weights based on their size relative to the total weight.
+Categorize weights based on their size relative to the average weight.
 }

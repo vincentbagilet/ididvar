@@ -1,11 +1,13 @@
-#' Compute a threshold for the weights used in inverse probability weighting (IPW)
+#' Find a weight threshold below which observations do not contribute
 #'
 #' @description
-#' A short description...
+#' Find a weight threshold below which removing observations does not change
+#' the point estimate or the standard error of the estimate of interest by more
+#' than a given proportion.
 #'
-#' @param reg A regression object.
-#' @param var_interest A single string or constant indicating the variable of interest, e.g. a character vector with names matching columns in your data.
-#' @param threshold_change The maximum size of change in predictions allowed after dropping participants (i.e., weighting participants 0). Optional. Default is `0.05`, which means up to 5% of observations can be dropped without exceeding the threshold change.
+#' @inheritParams idid_weights
+#' @param threshold_change A number (between 0 and 1).
+#' The maximum size of change in predictions allowed after dropping participants (i.e., weighting participants 0). Optional. Default is `0.05`, which means up to 5% of observations can be dropped without exceeding the threshold change.
 #' @param search_step A fraction of observations or weight values. Optional. Default is `0.05`.
 #'
 #' @returns The last value from the weights at the point where no more participants could be "dropped" without significantly altering the estimates. It's returned invisibly, i.e., it's only visible if you call this function with `invisible()` around `idid_contrib_threshold` in your code.

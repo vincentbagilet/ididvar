@@ -2,20 +2,16 @@
 #'
 #' @description Create a heatmap showing which observations contribute to the identification of certain variables.
 #'
-#' @param reg A regression object created from `ididvar::create_regression()` function.
-#' @param var_interest The variable that we are identifying using the idid method. This is typically one of the dependent variables in the regression.
+#' @inheritParams idid_viz_weights
 #' @param threshold_diff (Optional) A numeric value between 0 and 1 representing the maximum proportion of data points that can be removed before we suspect that our estimate is changing more than by a `threshold_diff` percentage.
-#' @param var_1 The first variable shown on the x-axis. This argument represents a set of characteristics for "all" observations in an area.
-#' @param var_2 (Optional) A second binary or continuous variable to be shown on the y-axis, with values indicating the number of times each value appears within `var_interest`.
-#' @param keep_labels (Optional) If this is set to TRUE, we will include labels for all relevant areas; otherwise we only display a plot.
 #'
 #' @returns
 #' A ggplot object representing contribution heatmap. The function will print a warning message if `threshold_diff` is too low and not enough data would remain by dropping non-contributing cases.
 #' @export
-idid_contrib_viz <- function(reg,
+idid_viz_contrib <- function(reg,
                              var_interest,
-                             var_1,
-                             var_2,
+                             var_x,
+                             var_y,
                              contrib_threshold,
                              threshold_change = 0.05,
                              keep_labels = TRUE,
@@ -36,17 +32,17 @@ idid_contrib_viz <- function(reg,
   df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
   df[["contrib_name"]] <- ifelse(df[["contrib"]], "Contributes", "Does not contribute")
 
-  if (missing(var_2)) {
+  if (missing(var_y)) {
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(x = {{ var_1 }}, fill = contrib_name)) +
+      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, fill = contrib_name)) +
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
       # ggplot2::coord_flip() +
       ggplot2::labs(y = "Number of observations")
   } else {
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
-        x = {{ var_1 }},
-        y = {{ var_2 }},
+        x = {{ var_x }},
+        y = {{ var_y }},
         fill = contrib_name)
       ) +
       ggplot2::geom_tile()

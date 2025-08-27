@@ -15,7 +15,7 @@
 #' @importFrom ggplot2 %+replace%
 #'
 #' @export
-idid_drop_change_viz <- function(reg,
+idid_viz_drop_change <- function(reg,
                                  var_interest,
                                  search_step = 0.05,
                                  search_start = search_step,

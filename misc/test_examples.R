@@ -5,10 +5,10 @@ reg_test <- ggplot2::economics |>
   ) |>
   lm(formula = unemploy ~ pce + uempmed + psavert + pop + year_fe)
 
-idid_weights_viz(reg_test, "pce", var_x = pop) +
+idid_viz_weights(reg_test, "pce", var_x = pop) +
   ggplot2::labs(x = NULL)
 
-idid_contrib_viz(reg_test, "pce", var_1 = pop) +
+idid_viz_contrib(reg_test, "pce", var_1 = pop) +
   ggplot2::labs(x = NULL)
 
 

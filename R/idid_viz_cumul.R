@@ -1,7 +1,4 @@
-#' Idid-lorentz plot
-#'
-#' @description
-#' A short description...
+#' Plot of the cumulative distribution of weights
 #'
 #' @param weights A numeric vector (e.g., weights or probabilities).
 #' @param prop_weights Optional. One of `0`, `1`, or values in-between. The contribution threshold above which to display contributions ("tail") individually.
@@ -10,7 +7,7 @@
 #' An idiD Lörentz plot
 #'
 #' @export
-idid_lorentz_viz <- function(weights, prop_weights = 0.25) {
+idid_viz_cumul <- function(weights, prop_weights = 0.25) {
   weights_sorted <- sort(weights)
   cum_sum <- cumsum(weights_sorted)
   lorenz <- cum_sum/max(cum_sum)

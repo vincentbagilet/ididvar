@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_contrib_threshold.R
 \name{idid_contrib_threshold}
 \alias{idid_contrib_threshold}
-\title{Compute a threshold for the weights used in inverse probability weighting (IPW)}
+\title{Find a weight threshold below which observations do not contribute}
 \usage{
 idid_contrib_threshold(
   reg,
@@ -14,9 +14,10 @@ idid_contrib_threshold(
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A single string or constant indicating the variable of interest, e.g. a character vector with names matching columns in your data.}
+\item{var_interest}{A string. The treatment or main variable of interest.}
 
-\item{threshold_change}{The maximum size of change in predictions allowed after dropping participants (i.e., weighting participants 0). Optional. Default is \code{0.05}, which means up to 5\% of observations can be dropped without exceeding the threshold change.}
+\item{threshold_change}{A number (between 0 and 1).
+The maximum size of change in predictions allowed after dropping participants (i.e., weighting participants 0). Optional. Default is \code{0.05}, which means up to 5\% of observations can be dropped without exceeding the threshold change.}
 
 \item{search_step}{A fraction of observations or weight values. Optional. Default is \code{0.05}.}
 }
@@ -24,5 +25,7 @@ idid_contrib_threshold(
 The last value from the weights at the point where no more participants could be "dropped" without significantly altering the estimates. It's returned invisibly, i.e., it's only visible if you call this function with \code{invisible()} around \code{idid_contrib_threshold} in your code.
 }
 \description{
-A short description...
+Find a weight threshold below which removing observations does not change
+the point estimate or the standard error of the estimate of interest by more
+than a given proportion.
 }

@@ -5,7 +5,7 @@ reg_test <- ggplot2::mpg |>
   lm(formula = cty ~ displ + drv)
 
 reg_test |>
-  idid_weights_viz("displ", year, manufacturer)
+  idid_viz_weights("displ", year, manufacturer)
 
 +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
@@ -35,7 +35,7 @@ purrr::map(seq(0.2, 0.9, 0.1), idid_drop_change, reg = reg_test, var_interest = 
 
 contrib_threshold <- idid_contrib_threshold(reg_test, "displ", threshold_change = 0.05)
 
-idid_contrib_viz(reg_test, "displ", var_1 = year, var_2 = md, keep_labels = FALSE) +
+idid_viz_contrib(reg_test, "displ", var_1 = year, var_2 = md, keep_labels = FALSE) +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 # idid_viz(reg_test, "displ", manufacturer, md, keep_labels = FALSE)
@@ -60,13 +60,13 @@ dat <- ggplot2::mpg |>
 
 ### Additional tests
 
-idid_drop_change_viz(reg_test, "displ")
+idid_viz_drop_change(reg_test, "displ")
 
 idid_grouping_var(reg_test, "displ", names(ggplot2::mpg))
 
-idid_weights_viz(reg_test, "displ", year, manufacturer)
+idid_viz_weights(reg_test, "displ", year, manufacturer)
 
-dat$weights |> idid_lorentz_viz()
+dat$weights |> idid_viz_cumul()
 
 
 dat |>

@@ -8,6 +8,7 @@
 #' @param var_x A variable in the data set used in \code{reg}.
 #' @param var_y A variable in the data set used in \code{reg}. If not specified,
 #' produces a bar chart.
+#' @param keep_labels A boolean (optional). If FALSE, remove y labels and ticks.
 #'
 #' @returns
 #' A ggplot2 graph of identifying variation weights.
@@ -20,7 +21,7 @@
 #' each group.
 #'
 #' @export
-idid_weights_viz <- function(reg,
+idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
                              var_y,
