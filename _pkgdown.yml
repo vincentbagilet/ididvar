@@ -1,0 +1,35 @@
+template:
+  bootstrap: 5
+  bootswatch: journal
+  bslib:
+    # pkgdown-nav-height: 100px
+    base_font: {google: "Lato"}
+    heading_font: {google: "Lato"}
+    primary: "#1D4749"
+
+authors:
+  Vincent Bagilet:
+    href: https://vincentbagilet.github.io/
+
+navbar:
+  structure:
+    right: [github]
+
+reference:
+- title: Computation functions
+  contents:
+  - idid_weights
+  - idid_contrib_threshold
+  - idid_drop_change
+  - idid_grouping_var
+
+- title: Visualization functions
+  contents:
+  - idid_viz_weights
+  - idid_viz_cumul
+  - idid_viz_contrib
+  - idid_viz_drop_change
+
+- title: Internal functions
+  contents:
+  - theme_idid

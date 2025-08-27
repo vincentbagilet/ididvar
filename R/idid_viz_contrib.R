@@ -1,4 +1,4 @@
-#' Visualization of observations contributing to estimation
+#' Visualization of observations contributing (or not) to estimation
 #'
 #' @description
 #' Make a graph to visualize observations that can be dropped without

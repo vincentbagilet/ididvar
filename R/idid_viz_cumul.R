@@ -1,4 +1,4 @@
-#' Plot of the cumulative distribution of weights
+#' Visualization of the cumulative distribution of weights
 #'
 #' @param weights A numeric vector (e.g., weights or probabilities).
 #' @param prop_weights Optional. One of `0`, `1`, or values in-between. The contribution threshold above which to display contributions ("tail") individually.

@@ -1,4 +1,4 @@
-#' Visualize changes in point estimate and s.e. when dropping observation
+#' Visualize changes in point estimate and s.e. when dropping observations
 #'
 #' @description
 #' Make a faceted line graph describing the percentage variation of the point
