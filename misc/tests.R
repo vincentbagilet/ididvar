@@ -35,7 +35,7 @@ purrr::map(seq(0.2, 0.9, 0.1), idid_drop_change, reg = reg_test, var_interest = 
 
 contrib_threshold <- idid_contrib_threshold(reg_test, "displ", threshold_change = 0.05)
 
-idid_viz_contrib(reg_test, "displ", var_1 = year, var_2 = md, keep_labels = FALSE) +
+idid_viz_contrib(reg_test, "displ", var_x = year, var_y = md) +
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 # idid_viz(reg_test, "displ", manufacturer, md, keep_labels = FALSE)

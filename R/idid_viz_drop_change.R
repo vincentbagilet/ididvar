@@ -15,9 +15,18 @@
 #' @returns
 #' A ggplot2 object.
 #'
+#' The name of the facet variable is \code{measure}.
+#'
 #' @importFrom ggplot2 %+replace%
 #'
 #' @export
+#'
+#' @examples
+#' reg_ex <- ggplot2::txhousing |>
+#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'
+#' idid_viz_drop_change(reg_ex, "sales") +
+#'   ggplot2::facet_wrap(~ measure, nrow = 2)
 idid_viz_drop_change <- function(reg,
                                  var_interest,
                                  threshold_change = 0.05,
@@ -42,16 +51,21 @@ idid_viz_drop_change <- function(reg,
 
   rbind(drop_change_est, drop_change_se) |>
     ggplot2::ggplot(ggplot2::aes(x = prop_drop, y = abs(prop_change*100))) +
-    ggplot2::geom_line(size = 0.8) +
-    ggplot2::geom_hline(yintercept = threshold_change*100, linetype = "dashed") +
+    ggplot2::geom_line(linewidth = 1.4, color = "#300D49") +
+    ggplot2::geom_hline(
+      yintercept = threshold_change*100,
+      linetype = "dashed",
+      color = "#300D49"
+    ) +
     ggplot2::facet_wrap(~ measure) +
-    ididvar::theme_idid()  %+replace%
+    ididvar::theme_idid() +
     ggplot2::theme(
       # text = ggplot2::element_text(family = "lato"),
       panel.grid.major.y = ggplot2::element_line()
     ) +
     ggplot2::labs(
+      title = "Variation of the estimate when dropping observations",
       x = "Proportion of observations dropped",
-      y = "Change as compared to the full sample (in %)"
+      y = "Variation (in %)\nas compared to the full sample estimate "
     )
 }

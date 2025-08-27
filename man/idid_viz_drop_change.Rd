@@ -32,9 +32,18 @@ drop in the last step of the loop in \code{idid_contrib_threshold}.}
 }
 \value{
 A ggplot2 object.
+
+The name of the facet variable is \code{measure}.
 }
 \description{
 Make a faceted line graph describing the percentage variation of the point
 estimate and s.e. of interest as a function of the proportion of
 observations dropped.
+}
+\examples{
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_viz_drop_change(reg_ex, "sales") +
+  ggplot2::facet_wrap(~ measure, nrow = 2)
 }

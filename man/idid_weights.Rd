@@ -51,5 +51,4 @@ reg_ex_plm <- ggplot2::txhousing  |>
 
 idid_weights(reg_ex_plm, "sales") |>
   head()
-
 }

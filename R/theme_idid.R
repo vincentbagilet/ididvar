@@ -4,6 +4,7 @@
 #' A function to return a custom ggplot2 theme.
 #'
 #' @importFrom ggplot2 %+replace%
+#' @param ... Additional arguments to be passed to the \code{theme} function
 #'
 #' @returns
 #' The specified `theme` object.
@@ -19,8 +20,7 @@
 #'     subtitle = "Something to add"
 #'   ) +
 #'   theme_idid()
-#'
-theme_idid <- function() {
+theme_idid <- function(...) {
   ggplot2::theme_minimal(
     base_family = c("Helvetica")
   ) %+replace%
@@ -68,18 +68,15 @@ theme_idid <- function() {
       legend.text = ggplot2::element_text(size = ggplot2::rel(0.9)),
       strip.placement = "outside",
       strip.text = ggplot2::element_text(
-        size = ggplot2::rel(1),
+        size = ggplot2::rel(1.2),
         face = "bold"
       ),
       strip.text.x = ggplot2::element_text(
         hjust = 0,
-        margin = ggplot2::margin(b = .3, unit = "cm")
+        margin = ggplot2::margin(b = .3, t = 0.4, unit = "cm")
       ),
       panel.spacing.y = ggplot2::unit(1.8, "lines"),
-      panel.spacing.x = ggplot2::unit(1.3, "lines")
+      panel.spacing.x = ggplot2::unit(1.3, "lines"),
+      ...
     )
-  # ggplot2::scale_fill_gradientn(colors = c("#FBE2C5", "#d46c76", "#3e196e"))
-  # ggplot2::scale_fill_gradientn(colors = c("#FAF7F5", "#CDC6CC", "#041258"))
-  # ggplot2::scale_fill_gradientn(colors = c("#FEF5EC", "#E14144", "#041258"))
-
 }

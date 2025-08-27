@@ -27,3 +27,9 @@ droped s.e.
 Computes a variation of the point estimate and standard errors of the
 variable of interest when dropping low weight observations.
 }
+\examples{
+reg_ex <- ggplot2::economics |>
+  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+
+idid_drop_change(reg_ex, "pce", prop_drop = 0.1)
+}

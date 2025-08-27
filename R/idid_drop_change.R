@@ -16,6 +16,12 @@
 #' droped s.e.
 #'
 #' @export
+#'
+#' @examples
+#' reg_ex <- ggplot2::economics |>
+#'   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+#'
+#' idid_drop_change(reg_ex, "pce", prop_drop = 0.1)
 idid_drop_change <- function(reg,
                              var_interest,
                              prop_drop) {

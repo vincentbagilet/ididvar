@@ -32,3 +32,9 @@ This function allows to identify variables for which grouping by this
 variable yields the most homogeneous within group variance in weights or the
 most heterogeneous between groups variance
 }
+\examples{
+reg_ex <- ggplot2::economics |>
+  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+
+idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
+}

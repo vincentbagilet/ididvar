@@ -1,0 +1,75 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-",
+  out.width = "70%",
+  dpi = 400,
+  fig.align = "center"
+)
+```
+
+# ididvar
+
+<!-- badges: start -->
+<!-- badges: end -->
+
+This package provide tools to **identify the identifying variation in a regression**. 
+
+It is specifically built for **economics** analyses.
+
+This package is built as part of a [research project](https://vincentbagilet.github.io/causal_exaggeration/). As such, the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) provides a detailed scientific description of its content and of its underpinnings. Online appendices of the paper also provide a thorough example of a practical implementation of an analysis using the `ididvar` package.
+
+## Installation
+
+You can install the development version of `ididvar` from [GitHub](https://github.com/vincentbagilet/ididvar) with:
+
+```{r instal, eval=FALSE}
+# install.packages("devtools")
+devtools::install_github("vincentbagilet/ididvar")
+```
+
+## Usage
+
+This package allows easily compute identifying variation weights and works with a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
+
+```{r compute_weights, message=FALSE}
+library(ididvar)
+
+reg_ex_fixest <- ggplot2::txhousing  |>
+  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+
+idid_weights(reg_ex_fixest, "sales") |>
+  head()
+```
+
+It then allows to explore them through visualizations.
+
+```{r plot_weights, message=FALSE, fig.asp=1.3, fig.dpi=400}
+library(ggplot2)
+
+idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+  ggplot2::labs(x = NULL, y = NULL)
+```
+
+```{r plot_cumul, message=FALSE, fig.asp=1.3, fig.dpi=400}
+idid_weights(reg_ex_fixest, "sales") |>
+  idid_viz_cumul()
+```
+
+It also allows to easily find observation that actually contribute to identification (in the sense that we can drom observations that "do not contribute" without the estimate changing more than a given proportion). 
+
+```{r plot_contrib, message=FALSE, fig.asp=1.3, fig.dpi=400}
+idid_viz_contrib(reg_ex_fixest, "sales", city) +
+  ggplot2::labs(x = NULL) +
+  ggplot2::coord_flip()
+```
+
+
+

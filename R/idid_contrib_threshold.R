@@ -22,6 +22,12 @@
 #' \code{threshold_change}.
 #'
 #' @export
+#'
+#' @examples
+#' reg_ex <- ggplot2::economics |>
+#'   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+#'
+#' idid_contrib_threshold(reg_ex, "pce")
 idid_contrib_threshold <- function(reg,
                                    var_interest,
                                    threshold_change = 0.05,

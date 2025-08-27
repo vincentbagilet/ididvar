@@ -7,7 +7,7 @@ template:
     heading_font: {google: "Lato"}
     primary: "#300D49"
 
-title: "ididvar"
+name: "ididvar"
 authors:
   Vincent Bagilet:
     href: https://vincentbagilet.github.io/

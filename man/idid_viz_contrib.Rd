@@ -53,3 +53,14 @@ interest by more than a given proportion (\code{threshold_change}).
 Makes a heatmap or a bar chart, depending on the number of dimensions
 specified.
 }
+\examples{
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_viz_contrib(reg_ex, "sales", date, city) +
+  ggplot2::labs(x = NULL, y = NULL)
+
+idid_viz_contrib(reg_ex, "sales", city) +
+  ggplot2::labs(x = NULL) +
+  ggplot2::coord_flip()
+}

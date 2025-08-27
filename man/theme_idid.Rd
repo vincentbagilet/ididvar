@@ -4,7 +4,10 @@
 \alias{theme_idid}
 \title{Create a custom theme for \code{ididvar} visualizations}
 \usage{
-theme_idid()
+theme_idid(...)
+}
+\arguments{
+\item{...}{Additional arguments to be passed to the \code{theme} function}
 }
 \value{
 The specified \code{theme} object.
@@ -21,5 +24,4 @@ ggplot2::mpg |>
     subtitle = "Something to add"
   ) +
   theme_idid()
-
 }

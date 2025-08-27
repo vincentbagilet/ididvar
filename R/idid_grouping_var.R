@@ -20,6 +20,12 @@
 #' - `between_var` the between-group variation in weights
 #'
 #' @export
+#'
+#' @examples
+#' reg_ex <- ggplot2::economics |>
+#'   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+#'
+#' idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
 idid_grouping_var <- function(reg, var_interest, grouping_vars = "everything") {
   df <- eval(reg$call$data)
   df[["weight"]] = idid_weights(reg, var_interest)

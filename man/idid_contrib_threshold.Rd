@@ -38,3 +38,9 @@ proportions of observations removed, increasing this proportion by
 \code{search_step} while the variation in the estimate and s.e. as compared
 to the full sample is less than \code{threshold_change}.
 }
+\examples{
+reg_ex <- ggplot2::economics |>
+  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+
+idid_contrib_threshold(reg_ex, "pce")
+}

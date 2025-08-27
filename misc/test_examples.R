@@ -56,7 +56,7 @@ reg_ex_plm <- ggplot2::txhousing  |>
 
 #computing identifying variation weights
 idid_weights(reg_ex_fixest, "sales") |>
-  head()
+  idid_viz_cumul()
 
 idid_weights(reg_ex_lm, "sales") |>
   head()
@@ -73,6 +73,8 @@ txhousing_clean <- ggplot2::txhousing |>
 #regression using lm
 reg_ex_lm <- ggplot2::txhousing |>
   lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_contrib_threshold(reg_ex_lm, "sales")
 
 idid_viz_weights(reg_ex_lm, "sales", city) +
   ggplot2::coord_flip() +
@@ -98,6 +100,8 @@ reg_ex_plm <- ggplot2::txhousing  |>
   )
 
 
+idid_contrib_threshold(reg_ex_lm, "sales")
+
 
 idid_weights(reg_ex_lm, "sales") |>
   head()
@@ -117,10 +121,53 @@ ggplot2::mpg |>
   theme_idid()
 
 
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_contrib_threshold(reg_ex, "sales")
+
+reg_ex <- ggplot2::economics |>
+  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+
+idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
+
+idid_drop_change(reg_ex, "pce", prop_drop = 0.1)
+
+
+idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
+
+idid_grouping_var(reg_test, "displ", names(ggplot2::mpg))
 
 
 
 
+idid_viz_contrib(reg_test, "displ", var_x = year, var_y = md) +
+  ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 
+reg_ex_fixest <- ggplot2::txhousing |>
+  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
 
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_viz_drop_change(reg_ex, "sales")
+
+idid_weights(reg_ex_lm, "sales") |>
+  idid_viz_cumul()
+
+contrib_threshold <- idid_contrib_threshold(reg_ex_lm, "sales")
+
+idid_viz_contrib(reg_ex_lm, "sales", date, city) +
+  ggplot2::labs(x = NULL, y = NULL)
+
+idid_viz_contrib(reg_ex_lm, "sales", city) +
+  ggplot2::labs(x = NULL) +
+  ggplot2::coord_flip()
+
+
+idid_weights(reg_ex_lm, "sales") |>
+  idid_viz_cumul()
+
+
+idid_viz_drop_change(reg_ex_lm, "sales")

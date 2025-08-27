@@ -53,5 +53,4 @@ reg_ex_fixest <- ggplot2::txhousing |>
 
 idid_viz_weights(reg_ex_fixest, "sales", date, city) +
   ggplot2::labs(x = NULL, y = NULL)
-
 }

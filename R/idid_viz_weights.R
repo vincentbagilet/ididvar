@@ -43,7 +43,6 @@
 #'
 #' idid_viz_weights(reg_ex_fixest, "sales", date, city) +
 #'   ggplot2::labs(x = NULL, y = NULL)
-#'
 idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
@@ -52,7 +51,6 @@ idid_viz_weights <- function(reg,
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
   df <- df[!is.na(df$weight), ]
-  df[1, "weight"] <- NA
 
   if (missing(var_y)) {
     graph <- df |>
@@ -98,7 +96,7 @@ idid_viz_weights <- function(reg,
         breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
         labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
         limits = c(-2, 2),
-        na.value = "#0f1d2e"
+        na.value = "gray88"
       ) +
       ggplot2::labs(
         fill = "Weight, compared to the average weight",

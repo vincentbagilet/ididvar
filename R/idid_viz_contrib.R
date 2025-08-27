@@ -26,6 +26,17 @@
 #' observations that can be dropped in each group.
 #'
 #' @export
+#'
+#' @examples
+#' reg_ex <- ggplot2::txhousing |>
+#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'
+#' idid_viz_contrib(reg_ex, "sales", date, city) +
+#'   ggplot2::labs(x = NULL, y = NULL)
+#'
+#' idid_viz_contrib(reg_ex, "sales", city) +
+#'   ggplot2::labs(x = NULL) +
+#'   ggplot2::coord_flip()
 idid_viz_contrib <- function(reg,
                              var_interest,
                              var_x,
@@ -39,8 +50,7 @@ idid_viz_contrib <- function(reg,
     contrib_threshold <- ididvar::idid_contrib_threshold(
       reg,
       var_interest,
-      threshold_change = threshold_change,
-      ...
+      threshold_change = threshold_change
     )
   }
 
@@ -74,7 +84,8 @@ idid_viz_contrib <- function(reg,
     # theme and palette
     ididvar::theme_idid() +
     ggplot2::scale_fill_manual(
-      values = c("#1C6669", "#E5C38A")
+      values = c("#562A62", "#E79232"),
+      na.value = "gray88"
     )
 
   if (!keep_labels) {

@@ -45,7 +45,6 @@
 #'
 #' idid_weights(reg_ex_plm, "sales") |>
 #'   head()
-#'
 idid_weights <- function(reg, var_interest) {
   x_per <-
     update(

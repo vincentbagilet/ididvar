@@ -1,13 +1,22 @@
 #' Visualization of the cumulative distribution of weights
 #'
-#' @param weights A numeric vector (e.g., weights or probabilities).
-#' @param prop_weights Optional. One of `0`, `1`, or values in-between. The contribution threshold above which to display contributions ("tail") individually.
+#' @param weights A numeric vector of weights
+#' @param prop_weights A numeric (between 0 and 1). A proportion of weights
+#' that to consider as contributing the most to identification.
+#' Used to build the subtitle.
 #'
 #' @returns
-#' An idiD Lörentz plot
+#' A ggplot2 graph of the cumulative distribution of weights.
 #'
 #' @export
-idid_viz_cumul <- function(weights, prop_weights = 0.25) {
+#'
+#' @examples
+#' reg_ex <- ggplot2::txhousing |>
+#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'
+#' idid_weights(reg_ex, "sales") |>
+#'   idid_viz_cumul()
+idid_viz_cumul <- function(weights, prop_weights = 0.2) {
   weights_sorted <- sort(weights)
   cum_sum <- cumsum(weights_sorted)
   lorenz <- cum_sum/max(cum_sum)
@@ -20,18 +29,34 @@ idid_viz_cumul <- function(weights, prop_weights = 0.25) {
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = obs_nb, y = lorenz)) +
-    ggplot2::geom_line(linewidth = 1.2, color = "#300D49") +
-    ggplot2::geom_segment(
-      ggplot2::aes(x = 0, y = 0, xend = nrow(df), yend = 1),
+    ggplot2::geom_line(linewidth = 1.4, color = "#300D49") +
+    ggplot2::geom_area(fill = "#300D49", alpha = 0.2) +
+    ggplot2::annotate(
+      geom = "segment",
+      x = 0, y = 0, xend = nrow(df), yend = 1,
       linetype = "dashed",
-      linewidth = 0.2,
+      linewidth = 0.5,
       color = "#300D49"
     ) +
-    ididvar::theme_idid() +
+    ididvar::theme_idid(aspect.ratio = 1) +
+    #the next chunck is optional
+    ggplot2::theme(
+      axis.title.y = ggplot2::element_text(
+        vjust = 1,
+        margin = ggplot2::margin(r = -4.9, unit = "cm"),
+        size = ggplot2::rel(1),
+        angle = 0
+      ),
+      axis.title.x = ggplot2::element_text(size = ggplot2::rel(1)),
+      plot.subtitle = ggplot2::element_text(
+        margin = ggplot2::margin(b = 0.6, unit = "cm"))
+    ) +
     ggplot2::labs(
-      title = "Lorenz curve of weights",
-      subtitle = paste0(n_contrib, " observations (", round(prop_contrib, 3)*100, "%) account for ", (1 - prop_weights)*100, "% of the weights"),
-      x = "Observation index",
+      title = "Cumulative distribution of weights",
+      subtitle = paste0(n_contrib, " observations (",
+                        round(prop_contrib, 3)*100, "%) account for ",
+                        (1 - prop_weights)*100, "% of the weights"),
+      x = "Observation index\n(smallest to largest weight)",
       y = "Cummulative sum of weights"
     )
 }
