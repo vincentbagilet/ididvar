@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_viz_cumul.R
 \name{idid_viz_cumul}
 \alias{idid_viz_cumul}
-\title{Plot of the cumulative distribution of weights}
+\title{Visualization of the cumulative distribution of weights}
 \usage{
 idid_viz_cumul(weights, prop_weights = 0.25)
 }
@@ -15,5 +15,5 @@ idid_viz_cumul(weights, prop_weights = 0.25)
 An idiD Lörentz plot
 }
 \description{
-Plot of the cumulative distribution of weights
+Visualization of the cumulative distribution of weights
 }

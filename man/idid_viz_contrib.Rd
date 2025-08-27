@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_viz_contrib.R
 \name{idid_viz_contrib}
 \alias{idid_viz_contrib}
-\title{Visualization of observations contributing to estimation}
+\title{Visualization of observations contributing (or not) to estimation}
 \usage{
 idid_viz_contrib(
   reg,

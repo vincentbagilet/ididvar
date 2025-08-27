@@ -31,7 +31,8 @@ without altering the estimate by more than a proportion of
 Find a weight threshold below which removing observations does not change
 the point estimate or the standard error of the estimate of interest by more
 than a given proportion.
-
+}
+\details{
 This function applies \code{ididvar::idid_drop_change} for a series of
 proportions of observations removed, increasing this proportion by
 \code{search_step} while the variation in the estimate and s.e. as compared

@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_viz_drop_change.R
 \name{idid_viz_drop_change}
 \alias{idid_viz_drop_change}
-\title{Visualize changes in point estimate and s.e. when dropping observation}
+\title{Visualize changes in point estimate and s.e. when dropping observations}
 \usage{
 idid_viz_drop_change(
   reg,

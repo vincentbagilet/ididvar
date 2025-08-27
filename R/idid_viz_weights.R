@@ -22,6 +22,13 @@
 #' each group.
 #'
 #' @export
+#'
+#' @examples
+#' reg_test <- ggplot2::economics |>
+#'  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+#'
+#' idid_weights(reg_test, "pce") |>
+#'  head()
 idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
@@ -56,8 +63,6 @@ idid_viz_weights <- function(reg,
       ifelse(sum_df[["log_weight"]] < log10(1/50), -2,
         ifelse(sum_df[["log_weight"]] > log10(50), 2, sum_df[["log_weight"]]))
 
-    sum_df[1, "log_weight_trunc"] <- 1000000
-
     graph <- sum_df |>
       ggplot2::ggplot(ggplot2::aes(
         x = var_x_name,
@@ -74,7 +79,7 @@ idid_viz_weights <- function(reg,
         # breaks = 1:7,
         breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
         labels = c("0", "1/50x", "1/2x", "2x", "10x", "50x", "Inf"),
-        limits = c(-2, 2),
+        # limits = c(-2, 2),
         na.value = "#0f1d2e"
       ) +
       ggplot2::labs(

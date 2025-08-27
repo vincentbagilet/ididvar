@@ -33,3 +33,10 @@ each group.
 Makes a graph to visualize the identifying variation weights (a heatmap or
 a bar chart, depending on the number of dimensions specified)
 }
+\examples{
+reg_test <- ggplot2::economics |>
+ lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+
+idid_weights(reg_test, "pce") |>
+ head()
+}

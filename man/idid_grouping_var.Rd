@@ -26,7 +26,8 @@ A dataframe with 3 columns:
 \description{
 Groups weights by each of the variables listed in \code{grouping_vars},
 and computes the within-group variances and between-group variances.
-
+}
+\details{
 This function allows to identify variables for which grouping by this
 variable yields the most homogeneous within group variance in weights or the
 most heterogeneous between groups variance

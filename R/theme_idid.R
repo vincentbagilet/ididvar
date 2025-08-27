@@ -11,7 +11,7 @@
 #' @export
 theme_idid <- function() {
   ggplot2::theme_minimal(
-    base_family = c("Helvetica", "Verdana", "Arial")
+    base_family = c("Helvetica")
   ) %+replace%
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(0.5, 0.5, 0.5, 0.5), "cm"),

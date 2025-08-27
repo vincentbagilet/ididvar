@@ -5,7 +5,7 @@ template:
     # pkgdown-nav-height: 100px
     base_font: {google: "Lato"}
     heading_font: {google: "Lato"}
-    primary: "#1D4749"
+    primary: "#300D49"
 
 authors:
   Vincent Bagilet:
