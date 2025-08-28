@@ -16,5 +16,7 @@ Suggests:
     fixest,
     knitr,
     plm,
-    rmarkdown
+    rmarkdown,
+    sf,
+    tigris
 VignetteBuilder: knitr

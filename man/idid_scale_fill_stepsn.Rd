@@ -16,7 +16,8 @@ the middle, constituting a diverging scale. It allows a clear distinction
 between contributing and non contributing observations.}
 
 \item{...}{Additional arguments to be passed to the
-\code{ggplot2::scale_fill_stepsn} function}
+\code{ggplot2::scale_fill_stepsn} or  \code{ggplot2::scale_color_stepsn}
+function}
 }
 \description{
 A function that makes a custom color scale and ensures that breaks in terms

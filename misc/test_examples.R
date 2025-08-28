@@ -174,3 +174,36 @@ idid_weights(reg_ex_lm, "sales") |>
 
 
 idid_viz_drop_change(reg_ex_lm, "sales")
+
+
+
+
+
+
+
+
+
+
+#----------- idid_viz_weights_map
+
+library(tigris)
+library(sf)
+library(dplyr)
+
+reg <- state.x77 |>
+  as_tibble() |>
+  mutate(NAME = rownames(state.x77)) |>
+  lm(formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
+
+states_sf <- states(cb = TRUE, resolution = "20m") |>
+  tigris::shift_geometry()
+
+idid_viz_weights_map(reg, "Income", states_sf, "NAME")
+
+
+
+
+
+
+
+

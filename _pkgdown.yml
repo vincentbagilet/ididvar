@@ -32,6 +32,7 @@ reference:
 - title: Visualization functions
   contents:
   - idid_viz_weights
+  - idid_viz_weights_map
   - idid_viz_cumul
   - idid_viz_contrib
   - idid_viz_drop_change

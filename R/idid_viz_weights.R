@@ -51,7 +51,7 @@ idid_viz_weights <- function(reg,
                              ...) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  df <- df[!is.na(df$weight), ]
+  # df <- df[!is.na(df$weight), ]
 
   if (missing(var_y)) {
     graph <- df |>
