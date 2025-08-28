@@ -5,6 +5,9 @@ reg_test <- ggplot2::mpg |>
   lm(formula = cty ~ displ + drv)
 
 reg_test |>
+  idid_weights("displ")
+
+reg_test |>
   idid_viz_weights("displ", year, manufacturer)
 
 +

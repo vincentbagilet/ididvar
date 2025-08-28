@@ -4,7 +4,7 @@
 \alias{idid_drop_change}
 \title{Variation in estimate when dropping low weight observations}
 \usage{
-idid_drop_change(reg, var_interest, prop_drop)
+idid_drop_change(reg, var_interest, prop_drop, ...)
 }
 \arguments{
 \item{reg}{A regression object.}
@@ -12,6 +12,9 @@ idid_drop_change(reg, var_interest, prop_drop)
 \item{var_interest}{A string. The name of the main variable of interest.}
 
 \item{prop_drop}{Proportion of observations to drop}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
 A dataframe with one row and 3 columns:

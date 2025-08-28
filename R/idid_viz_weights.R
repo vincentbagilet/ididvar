@@ -47,9 +47,10 @@ idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
                              var_y,
-                             keep_labels = TRUE) {
+                             keep_labels = TRUE,
+                             ...) {
   df <- eval(reg$call$data)
-  df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
+  df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df <- df[!is.na(df$weight), ]
 
   if (missing(var_y)) {
@@ -90,7 +91,7 @@ idid_viz_weights <- function(reg,
       ggplot2::geom_tile() +
       # ggplot2::geom_text() +
       ggplot2::scale_fill_stepsn(
-        colours = c( "#AD3D00", "#FBE2C5", "#300D49"),
+        colours = c( "#C25807", "#FBE2C5", "#300D49"),
         # colours = c("#913300", "#c68b63", "#fbe2c5", "#b18a9d", "#673275"),
         # colours = c("#19304d", "#3f5473", "#798cad", "#fae7d3", "#c3847e", "#a75254", "#84141e"),
         breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),

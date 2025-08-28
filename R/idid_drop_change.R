@@ -24,7 +24,8 @@
 #' idid_drop_change(reg_ex, "pce", prop_drop = 0.1)
 idid_drop_change <- function(reg,
                              var_interest,
-                             prop_drop) {
+                             prop_drop,
+                             ...) {
   df <- eval(reg$call$data)
   # fml <- reg$call$formula
 
@@ -32,16 +33,16 @@ idid_drop_change <- function(reg,
 
   #keep high weights
   df_sliced <- df[order(df$idid_weights, decreasing = TRUE),] |>
-    head(n = nrow(df)*(1 - prop_drop))
+    utils::head(n = nrow(df)*(1 - prop_drop))
 
   #compute new estimate
   reg_sliced <- stats::update(reg, data = df_sliced)
 
   #retrieve point estimates and se
-  if (class(reg) == "lm") {
+  if (inherits(reg, c("lm", "plm"))) {
     coef_table <- summary(reg)$coefficients
     coef_table_sliced <- summary(reg_sliced)$coefficients
-  } else if (class(reg) == "fixest") {
+  } else if (inherits(reg, "fixest")) {
     coef_table <- reg$coeftable
     coef_table_sliced <- reg_sliced$coeftable
   }

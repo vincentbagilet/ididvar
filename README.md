@@ -7,10 +7,12 @@
 
 <!-- badges: end -->
 
-This package provide tools to **identify the identifying variation in a
-regression**. It is specifically built for analysis in **economics**.
+This package provides tools to **identify the identifying variation in a
+regression**.
 
-This package is built as part of a [research
+It is specifically built for **economics** analyses.
+
+It is built as part of a [research
 project](https://vincentbagilet.github.io/causal_exaggeration/). As
 such, the [associated
 paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf)
@@ -31,9 +33,12 @@ devtools::install_github("vincentbagilet/ididvar")
 
 ## Usage
 
-This package allows easily compute identifying variation weights and
-works with a breadth of estimation packages (`lm`, `plm`, `fixest` for
-instance).
+Most of the functions of the package take as input the output of a
+regression and the name of the variable of interest. `ididvar` supports
+a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
+
+It provides a straightforward function to compute identifying variation
+weights.
 
 ``` r
 library(ididvar)
@@ -47,7 +52,8 @@ idid_weights(reg_ex_fixest, "sales") |>
 #> [6] 4.469283e-07
 ```
 
-It then allows to explore them through visualizations.
+The package also allows for an easy exploration of these weights through
+visualizations.
 
 ``` r
 library(ggplot2)
@@ -65,9 +71,9 @@ idid_weights(reg_ex_fixest, "sales") |>
 
 <img src="man/figures/README-plot_cumul-1.png" width="70%" style="display: block; margin: auto;" />
 
-It also allows to easily find observation that actually contribute to
-identification (in the sense that we can drom observations that “do not
-contribute” without the estimate changing more than a given proportion).
+It also provide functions to identify observations that actually
+contribute to identification (in the sense that dropping the other
+observations does not significantly affect the estimate obtained).
 
 ``` r
 idid_viz_contrib(reg_ex_fixest, "sales", city) +

@@ -11,7 +11,8 @@ idid_viz_contrib(
   var_y,
   contrib_threshold,
   threshold_change = 0.05,
-  keep_labels = TRUE
+  keep_labels = TRUE,
+  ...
 )
 }
 \arguments{
@@ -34,6 +35,9 @@ If not provided, will be determined by running
 estimate and s.e. when dropping observations.}
 
 \item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
 A ggplot2 graph of observations contributing to estimation.

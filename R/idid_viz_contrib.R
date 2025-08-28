@@ -43,7 +43,8 @@ idid_viz_contrib <- function(reg,
                              var_y,
                              contrib_threshold,
                              threshold_change = 0.05,
-                             keep_labels = TRUE) {
+                             keep_labels = TRUE,
+                             ...) {
 
   if (missing(contrib_threshold)) {
     message("Searching for the contribution threshold")

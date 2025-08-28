@@ -1,0 +1,51 @@
+---
+title: "ididvar"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ididvar}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ididvar)
+```
+
+This vignette introduces the main functions in the package and provides examples of analyses that can be carried out with these functions. 
+
+The goal of this document is to describe the capabilities of the package and to describe a typical workflow for analysis. A more thorough example of a practical implementation and analysis, with a thorough analysis of implications for the outcome of an economics research project is available on here, on the  website of the research project for which the `ididvar` package has been developed.
+
+# Weights: computation and analysis
+
+The main objective of the `ididvar` package is to facilitate the computation and analysis of identifying variation weights. These weights represent how much each observation contributes to the identification of a treatment variable of interest. They roughly correspond to the leverage of the bivariate regression of the independent variable on the treatment or main variable of interest, after partialling out the controls, including fixed effects. Observations for which the main variable of interest is well explained by controls only contribute little to identification; the controls or fixed effects absorb most of the variation. 
+
+The formula for the weight for each observation $i \in \{1, ..., N\}$ with $N$ the number of observations is: 
+
+$$w_i = \left( x_i - \mathbb{E}[x_i | C_i] \right)^2 $$
+
+where $x$ is the variable of interest and $C$ the vector of controls and fixed effects.
+
+## Computing observation level weights
+
+
+, have been partialled out
+
+## Group level weights
+
+
+
+these weights allow to compute the amount of variation availale 
+
+
+
+The underlying intuition   T
+
+# An
+

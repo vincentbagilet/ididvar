@@ -8,11 +8,21 @@
 #' The weights correspond to the normalized leverage of each observation for
 #' the variable of interest after partialling out all controls.
 #'
-#' The function invokes particular methods which depend on the class of the
-#' first argument.
+#' They are computed by re-running the regression provided but replacing the
+#' independent variable by the variable of interest (and removing it from the
+#' set of regressors).
+#'
+#' If the nature of the independent variable and of the variable of interest
+#' are different, one may want to change the estimation.
+#' For instance, if the independent variable is discrete and estimated via glm
+#' with the argument \code{family = "binomial"} and the dependent variable is
+#' continuous, one may want to provide the argument \code{family = "gaussian"}
+#' to \code{idid_weights}.
 #'
 #' @param reg A regression object.
 #' @param var_interest A string. The name of the main variable of interest.
+#' @param ... Additional elements to pass to the regression function when
+#' partialling out controls.
 #'
 #' @returns
 #' A numeric vector representing the identifying variation weights.
@@ -45,12 +55,19 @@
 #'
 #' idid_weights(reg_ex_plm, "sales") |>
 #'   head()
-idid_weights <- function(reg, var_interest) {
+idid_weights <- function(reg, var_interest, ...) {
+  #additional arguments to the regression
+  # other_args <- list(
+  #   na.action = na.exclude #add NAs to the weights when values missing for some regressors
+  # )
+  # if (inherits(reg, "fixest")) other_args$na.action <- NULL
+
   x_per <-
     update(
       reg,
       stats::as.formula(paste(var_interest, "~ . -", var_interest)),
-      na.action = na.exclude
+      na.action = na.exclude,
+      ...
     ) |>
     residuals(na.rm = FALSE) |>
     #handle warning when using feols for instance:

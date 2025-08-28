@@ -4,7 +4,7 @@
 \alias{idid_viz_weights}
 \title{Visualization of Identifying Variation Weights}
 \usage{
-idid_viz_weights(reg, var_interest, var_x, var_y, keep_labels = TRUE)
+idid_viz_weights(reg, var_interest, var_x, var_y, keep_labels = TRUE, ...)
 }
 \arguments{
 \item{reg}{A regression object.}
@@ -18,6 +18,9 @@ x-axis.}
 y-axis (optional). If not specified, produces a bar chart.}
 
 \item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
 A ggplot2 graph of identifying variation weights.

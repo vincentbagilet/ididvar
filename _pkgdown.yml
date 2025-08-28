@@ -19,6 +19,7 @@ figures:
 navbar:
   structure:
     right: [github]
+    title: ididvar
 
 reference:
 - title: Computation functions

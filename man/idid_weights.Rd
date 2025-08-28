@@ -4,12 +4,15 @@
 \alias{idid_weights}
 \title{Compute Identifying Variation Weights}
 \usage{
-idid_weights(reg, var_interest)
+idid_weights(reg, var_interest, ...)
 }
 \arguments{
 \item{reg}{A regression object.}
 
 \item{var_interest}{A string. The name of the main variable of interest.}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
 A numeric vector representing the identifying variation weights.
@@ -22,8 +25,16 @@ identification.
 The weights correspond to the normalized leverage of each observation for
 the variable of interest after partialling out all controls.
 
-The function invokes particular methods which depend on the class of the
-first argument.
+They are computed by re-running the regression provided but replacing the
+independent variable by the variable of interest (and removing it from the
+set of regressors).
+
+If the nature of the independent variable and of the variable of interest
+are different, one may want to change the estimation.
+For instance, if the independent variable is discrete and estimated via glm
+with the argument \code{family = "binomial"} and the dependent variable is
+continuous, one may want to provide the argument \code{family = "gaussian"}
+to \code{idid_weights}.
 }
 \examples{
 # example with a lm regression

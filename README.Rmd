@@ -20,11 +20,11 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package provide tools to **identify the identifying variation in a regression**. 
+This package provides tools to **identify the identifying variation in a regression**. 
 
 It is specifically built for **economics** analyses.
 
-This package is built as part of a [research project](https://vincentbagilet.github.io/causal_exaggeration/). As such, the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) provides a detailed scientific description of its content and of its underpinnings. Online appendices of the paper also provide a thorough example of a practical implementation of an analysis using the `ididvar` package.
+It is built as part of a [research project](https://vincentbagilet.github.io/causal_exaggeration/). As such, the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) provides a detailed scientific description of its content and of its underpinnings. Online appendices of the paper also provide a thorough example of a practical implementation of an analysis using the `ididvar` package.
 
 ## Installation
 
@@ -37,7 +37,9 @@ devtools::install_github("vincentbagilet/ididvar")
 
 ## Usage
 
-This package allows easily compute identifying variation weights and works with a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
+Most of the functions of the package take as input the output of a regression and the name of the variable of interest. `ididvar` supports a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
+
+It provides a straightforward function to compute identifying variation weights. 
 
 ```{r compute_weights, message=FALSE}
 library(ididvar)
@@ -49,13 +51,13 @@ idid_weights(reg_ex_fixest, "sales") |>
   head()
 ```
 
-It then allows to explore them through visualizations.
+The package also allows for an easy exploration of these weights through visualizations.
 
-```{r plot_weights, message=FALSE, fig.asp=1.3, fig.dpi=400}
+```{r plot_weights, message=FALSE, fig.asp=1.5, fig.dpi=400}
 library(ggplot2)
 
 idid_viz_weights(reg_ex_fixest, "sales", date, city) +
-  ggplot2::labs(x = NULL, y = NULL)
+  ggplot2::labs(x = NULL, y = NULL) 
 ```
 
 ```{r plot_cumul, message=FALSE, fig.asp=1.3, fig.dpi=400}
@@ -63,9 +65,9 @@ idid_weights(reg_ex_fixest, "sales") |>
   idid_viz_cumul()
 ```
 
-It also allows to easily find observation that actually contribute to identification (in the sense that we can drom observations that "do not contribute" without the estimate changing more than a given proportion). 
+It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained). 
 
-```{r plot_contrib, message=FALSE, fig.asp=1.3, fig.dpi=400}
+```{r plot_contrib, message=FALSE, fig.asp=1.5, fig.dpi=400}
 idid_viz_contrib(reg_ex_fixest, "sales", city) +
   ggplot2::labs(x = NULL) +
   ggplot2::coord_flip()

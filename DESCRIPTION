@@ -10,3 +10,9 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     ggplot2
+Suggests: 
+    fixest,
+    knitr,
+    plm,
+    rmarkdown
+VignetteBuilder: knitr

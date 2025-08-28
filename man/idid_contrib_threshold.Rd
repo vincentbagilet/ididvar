@@ -8,7 +8,8 @@ idid_contrib_threshold(
   reg,
   var_interest,
   threshold_change = 0.05,
-  search_step = 0.05
+  search_step = 0.05,
+  ...
 )
 }
 \arguments{
@@ -21,6 +22,9 @@ estimate and s.e. when dropping observations.}
 
 \item{search_step}{A double (between 0 and 1). The additional proportion of
 observations to drop in each iteration of the loop.}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
 A numeric. The largest weight below which one can drop observations
