@@ -1,8 +1,7 @@
 #' Plot a map of identifying variation weights
 #'
 #' @description
-#' A short description...
-#' displaying weights as fill color and scale for
+#' Displaying weights as fill color and scale for
 #' each region, or nothing. If there are no overlapping polygons,
 #' an error will occur, while if `...` is supplied (see below) it will
 #' be passed onto the subsequent geom_sf(), otherwise a warning will be raised.
@@ -47,12 +46,12 @@ idid_viz_weights_map <- function(reg,
 
   #merge with shapefile
   merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
-  merged[["weight_norm"]] <- log10(merged$weight * nrow(merged))
+  merged[["weight_log"]] <- log10(merged$weight * nrow(merged))
 
   merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
-      ggplot2::aes(fill = weight_norm),
+      ggplot2::aes(fill = weight_log),
       color = "white",
       linewidth = 0.1
     ) +

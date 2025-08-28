@@ -1,0 +1,105 @@
+---
+title: "Own visualizations"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{own-viz}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r load_packages, message=FALSE}
+library(ididvar)
+library(tigris)
+library(dplyr)
+library(ggplot2)
+```
+
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, some may want to *customize* their graphs or build their own. This vignette therefore describes a workflow to do so and offers `dplyr` code to easily replicate this.
+
+## Making a plot
+
+The workflow to make a plot from scratch is straightforward: 
+
+1. Add a `weight` variable to the data set. Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion.
+2. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group.
+3. Make a plot
+
+
+
+Let's assume we have already ran the regression of interest and a `sf` object with our data.
+
+```{r run_reg}
+data_state_clean <- state.x77 |> 
+  as_tibble() |> 
+  mutate(state_name = rownames(state.x77), .before = 1) 
+
+reg <- data_state_clean |> 
+  lm(formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
+
+states_sf <- 
+  tigris::states(cb = TRUE, resolution = "20m", progress_bar = FALSE) |>
+  tigris::shift_geometry() |> 
+  rename(state_name = NAME)
+```
+
+
+We can then add a `weight` variable to our dataset, along with a `contrib` dummy. We then compute our weight and mean contribution at the state level, *i.e.*, at the level at which we want build our choropleth map. Note that this step is useless here as our data is already at the state level. Next, we compare the weights to the average weight (the inverse of the number of observations) and take its log10. This step is crucial to then be able to apply the `scale_fill_idid` color scale.
+
+```{r agg_weights}
+data_state_weights <- data_state_clean |> 
+  mutate(
+    weight = idid_weights(reg, "Income"),
+    contrib = weight > idid_contrib_threshold(reg, "Income")
+  ) |> 
+  group_by(state_name) |> 
+  summarise(
+    weight = sum(weight, na.rm = TRUE), 
+    contrib = mean(contrib, na.rm = TRUE),
+    .groups = "drop"
+  ) |> 
+  mutate(weight_log = log10(weight * length(weight))) 
+```
+
+We can then merge the data to the shape file and make the graphs of interest.
+
+```{r map_weights}
+data_sf <- states_sf |> 
+  full_join(data_state_weights, by = join_by(state_name)) 
+
+data_sf |> 
+  ggplot() +
+  geom_sf(aes(fill = weight_log), color = "white", linewidth = 0.1) +
+  theme_idid() +
+  scale_fill_idid() +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    fill = "Weight, compared to the average weight"
+  ) +
+  theme(axis.text.y = element_blank(), 
+        axis.text.x = element_blank())
+
+data_sf |> 
+  ggplot() +
+  geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
+  theme_idid() +
+  scale_fill_gradient(low = "#FBE2C5", high = "#300D49") +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    fill = "Weight, compared to the average weight"
+  ) +
+  theme(axis.text.y = element_blank(), 
+        axis.text.x = element_blank())
+``` 
+
+The maps here are not particularly interesting, the regression being only a simple example.
+
+<!-- # Why keeping the idid scale -->
+
+<!-- I argue for keeping the idid scale -->
