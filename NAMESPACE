@@ -3,6 +3,8 @@
 export(idid_contrib_threshold)
 export(idid_drop_change)
 export(idid_grouping_var)
+export(idid_scale_color_stepsn)
+export(idid_scale_fill_stepsn)
 export(idid_viz_contrib)
 export(idid_viz_cumul)
 export(idid_viz_drop_change)

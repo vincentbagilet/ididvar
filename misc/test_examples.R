@@ -129,7 +129,10 @@ idid_contrib_threshold(reg_ex, "sales")
 reg_ex <- ggplot2::economics |>
   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
 
-idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_grouping_var(reg_ex, "sales", grouping_vars = c("city", "year", "month"))
 
 idid_drop_change(reg_ex, "pce", prop_drop = 0.1)
 

@@ -2,9 +2,9 @@
 % Please edit documentation in R/idid_grouping_var.R
 \name{idid_grouping_var}
 \alias{idid_grouping_var}
-\title{Computes the within-group and between-group weight variances}
+\title{Compute the between-group variances in weights}
 \usage{
-idid_grouping_var(reg, var_interest, grouping_vars = "everything")
+idid_grouping_var(reg, var_interest, grouping_vars, ...)
 }
 \arguments{
 \item{reg}{A regression object.}
@@ -14,27 +14,33 @@ idid_grouping_var(reg, var_interest, grouping_vars = "everything")
 \item{grouping_vars}{A string vector of variable names or \code{"everything"}.
 The set of variables to group weights by. If \code{"everything"} passed,
 group by each of the variables in the data set successively.}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
-A dataframe with 3 columns:
+A dataframe with 2 columns:
 \itemize{
 \item \code{grouping_var} the names of grouping var
-\item \code{within_var} the within-group variation in weights
 \item \code{between_var} the between-group variation in weights
 }
 }
 \description{
-Groups weights by each of the variables listed in \code{grouping_vars},
-and computes the within-group variances and between-group variances.
+Allows to identify variables for which groups may contribute differentialy
+to identification.
 }
 \details{
 This function allows to identify variables for which grouping by this
-variable yields the most homogeneous within group variance in weights or the
-most heterogeneous between groups variance
+variable yields the most heterogeneous between groups variance (i.e. the
+largest between-groups variance.
 }
 \examples{
-reg_ex <- ggplot2::economics |>
-  lm(formula = unemploy ~ pce + uempmed + psavert + pop)
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
 
-idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
+idid_grouping_var(reg_ex, "sales", grouping_vars = c("city", "year", "month"))
+
+#We can now then explore the weights along the dimension with the largest
+variance: year
+idid_viz_weights(reg_ex, "sales", year)
 }

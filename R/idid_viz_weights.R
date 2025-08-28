@@ -77,28 +77,20 @@ idid_viz_weights <- function(reg,
     #take the log to avoid squeezing the scale.
     #I later also take the logs to define the breaks in the scale
     sum_df[["log_weight"]] <- log10(sum_df[["weight"]]  * nrow(sum_df))
-    sum_df[["log_weight_trunc"]] <-
-      ifelse(sum_df[["log_weight"]] < log10(1/50), -2,
-        ifelse(sum_df[["log_weight"]] > log10(50), 2, sum_df[["log_weight"]]))
+    # sum_df[["log_weight_trunc"]] <-
+    #   ifelse(sum_df[["log_weight"]] < log10(1/50), -2,
+    #     ifelse(sum_df[["log_weight"]] > log10(50), 2, sum_df[["log_weight"]]))
 
     graph <- sum_df |>
       ggplot2::ggplot(ggplot2::aes(
         x = var_x_name,
         y = var_y_name,
-        fill = log_weight_trunc
+        fill = log_weight
         # label = round(weight, 3)
       )) +
       ggplot2::geom_tile() +
       # ggplot2::geom_text() +
-      ggplot2::scale_fill_stepsn(
-        colours = c( "#C25807", "#FBE2C5", "#300D49"),
-        # colours = c("#913300", "#c68b63", "#fbe2c5", "#b18a9d", "#673275"),
-        # colours = c("#19304d", "#3f5473", "#798cad", "#fae7d3", "#c3847e", "#a75254", "#84141e"),
-        breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
-        labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
-        limits = c(-2, 2),
-        na.value = "gray88"
-      ) +
+      ididvar::idid_scale_fill_stepsn() +
       ggplot2::labs(
         fill = "Weight, compared to the average weight",
         x = substitute(var_x),

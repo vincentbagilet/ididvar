@@ -10,7 +10,8 @@ idid_viz_drop_change(
   threshold_change = 0.05,
   search_step = 0.05,
   search_start = search_step,
-  search_end = 1 - search_step
+  search_end = 1 - search_step,
+  ...
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ drop in the first step of the loop in \code{idid_contrib_threshold}.}
 
 \item{search_end}{A numeric (between 0 and 1). Proportion of observation to
 drop in the last step of the loop in \code{idid_contrib_threshold}.}
+
+\item{...}{Additional elements to pass to the regression function when
+partialling out controls.}
 }
 \value{
 A ggplot2 object.
