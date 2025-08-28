@@ -51,12 +51,13 @@ idid_viz_contrib <- function(reg,
     contrib_threshold <- ididvar::idid_contrib_threshold(
       reg,
       var_interest,
-      threshold_change = threshold_change
+      threshold_change = threshold_change,
+      ...
     )
   }
 
   df <- eval(reg$call$data)
-  df[["weights"]] <- ididvar::idid_weights(reg, var_interest)
+  df[["weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
   df[["contrib_name"]] <- ifelse(df[["contrib"]], "Contributes", "Does not contribute")
 

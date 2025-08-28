@@ -81,6 +81,13 @@ idid_weights <- function(reg, var_interest, ...) {
       }
     )
 
+  #add NAs back for plm (because na.action not fully supported by plm)
+  if (inherits(reg, "plm")) {
+    miss_val <- rep(NA, nrow(eval(reg$call$data)))
+    miss_val[as.numeric(rownames(reg$model))] <- x_per
+    x_per <- miss_val
+  }
+
   weight <- (x_per - mean(x_per, na.rm = TRUE))^2
   weight <- weight/sum(weight, na.rm = TRUE)
 
