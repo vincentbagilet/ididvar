@@ -40,4 +40,4 @@ reference:
 - title: Internal functions
   contents:
   - theme_idid
-  - idid_scale_fill_stepsn
+  - scale_fill_idid

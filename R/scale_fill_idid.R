@@ -26,7 +26,7 @@
 #'
 #' idid_viz_weights(reg_ex_fixest, "sales", date, city) +
 #'   ggplot2::labs(x = NULL, y = NULL) +
-#'   idid_scale_fill_stepsn(colors = c("#19304d", "#fae7d3", "#84141e"))
+#'   scale_fill_idid(colors = c("#19304d", "#fae7d3", "#84141e"))
 #'
 #' ggplot2::mpg |>
 #'   ggplot2::ggplot(ggplot2::aes(x = displ, hwy, color = cyl)) +
@@ -37,9 +37,9 @@
 #'     color = "Value, as compared to 1/n_obs"
 #'   ) +
 #'   theme_idid() +
-#'   idid_scale_color_stepsn()
-idid_scale_fill_stepsn <- function(colors = c("#C25807", "#FBE2C5", "#300D49"),
-                                   ...) {
+#'   scale_color_idid()
+scale_fill_idid <- function(colors = c("#C25807", "#FBE2C5", "#300D49"),
+                            ...) {
   ggplot2::scale_fill_stepsn(
     colors = colors,
     breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
@@ -51,8 +51,8 @@ idid_scale_fill_stepsn <- function(colors = c("#C25807", "#FBE2C5", "#300D49"),
 }
 
 #' @export
-#' @rdname idid_scale_fill_stepsn
-idid_scale_color_stepsn <- function(colors = c("#C25807", "#FBE2C5", "#300D49"),
+#' @rdname scale_fill_idid
+scale_color_idid <- function(colors = c("#C25807", "#FBE2C5", "#300D49"),
                                    ...) {
   ggplot2::scale_color_stepsn(
     colors = colors,

@@ -90,7 +90,7 @@ idid_viz_weights <- function(reg,
       )) +
       ggplot2::geom_tile() +
       # ggplot2::geom_text() +
-      ididvar::idid_scale_fill_stepsn() +
+      ididvar::scale_fill_idid() +
       ggplot2::labs(
         fill = "Weight, compared to the average weight",
         x = substitute(var_x),

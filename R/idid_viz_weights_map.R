@@ -8,9 +8,9 @@
 #' be passed onto the subsequent geom_sf(), otherwise a warning will be raised.
 #'
 #' @inheritParams idid_weights
-#' @param shape_file_sf An \code{sf} object. The shape file to map the weights on.
+#' @param shape_file An \code{sf} object. The shape file to map the weights on.
 #' @param join_by A character string. The name of the variable in the original
-#' data and in `shape_file_sf` and along which the matching should be performed.
+#' data and in `shape_file` and along which the matching should be performed.
 #'
 #' @returns
 #' A ggplot object.
@@ -18,21 +18,21 @@
 #' @export
 #'
 #' @examples
-#' library(tigris)
-#' library(sf)
-#' library(dplyr)
-#'
 #' reg <- state.x77 |>
-#'   as_tibble() |>
-#'   mutate(NAME = rownames(state.x77)) |>
+#'   dplyr::as_tibble() |>
+#'   dplyr::mutate(NAME = rownames(state.x77)) |>
 #'   lm(formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
 #'
-#' states_sf <- states(
-#'    cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
+#' states_sf <- tigris::states(
+#'     cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
 #'   tigris::shift_geometry()
 #'
 #' idid_viz_weights_map(reg, "Income", states_sf, "NAME")
-idid_viz_weights_map <- function(reg, var_interest, shape_file_sf, join_by, ...) {
+idid_viz_weights_map <- function(reg,
+                                 var_interest,
+                                 shape_file,
+                                 join_by,
+                                 ...) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
 
@@ -46,7 +46,7 @@ idid_viz_weights_map <- function(reg, var_interest, shape_file_sf, join_by, ...)
   names(aggr_df) <- c(join_by, "weight")
 
   #merge with shapefile
-  merged <- base::merge(shape_file_sf, aggr_df, by = join_by, all = TRUE)
+  merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
   merged[["weight_norm"]] <- log10(merged$weight * nrow(merged))
 
   merged |>
@@ -57,7 +57,7 @@ idid_viz_weights_map <- function(reg, var_interest, shape_file_sf, join_by, ...)
       linewidth = 0.1
     ) +
     ididvar::theme_idid() +
-    ididvar::idid_scale_fill_stepsn() +
+    ididvar::scale_fill_idid() +
     ggplot2::labs(
       title = "Distribution of Identifying Variation Weights",
       fill = "Weight, compared to the average weight"

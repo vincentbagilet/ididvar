@@ -4,17 +4,17 @@
 \alias{idid_viz_weights_map}
 \title{Plot a map of identifying variation weights}
 \usage{
-idid_viz_weights_map(reg, var_interest, shape_file_sf, join_by, ...)
+idid_viz_weights_map(reg, var_interest, shape_file, join_by, ...)
 }
 \arguments{
 \item{reg}{A regression object.}
 
 \item{var_interest}{A string. The name of the main variable of interest.}
 
-\item{shape_file_sf}{An \code{sf} object. The shape file to map the weights on.}
+\item{shape_file}{An \code{sf} object. The shape file to map the weights on.}
 
 \item{join_by}{A character string. The name of the variable in the original
-data and in \code{shape_file_sf} and along which the matching should be performed.}
+data and in \code{shape_file} and along which the matching should be performed.}
 
 \item{...}{Additional elements to pass to the regression function when
 partialling out controls.}
@@ -30,17 +30,13 @@ an error will occur, while if \code{...} is supplied (see below) it will
 be passed onto the subsequent geom_sf(), otherwise a warning will be raised.
 }
 \examples{
-library(tigris)
-library(sf)
-library(dplyr)
-
 reg <- state.x77 |>
-  as_tibble() |>
-  mutate(NAME = rownames(state.x77)) |>
+  dplyr::as_tibble() |>
+  dplyr::mutate(NAME = rownames(state.x77)) |>
   lm(formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
 
-states_sf <- states(
-   cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
+states_sf <- tigris::states(
+    cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
   tigris::shift_geometry()
 
 idid_viz_weights_map(reg, "Income", states_sf, "NAME")
