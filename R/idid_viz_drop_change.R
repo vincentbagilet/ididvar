@@ -32,12 +32,14 @@ idid_viz_drop_change <- function(reg,
                                  threshold_change = 0.05,
                                  search_step = 0.05,
                                  search_start = search_step,
-                                 search_end = 1 - search_step) {
+                                 search_end = 1 - search_step,
+                                 ...) {
   drop_change_df <- seq(search_start, search_end, 0.05) |>
     lapply(
-      idid_drop_change,
+      ididvar::idid_drop_change,
       reg = reg,
-      var_interest = var_interest
+      var_interest = var_interest,
+      ...
     ) |>
     do.call(what = rbind)
 

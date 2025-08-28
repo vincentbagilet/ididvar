@@ -44,7 +44,8 @@ idid_contrib_threshold <- function(reg,
     drop_change <- ididvar::idid_drop_change(
       reg,
       var_interest,
-      prop_drop = prop_drop
+      prop_drop = prop_drop,
+      ...
     )
 
     small_change <- (abs(drop_change$prop_change_est) < threshold_change &

@@ -26,9 +26,12 @@
 #'   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
 #'
 #' idid_grouping_var(reg_ex, "pce", grouping_vars = "everything")
-idid_grouping_var <- function(reg, var_interest, grouping_vars = "everything") {
+idid_grouping_var <- function(reg,
+                              var_interest,
+                              grouping_vars = "everything",
+                              ...) {
   df <- eval(reg$call$data)
-  df[["weight"]] = idid_weights(reg, var_interest)
+  df[["weight"]] = idid_weights(reg, var_interest, ...)
   grouping_vars <- if ("everything" %in% grouping_vars) names(df) else grouping_vars
   grouping_vars <- grouping_vars[-which(grouping_vars == var_interest)]
 

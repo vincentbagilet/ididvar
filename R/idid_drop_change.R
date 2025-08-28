@@ -29,7 +29,7 @@ idid_drop_change <- function(reg,
   df <- eval(reg$call$data)
   # fml <- reg$call$formula
 
-  df[["idid_weights"]] <- ididvar::idid_weights(reg, var_interest)
+  df[["idid_weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
 
   #keep high weights
   df_sliced <- df[order(df$idid_weights, decreasing = TRUE),] |>
