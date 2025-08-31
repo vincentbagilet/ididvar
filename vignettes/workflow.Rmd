@@ -105,8 +105,8 @@ idid_viz_weights(reg_ex, "Income", pop_quartiles)
 ```{r}
 data_partial <- 
   tibble(
-    illiteracy_per = idid_partial_out(reg, "Illiteracy"),
-    income_per = idid_partial_out(reg, "Income"),
+    illiteracy_per = idid_partial_out(reg_ex, "Illiteracy"),
+    income_per = idid_partial_out(reg_ex, "Income"),
     weight = (income_per - mean(income_per))^2
   ) |> 
   mutate(
@@ -114,14 +114,18 @@ data_partial <-
     logweight = log10(weight * length(weight))
   )
 
-graph <- data.frame(y_per, x_per, logweight) |>
-  ggplot2::ggplot(aes(x = x_per, y = y_per, color = logweight)) +
+graph <- data_partial |>
+  ggplot2::ggplot(aes(x = income_per, y = illiteracy_per, color = logweight)) +
   ggplot2::geom_point() +
-  ggplot2::geom_smooth(method = "lm", color = ) +
+  ggplot2::geom_smooth(
+    method = "lm", 
+    color = idid_colors_table[["base"]],
+    fill = idid_colors_table[["base"]], 
+    alpha = 0.1) +
   ididvar::theme_idid() +
   ididvar::scale_color_idid()
 
-return(graph)
+graph
 ```
 
 
