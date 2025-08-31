@@ -2,7 +2,7 @@
 title: "Own visualizations"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{own-viz}
+  %\VignetteIndexEntry{Own visualizations}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -52,7 +52,7 @@ states_sf <-
 
 We can then add a `weight` variable to our dataset, along with a `contrib` dummy. We then compute our weight and mean contribution at the state level, *i.e.*, at the level at which we want build our choropleth map. Note that this step is useless here as our data is already at the state level. Next, we compare the weights to the average weight (the inverse of the number of observations) and take its log10. This step is crucial to then be able to apply the `scale_fill_idid` color scale.
 
-```{r agg_weights}
+```{r agg_weights, fig.asp=0.8}
 data_state_weights <- data_state_clean |> 
   mutate(
     weight = idid_weights(reg, "Income"),
@@ -69,7 +69,7 @@ data_state_weights <- data_state_clean |>
 
 We can then merge the data to the shape file and make the graphs of interest.
 
-```{r map_weights}
+```{r map_weights, fig.asp=0.8}
 data_sf <- states_sf |> 
   full_join(data_state_weights, by = join_by(state_name)) 
 
@@ -91,8 +91,9 @@ data_sf |>
   theme_idid() +
   scale_fill_gradient(low = "#FBE2C5", high = "#300D49") +
   labs(
-    title = "Distribution of Identifying Variation Weights",
-    fill = "Weight, compared to the average weight"
+    title = "Distribution of contributing observations per state",
+    fill = "Share of contributing observations",
+    caption = "In this particular example, there is only one observation per state.\nThe shares are threfore 0 or 1."
   ) +
   theme(axis.text.y = element_blank(), 
         axis.text.x = element_blank())

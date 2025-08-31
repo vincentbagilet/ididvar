@@ -53,8 +53,8 @@ idid_viz_cumul <- function(weights, prop_weights = 0.2) {
     ) +
     ggplot2::labs(
       title = "Cumulative distribution of weights",
-      subtitle = paste0(n_contrib, " observations (",
-                        round(prop_contrib, 3)*100, "%) account for ",
+      subtitle = paste0(round(prop_contrib, 3)*100, "% of the observations (",
+                        n_contrib,  " obs.) account for ",
                         (1 - prop_weights)*100, "% of the weights"),
       x = "Observation index\n(smallest to largest weight)",
       y = "Cummulative sum of weights"

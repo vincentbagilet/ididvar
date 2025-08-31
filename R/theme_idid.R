@@ -38,7 +38,7 @@ theme_idid <- function(...) {
         size = ggplot2::rel(1.1),
         margin = ggplot2::margin(b = 8)
       ),
-      plot.caption = ggplot2::element_text(hjust = 0, size = ggplot2::rel(0.8)),
+      plot.caption = ggplot2::element_text(hjust = 1, size = ggplot2::rel(0.8)),
       # text = ggplot2::element_text(family = "lato"),
       panel.grid.major = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank(),
@@ -63,7 +63,7 @@ theme_idid <- function(...) {
       legend.key.spacing.y = ggplot2::unit(0.01, "cm"),
       legend.key.height = ggplot2::unit(0.25, "cm"),
       legend.key.width = ggplot2::unit(1.3, "cm"),
-      legend.title = ggplot2::element_text(size = ggplot2::rel(1.1)),
+      legend.title = ggplot2::element_text(size = ggplot2::rel(1)),
       legend.title.position = "top",
       legend.text = ggplot2::element_text(size = ggplot2::rel(0.9)),
       strip.placement = "outside",

@@ -49,5 +49,5 @@ reg_ex <- ggplot2::txhousing |>
   lm(formula = volume ~ sales + listings + city + as.factor(date))
 
 idid_viz_drop_change(reg_ex, "sales") +
-  ggplot2::facet_wrap(~ measure, nrow = 2)
+  ggplot2::facet_wrap(~ measure, ncol = 1, scales = "free_y")
 }

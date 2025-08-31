@@ -20,10 +20,21 @@ navbar:
   structure:
     right: [github]
     title: ididvar
+  contents:
+    - Quick workflow
+    - Own visualizations
+
+
+# articles:
+# - title: Customise your site
+#   navbar: ~
+#   contents:
+#   -
 
 reference:
 - title: Computation functions
   contents:
+  - idid_partial_out
   - idid_weights
   - idid_contrib_threshold
   - idid_drop_change

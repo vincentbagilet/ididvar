@@ -59,7 +59,7 @@ visualizations.
 library(ggplot2)
 
 idid_viz_weights(reg_ex_fixest, "sales", date, city) +
-  ggplot2::labs(x = NULL, y = NULL)
+  ggplot2::labs(x = NULL, y = NULL) 
 ```
 
 <img src="man/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;" />

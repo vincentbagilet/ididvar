@@ -26,7 +26,7 @@
 #'   lm(formula = volume ~ sales + listings + city + as.factor(date))
 #'
 #' idid_viz_drop_change(reg_ex, "sales") +
-#'   ggplot2::facet_wrap(~ measure, nrow = 2)
+#'   ggplot2::facet_wrap(~ measure, ncol = 1, scales = "free_y")
 idid_viz_drop_change <- function(reg,
                                  var_interest,
                                  threshold_change = 0.05,
@@ -59,7 +59,7 @@ idid_viz_drop_change <- function(reg,
       linetype = "dashed",
       color = "#300D49"
     ) +
-    ggplot2::facet_wrap(~ measure) +
+    ggplot2::facet_wrap(~ measure, ncol = 1) +
     ididvar::theme_idid() +
     ggplot2::theme(
       # text = ggplot2::element_text(family = "lato"),

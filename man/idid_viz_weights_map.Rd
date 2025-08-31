@@ -23,8 +23,7 @@ partialling out controls.}
 A ggplot object.
 }
 \description{
-A short description...
-displaying weights as fill color and scale for
+Displaying weights as fill color and scale for
 each region, or nothing. If there are no overlapping polygons,
 an error will occur, while if \code{...} is supplied (see below) it will
 be passed onto the subsequent geom_sf(), otherwise a warning will be raised.
