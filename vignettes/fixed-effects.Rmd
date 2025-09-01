@@ -1,0 +1,22 @@
+---
+title: "Fixed effects and variation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fixed effects and variation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ididvar)
+```
+
+This document discusses how the `ididvar` can be used to learn and communicate where the identifying variation comes form and what different levels of fixed effects actually identify.
+

@@ -1,0 +1,49 @@
+---
+title: "The maths behind"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{The maths behind}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(ididvar)
+```
+
+This document very quickly introduces the maths and theory behind the weights. More detail is available in the associated research parper and research project website.
+
+# Weights: computation and analysis
+
+The main objective of the `ididvar` package is to facilitate the computation and analysis of identifying variation weights. These weights represent how much each observation contributes to the identification of a treatment variable of interest. They roughly correspond to the leverage of the bivariate regression of the independent variable on the treatment or main variable of interest, after partialling out the controls, including fixed effects. Observations for which the main variable of interest is well explained by controls only contribute little to identification; the controls or fixed effects absorb most of the variation. 
+
+The formula for the weight for each observation $i \in \{1, ..., N\}$ with $N$ the number of observations is: 
+
+$$w_i = \left( x_i - \mathbb{E}[x_i | C_i] \right)^2 $$
+
+where $x$ is the variable of interest and $C$ the vector of controls and fixed effects.
+
+## Computing observation level weights
+
+
+, have been partialled out
+
+## Group level weights
+
+
+
+these weights allow to compute the amount of variation availale 
+
+
+
+The underlying intuition   T
+
+# An
+
