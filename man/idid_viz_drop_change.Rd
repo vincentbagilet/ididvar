@@ -11,6 +11,7 @@ idid_viz_drop_change(
   search_step = 0.05,
   search_start = search_step,
   search_end = 1 - search_step,
+  color = "#300D49",
   ...
 )
 }
@@ -30,6 +31,8 @@ drop in the first step of the loop in \code{idid_contrib_threshold}.}
 
 \item{search_end}{A numeric (between 0 and 1). Proportion of observation to
 drop in the last step of the loop in \code{idid_contrib_threshold}.}
+
+\item{color}{A string. Color of the graph.}
 
 \item{...}{Additional elements to pass to the regression function when
 partialling out controls.}

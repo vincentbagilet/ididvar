@@ -28,7 +28,7 @@ droped s.e.
 }
 \description{
 Computes a variation of the point estimate and standard errors of the
-variable of interest when dropping low weight observations.
+coefficient of interest when dropping low weight observations.
 }
 \examples{
 reg_ex <- ggplot2::economics |>

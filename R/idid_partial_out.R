@@ -52,7 +52,7 @@ idid_partial_out <- function(reg, var_to_partial, ...) {
     formula_partial <-
       stats::as.formula(paste(var_to_partial, "~ . -", var_to_partial))
   } else {
-    stop(var_to_partial, "is not a variable in the regression")
+    stop(var_to_partial, " is not a variable in the regression")
   }
 
   partialled_out <- update(reg, formula_partial, na.action = na.exclude, ...) |>

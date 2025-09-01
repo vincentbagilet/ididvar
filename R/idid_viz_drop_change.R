@@ -7,6 +7,7 @@
 #'
 #' @inheritParams idid_drop_change
 #' @inheritParams idid_contrib_threshold
+#' @inheritParams idid_viz_cumul
 #' @param search_start A numeric (between 0 and 1). Proportion of observation to
 #' drop in the first step of the loop in \code{idid_contrib_threshold}.
 #' @param search_end A numeric (between 0 and 1). Proportion of observation to
@@ -33,6 +34,7 @@ idid_viz_drop_change <- function(reg,
                                  search_step = 0.05,
                                  search_start = search_step,
                                  search_end = 1 - search_step,
+                                 color = "#300D49",
                                  ...) {
   drop_change_df <- seq(search_start, search_end, 0.05) |>
     lapply(
@@ -53,11 +55,11 @@ idid_viz_drop_change <- function(reg,
 
   rbind(drop_change_est, drop_change_se) |>
     ggplot2::ggplot(ggplot2::aes(x = prop_drop, y = abs(prop_change*100))) +
-    ggplot2::geom_line(linewidth = 1.4, color = "#300D49") +
+    ggplot2::geom_line(linewidth = 1.4, color = color) +
     ggplot2::geom_hline(
       yintercept = threshold_change*100,
       linetype = "dashed",
-      color = "#300D49"
+      color = color
     ) +
     ggplot2::facet_wrap(~ measure, ncol = 1) +
     ididvar::theme_idid() +

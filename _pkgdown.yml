@@ -7,7 +7,9 @@ template:
     heading_font: {google: "Lato"}
     primary: "#300D49"
 
-name: "ididvar"
+pkgdown:
+  title: "ididvar"
+
 authors:
   Vincent Bagilet:
     href: https://vincentbagilet.github.io/
@@ -19,7 +21,6 @@ figures:
 navbar:
   structure:
     right: [github]
-    title: ididvar
   contents:
     - Quick workflow
     - Own visualizations
@@ -48,7 +49,8 @@ reference:
   - idid_viz_contrib
   - idid_viz_drop_change
 
-- title: Internal functions
+- title: Graph theme functions
   contents:
   - theme_idid
   - scale_fill_idid
+  - idid_colors_table

@@ -4,6 +4,7 @@
 #' @param prop_weights A numeric (between 0 and 1). A proportion of weights
 #' that to consider as contributing the most to identification.
 #' Used to build the subtitle.
+#' @param color A string. Color of the graph.
 #'
 #' @returns
 #' A ggplot2 graph of the cumulative distribution of weights.
@@ -16,7 +17,7 @@
 #'
 #' idid_weights(reg_ex, "sales") |>
 #'   idid_viz_cumul()
-idid_viz_cumul <- function(weights, prop_weights = 0.2) {
+idid_viz_cumul <- function(weights, prop_weights = 0.2, color = "#300D49") {
   weights_sorted <- sort(weights)
   cum_sum <- cumsum(weights_sorted)
   lorenz <- cum_sum/max(cum_sum)
@@ -29,14 +30,14 @@ idid_viz_cumul <- function(weights, prop_weights = 0.2) {
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = obs_nb, y = lorenz)) +
-    ggplot2::geom_line(linewidth = 1.4, color = "#300D49") +
-    ggplot2::geom_area(fill = "#300D49", alpha = 0.2) +
+    ggplot2::geom_line(linewidth = 1.4, color = color) +
+    ggplot2::geom_area(fill = color, alpha = 0.2) +
     ggplot2::annotate(
       geom = "segment",
       x = 0, y = 0, xend = nrow(df), yend = 1,
       linetype = "dashed",
       linewidth = 0.5,
-      color = "#300D49"
+      color = color
     ) +
     ididvar::theme_idid(aspect.ratio = 1) +
     #the next chunck is optional

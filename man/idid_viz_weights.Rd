@@ -4,7 +4,15 @@
 \alias{idid_viz_weights}
 \title{Visualization of Identifying Variation Weights}
 \usage{
-idid_viz_weights(reg, var_interest, var_x, var_y, keep_labels = TRUE, ...)
+idid_viz_weights(
+  reg,
+  var_interest,
+  var_x,
+  var_y,
+  colors = c("#C25807", "#FBE2C5", "#300D49"),
+  keep_labels = TRUE,
+  ...
+)
 }
 \arguments{
 \item{reg}{A regression object.}
@@ -16,6 +24,11 @@ x-axis.}
 
 \item{var_y}{A variable in the data set used in \code{reg} to plot on the
 y-axis (optional). If not specified, produces a bar chart.}
+
+\item{colors}{A string vector of colors for the palette.
+I recommend to pass a vector of 3 distinct colors, with a lighter color in
+the middle, constituting a diverging scale. It allows a clear distinction
+between contributing and non contributing observations.}
 
 \item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
 

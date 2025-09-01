@@ -21,7 +21,9 @@ library(dplyr)
 library(ggplot2)
 ```
 
-This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, some may want to *customize* their graphs or build their own. This vignette therefore describes a workflow to do so and offers `dplyr` code to easily replicate this.
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, some may want to *customize* their graphs or build their own. 
+
+Thus, this vignette **provides code that can easily be copied/pasted to make your own customized plots**, going beyond the very quick to implement functions provided in the package.
 
 ## Making a plot
 

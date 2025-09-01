@@ -14,38 +14,176 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+
+```{r setup, message=FALSE}
 library(ididvar)
+library(dplyr)
+library(ggplot2)
+library(tigris)
 ```
 
-This vignette introduces the main functions in the package and provides examples of analyses that can be carried out with these functions. 
+The goal of this document is to describe the capabilities of the package and to describe a typical workflow for analysis. A more thorough example of a practical implementation and analysis, with a thorough analysis of implications for the outcome of an economics research project is available on here, on the website of the research project for which the `ididvar` package has been developed.
 
-The goal of this document is to describe the capabilities of the package and to describe a typical workflow for analysis. A more thorough example of a practical implementation and analysis, with a thorough analysis of implications for the outcome of an economics research project is available on here, on the  website of the research project for which the `ididvar` package has been developed.
+This vignette quickly presents a typical workflow for analysis, using a very basic example. It also provides an overview of most the functions available in the package.
 
-# Weights: computation and analysis
+A more thorough example, with an actual analysis and interpretation of the results, is available on the research project website. 
 
-The main objective of the `ididvar` package is to facilitate the computation and analysis of identifying variation weights. These weights represent how much each observation contributes to the identification of a treatment variable of interest. They roughly correspond to the leverage of the bivariate regression of the independent variable on the treatment or main variable of interest, after partialling out the controls, including fixed effects. Observations for which the main variable of interest is well explained by controls only contribute little to identification; the controls or fixed effects absorb most of the variation. 
+# Overview of a typical workflow
 
-The formula for the weight for each observation $i \in \{1, ..., N\}$ with $N$ the number of observations is: 
+The workflow to make a plot from scratch is straightforward: 
 
-$$w_i = \left( x_i - \mathbb{E}[x_i | C_i] \right)^2 $$
+1. Add a `weight` variable to the data set. Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion.
+1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group.
+1. Visualize the 
 
-where $x$ is the variable of interest and $C$ the vector of controls and fixed effects.
+# Compute weights
 
-## Computing observation level weights
+Let's assume we have already ran the regression of interest. 
+
+```{r reg_ex, message=FALSE}
+data_ex <- state.x77 |>
+  as_tibble() |>
+  mutate(
+    state = rownames(state.x77),
+    pop_quartiles = cut_number(Population, 4, labels = FALSE),
+    murder_quartiles = cut_number(Murder, 4, labels = FALSE),
+    income_quartiles = cut_number(Income, 4, labels = FALSE)
+  ) 
+
+reg_ex <-lm(data = data_ex,
+            formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
+```
+
+We can **add the weights to the data**.
+
+```{r data_ex_weights}
+data_ex_weights <- data_ex |> 
+  mutate(weight = idid_weights(reg_ex, "Income"))
+```
+
+# Visualize the weights
+
+We can then *visualize the weights*. 
+
+## Weights distribution
+
+We can then plot the distribution of weights using the `idid_viz_cumul` function.
+
+```{r idid_viz_cumul}
+idid_viz_cumul(data_ex_weights$weight)
+```
+
+That allows us to analyse the extend to which the weights are evenly distributed. A very unequal distribution should hint that some observations contribute much more to identification and that some observations may not contribute much.
+
+We may then want to explore the distribution of weights along several variables. Depending on the shape of the data, there might be some obvious way to analyse it: if the data is an individual-time panel, one may want to group it by individual and time. That can be done with, by providing these two dimensions as the `var_x` and `var_y` arguments.
+
+When the data has a geographical dimension, one may want to plot a map of the weights. The function `idid_viz_weights_map` allows to do easily do that by only providing a shape file in a `sf` format along with the join variable name.
+
+```{r idid_viz_weights_map}
+states_sf <- tigris::states(
+    cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
+  tigris::shift_geometry() |> 
+  rename(state = NAME)
+
+idid_viz_weights_map(reg_ex, "Income", states_sf, "state")
+```
+
+In addition--or instead--, it is often interesting to analyse whether some groups have larger weights, *ie* contribute more, than others. One may have *a priori* ideas regarding which variables to group by. In cases when this might be less clear, one can use `idid_grouping_var` to identify variables for which groups created by each variable considered (in the `grouping_vars` argument of the function) have the most between group variance in weights, suggesting a large heterogeneity in weights across groups.
+
+```{r idid_grouping_var}
+idid_grouping_var(
+  reg_ex, "Income", 
+  grouping_vars = c("income_quartiles", "pop_quartiles", "murder_quartiles")
+) |> 
+knitr::kable()
+```
+
+Once groups along which it makes sense to group the weights by have been identify, one can plot their distribution by group.
+
+```{r idid_viz_weights}
+idid_viz_weights(reg_ex, "Income", income_quartiles) +
+  labs(
+    x = "Income quartiles", 
+    title = "Distribution of Identifying Variation Weights By Income",
+    subtitle = "High income states contribute more to the estimation"
+  )
+```
+
+Through all these explorations, one can get a sense of the distribution of weights, through space or groups. 
+
+# Contribution
+
+The goal of the analysis is really to determine which observations contribute to the estimation and which do not. The approach chosen to do so here is to identify observations with low weight that can be dropped without affecting the point estimate *and* standard errors by more than a given proportion.
+
+```{r idid_viz_drop_change}
+idid_viz_drop_change(
+  reg_ex, 
+  "Income", 
+  threshold_change = 0.05, #position of the dotted line
+  search_end = 0.4
+)
+```
+
+This function just loops over the `idid_drop_change` function which, for a given proportion of observations dropped, computes a variation of the point estimate and standard errors of the coefficient of interest when dropping low weight observations.
+
+Using the `idid_contrib_threshold` one can thus identify a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. 
+
+We can thus define an effective sample whose weights are below the aforementioned threshold. We can then use the `idid_contrib_stats` function to compute quick descriptive statistics on this effective sample:
+
+```{r idid_contrib_stats}
+idid_contrib_stats(reg_ex, "Income")
+```
+
+The `ididvar` package also provides function to quickly explore which observations are part of this effective sample.
+
+```{r}
+idid_viz_contrib(reg_ex, "Income", income_quartiles)
+```
 
 
-, have been partialled out
-
-## Group level weights
 
 
+# Additional useful visualizations
 
-these weights allow to compute the amount of variation availale 
+## Relationship between x and y
+
+First of all, one may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest:
+
+```{r}
+data_partial <- 
+  tibble(
+    illiteracy_per = idid_partial_out(reg_ex, "Illiteracy"),
+    income_per = idid_partial_out(reg_ex, "Income"),
+    weight = (income_per - mean(income_per))^2
+  ) |> 
+  mutate(
+    weight = weight/sum(weight),
+    logweight = log10(weight * length(weight))
+  )
+
+data_partial |>
+  ggplot(aes(x = income_per, y = illiteracy_per, color = logweight)) +
+  geom_point(size = 2) +
+  geom_rug(linewidth = 0.8) +
+  # ggExtra::ggMarginal(type = "histogram") +
+  geom_smooth(
+    method = "lm", 
+    color = idid_colors_table[["base"]],
+    fill = idid_colors_table[["base"]], 
+    alpha = 0.1) +
+  theme_idid() +
+  scale_color_idid() +
+  labs(
+    title = "Relationship between illiteracy and income",
+    subtitle = "After partialling out controls",
+    color = "Weight, as compared to the average weight",
+    x = "Income (residualized)",
+    y = "Illiteracy (residualized)"
+  )
+```
+
+Such a mapping might be less legible when the sample size is large. In such instances, transparency or a bin or hex map can be useful tools to represent large numbers of observations.
 
 
 
-The underlying intuition   T
-
-# An
 

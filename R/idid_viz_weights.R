@@ -10,6 +10,7 @@
 #' removing missing values.
 #'
 #' @inheritParams idid_weights
+#' @inheritParams scale_fill_idid
 #' @param var_x A variable in the data set used in \code{reg} to plot on the
 #' x-axis.
 #' @param var_y A variable in the data set used in \code{reg} to plot on the
@@ -47,6 +48,7 @@ idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
                              var_y,
+                             colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
   df <- eval(reg$call$data)
@@ -56,7 +58,7 @@ idid_viz_weights <- function(reg,
   if (missing(var_y)) {
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = weight)) +
-      ggplot2::geom_bar(fill = "#1E383A") +
+      ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(y = "Weight")
       # ggplot2::coord_flip()
   } else {
@@ -90,7 +92,7 @@ idid_viz_weights <- function(reg,
       )) +
       ggplot2::geom_tile() +
       # ggplot2::geom_text() +
-      ididvar::scale_fill_idid() +
+      ididvar::scale_fill_idid(colors = colors) +
       ggplot2::labs(
         fill = "Weight, compared to the average weight",
         x = substitute(var_x),

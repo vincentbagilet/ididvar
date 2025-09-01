@@ -1,16 +1,13 @@
-#' Plot a map of identifying variation weights
+#' Plot a map of the effective sample
 #'
 #' @description
-#' Displaying weights as fill color and scale for
-#' each region, or nothing. If there are no overlapping polygons,
-#' an error will occur, while if `...` is supplied (see below) it will
-#' be passed onto the subsequent geom_sf(), otherwise a warning will be raised.
+#' Makes a map to visualize observations that can be dropped without
+#' changing the point estimate or the standard error of the estimate of
+#' interest by more than a given proportion (\code{threshold_change}).
 #'
-#' @inheritParams idid_weights
-#' @inheritParams scale_fill_idid
-#' @param shape_file An \code{sf} object. The shape file to map the weights on.
-#' @param join_by A character string. The name of the variable in the original
-#' data and in `shape_file` and along which the matching should be performed.
+#'
+#' @inheritParams idid_viz_weights_map
+#' @inheritParams idid_viz_contrib
 #'
 #' @returns
 #' A ggplot object.
@@ -27,8 +24,8 @@
 #'     cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
 #'   tigris::shift_geometry()
 #'
-#' idid_viz_weights_map(reg, "Income", states_sf, "NAME")
-idid_viz_weights_map <- function(reg,
+#' idid_viz_contrib_map(reg, "Income", states_sf, "NAME")
+idid_viz_contrib_map <- function(reg,
                                  var_interest,
                                  shape_file,
                                  join_by,

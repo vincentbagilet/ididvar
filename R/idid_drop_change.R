@@ -2,7 +2,7 @@
 #'
 #' @description
 #' Computes a variation of the point estimate and standard errors of the
-#' variable of interest when dropping low weight observations.
+#' coefficient of interest when dropping low weight observations.
 #'
 #' @inheritParams idid_weights
 #' @param prop_drop Proportion of observations to drop

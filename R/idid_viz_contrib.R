@@ -59,7 +59,10 @@ idid_viz_contrib <- function(reg,
   df <- eval(reg$call$data)
   df[["weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
-  df[["contrib_name"]] <- ifelse(df[["contrib"]], "Contributes", "Does not contribute")
+  df[["contrib_name"]] <-
+    ifelse(df[["contrib"]],
+           "In the effective sample",
+           "Outside the effective sample")
 
   if (missing(var_y)) {
     graph <- df |>
