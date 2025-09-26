@@ -7,19 +7,18 @@
 
 <!-- badges: end -->
 
-This package provides tools to **identify the identifying variation in a
-regression**.
+This package provides tools to easily **identify the identifying
+variation in a regression**, specifically in **applied economics**
+analyses. It does not provide new metrics per say but instead
+facilitates the implementation of slightly modified versions of existing
+ones.
 
-It is specifically built for **economics** analyses.
-
-It is built as part of a [research
+This package is built as part of a [research
 project](https://vincentbagilet.github.io/causal_exaggeration/). As
 such, the [associated
 paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf)
 provides a detailed scientific description of its content and of its
-underpinnings. Online appendices of the paper also provide a thorough
-example of a practical implementation of an analysis using the `ididvar`
-package.
+underpinnings.
 
 ## Installation
 
@@ -37,8 +36,8 @@ Most of the functions of the package take as input the output of a
 regression and the name of the variable of interest. `ididvar` supports
 a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
 
-It provides a straightforward function to compute identifying variation
-weights.
+First, the package provides a straightforward function to compute
+identifying variation weights.
 
 ``` r
 library(ididvar)
@@ -52,8 +51,8 @@ idid_weights(reg_ex_fixest, "sales") |>
 #> [6] 4.469283e-07
 ```
 
-The package also allows for an easy exploration of these weights through
-visualizations.
+The package also allows for an effortless exploration of these weights
+through visualizations.
 
 ``` r
 library(ggplot2)
@@ -64,12 +63,16 @@ idid_viz_weights(reg_ex_fixest, "sales", date, city) +
 
 <img src="man/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;" />
 
+In this particular (somehow silly) regression, most of the identifying
+variation comes from a few cities: Houston, Dallas, Austin and San
+Antonio.
+
 ``` r
 idid_weights(reg_ex_fixest, "sales") |>
   idid_viz_cumul()
 ```
 
-<img src="man/figures/README-plot_cumul-1.png" width="70%" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot_cumul-1.png" width="60%" style="display: block; margin: auto;" />
 
 It also provide functions to identify observations that actually
 contribute to identification (in the sense that dropping the other
@@ -82,3 +85,14 @@ idid_viz_contrib(reg_ex_fixest, "sales", city) +
 ```
 
 <img src="man/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;" />
+
+The package provides a larger set of functions.The [Get started
+vignette](articles/ididvar.html) introduces them in a concise manner,
+while also describing a typical workflow for analysis.
+
+[Online
+appendices](https://vincentbagilet.github.io/causal_exaggeration/) of
+the [associated
+paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf)
+complements this vignette by providing a thorough example of a practical
+implementation of an analysis using the `ididvar` package.

@@ -7,10 +7,10 @@ reg_test <- ggplot2::mpg |>
 reg_test |>
   idid_weights("displ")
 
-reg_test |>
+d <- reg_test |>
   idid_viz_weights("displ", year, manufacturer)
 
-+
+s+
   ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
 
 

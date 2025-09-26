@@ -29,36 +29,53 @@ idid_viz_contrib_map <- function(reg,
                                  var_interest,
                                  shape_file,
                                  join_by,
+                                 contrib_threshold,
+                                 threshold_change = 0.05,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
+  if (missing(contrib_threshold)) {
+    message("Searching for the contribution threshold")
+    contrib_threshold <- ididvar::idid_contrib_threshold(
+      reg,
+      var_interest,
+      threshold_change = threshold_change,
+      ...
+    )
+  }
+
   df <- eval(reg$call$data)
-  df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
+  df[["weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
+  df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
 
   #compute shape level weights
   aggr_df <- stats::aggregate(
-    df$weight,
+    df$contrib,
     by = list(join_by = df[[join_by]]),
-    FUN = sum,
+    FUN = mean,
     na.rm = TRUE
   )
-  names(aggr_df) <- c(join_by, "weight")
+  names(aggr_df) <- c(join_by, "share_contrib")
 
   #merge with shapefile
   merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
-  merged[["weight_log"]] <- log10(merged$weight * nrow(merged))
 
   merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
-      ggplot2::aes(fill = weight_log),
+      ggplot2::aes(fill = share_contrib),
       color = "white",
       linewidth = 0.1
     ) +
     ididvar::theme_idid() +
-    ididvar::scale_fill_idid(colors = colors) +
+    ggplot2::scale_fill_gradient(
+      high = colors[length(colors)],
+      low = colors[2],
+      na.value = "gray88"
+    ) +
     ggplot2::labs(
-      title = "Distribution of Identifying Variation Weights",
-      fill = "Weight, compared to the average weight"
+      title = "Set of observations contributing to identification",
+      subtitle = paste('Without the "non-contributing" observations, point estimate and s.e. would vary by less than ', round(threshold_change*100, 2), "%", sep = ""),
+      fill =  "Share of contributing observations"
     ) +
     ggplot2::theme(
       axis.text.y = ggplot2::element_blank(),

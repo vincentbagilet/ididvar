@@ -15,8 +15,8 @@ authors:
     href: https://vincentbagilet.github.io/
 
 figures:
-  dpi: 200
-  fig.asp: 1.2
+  dpi: 300
+  # fig.asp: 1.2
 
 navbar:
   structure:
@@ -33,23 +33,25 @@ navbar:
 #   -
 
 reference:
-- title: Computation functions
+- title: Computation
   contents:
   - idid_partial_out
   - idid_weights
   - idid_contrib_threshold
+  - idid_contrib_stats
   - idid_drop_change
   - idid_grouping_var
 
-- title: Visualization functions
+- title: Visualization
   contents:
   - idid_viz_weights
   - idid_viz_weights_map
   - idid_viz_cumul
   - idid_viz_contrib
+  - idid_viz_contrib_map
   - idid_viz_drop_change
 
-- title: Graph theme functions
+- title: Graph theming
   contents:
   - theme_idid
   - scale_fill_idid

@@ -83,7 +83,7 @@ idid_viz_contrib <- function(reg,
   graph <- graph +
     ggplot2::labs(
       title = "Set of observations contributing to identification",
-      subtitle = paste('Without the "non-contributing" observations, point estimate and s.e. would vary by less than ', round(threshold_change*100, 2), "%", sep = ""),
+      subtitle = paste('Removing observations outside the "effective sample"\nwould change the point estimate and s.e. by less than ', round(threshold_change*100, 2), "%", sep = ""),
       fill = NULL
     ) +
     # theme and palette

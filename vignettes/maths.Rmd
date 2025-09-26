@@ -18,26 +18,31 @@ knitr::opts_chunk$set(
 library(ididvar)
 ```
 
-This document very quickly introduces the maths and theory behind the weights. More detail is available in the associated research parper and research project website.
+This document very quickly introduces the maths and theory behind the weights. More detail is available in the associated research paper and its website.
 
 # Weights: computation and analysis
 
-The main objective of the `ididvar` package is to facilitate the computation and analysis of identifying variation weights. These weights represent how much each observation contributes to the identification of a treatment variable of interest. They roughly correspond to the leverage of the bivariate regression of the independent variable on the treatment or main variable of interest, after partialling out the controls, including fixed effects. Observations for which the main variable of interest is well explained by controls only contribute little to identification; the controls or fixed effects absorb most of the variation. 
+The main objective of the `ididvar` package is to facilitate the computation and analysis of identifying variation weights. These weights are defined in [Aronow and Samii (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12185). The 
 
-The formula for the weight for each observation $i \in \{1, ..., N\}$ with $N$ the number of observations is: 
+## Intuition
 
-$$w_i = \left( x_i - \mathbb{E}[x_i | C_i] \right)^2 $$
+These weights, defined by [Aronow and Samii (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12185), represent how much each observation contributes to the identification of a treatment variable of interest. They roughly correspond to the leverage of the bivariate regression of the independent variable on the treatment or main variable of interest, after partialling out the controls, including fixed effects. Observations for which the main variable of interest is well explained by controls only contribute little to identification; the controls or fixed effects absorb most of the variation. 
 
-where $x$ is the variable of interest and $C$ the vector of controls and fixed effects.
+## Theoretical formula
+
+The weight for each observation $i \in \{1, ..., N\}$ is: 
+
+$$w_i = \dfrac{\left( x_i - \mathbb{E}[x_i | C_i] \right)^2 }{\sum_j w_j}$$
+where $x$ is the variable of interest and $C$ the vector of controls and fixed effects. 
 
 ## Computing observation level weights
 
-
-, have been partialled out
-
-## Group level weights
+These weights are therefore the squared residuals of the regression of $x$ on the full set of controls. They are computed using the same estimation procedure as the one used in the main regression. 
 
 
+## Group level weights 
+
+One can compute 
 
 these weights allow to compute the amount of variation availale 
 
@@ -45,5 +50,17 @@ these weights allow to compute the amount of variation availale
 
 The underlying intuition   T
 
-# An
+## What do they represent really?
+
+# Are these weights actually weights?
+
+
+# Equivalence between leverage and multiple regression weights
+
+
+
+
+
+
+
 

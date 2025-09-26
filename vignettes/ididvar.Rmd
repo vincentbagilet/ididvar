@@ -138,16 +138,18 @@ The `ididvar` package also provides function to quickly explore which observatio
 
 ```{r}
 idid_viz_contrib(reg_ex, "Income", income_quartiles)
+
+idid_viz_contrib_map(reg_ex, "Income", states_sf, "state")
 ```
 
-
-
+`r vignette("own-viz")` provides a discussion and code to customize these graphs.
 
 # Additional useful visualizations
 
 ## Relationship between x and y
 
-First of all, one may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest:
+It is almost always a good idea to look at the raw data. 
+one may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest:
 
 ```{r}
 data_partial <- 
