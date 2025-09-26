@@ -62,8 +62,12 @@ idid_viz_weights <- function(reg,
       ggplot2::labs(y = "Weight")
   } else {
 
-    n_x <- unique(df[[deparse(substitute(var_x))]]) |> length()
-    n_y <- unique(df[[deparse(substitute(var_y))]]) |> length()
+    name_var_x <- deparse(substitute(var_x))
+    name_var_y <- deparse(substitute(var_y))
+    n_x <- unique(df[[name_var_x]]) |> length()
+    n_y <- unique(df[[name_var_y]]) |> length()
+    if (n_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
+    if (n_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
 
     #if each group weighted the same, their weight would be 1/nrow(sum_df), ie
     #the average weight. I compare each weight to that average and then
@@ -78,7 +82,8 @@ idid_viz_weights <- function(reg,
       )) +
       ggplot2::stat_summary_2d(
         fun = \(z) log10(sum(z, na.rm = TRUE)*n_x*n_y),
-        bins = c(n_x, n_y)
+        bins = c(n_x-1, n_y-1),
+        drop = FALSE
       ) +
       # ggplot2::geom_tile() +
       # ggplot2::geom_text() +

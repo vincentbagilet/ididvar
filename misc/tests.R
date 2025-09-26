@@ -1,13 +1,14 @@
 reg_test <- ggplot2::mpg |>
   dplyr::mutate(
     md = paste(model, trans, sep = "_")
+    # year = as.factor(year)
   ) |>
   lm(formula = cty ~ displ + drv)
 
 reg_test |>
   idid_weights("displ")
 
-d <- reg_test |>
+reg_test |>
   idid_viz_weights("displ", year, manufacturer)
 
 s+
