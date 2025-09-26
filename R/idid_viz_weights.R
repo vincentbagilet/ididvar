@@ -48,7 +48,6 @@ idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
                              var_y,
-                             facet,
                              colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
@@ -57,60 +56,37 @@ idid_viz_weights <- function(reg,
   # df <- df[!is.na(df$weight), ]
 
   if (missing(var_y)) {
-
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(y = "Weight")
-
   } else {
 
-    var_x_name <- deparse(substitute(var_x))
-    var_y_name <- deparse(substitute(var_y))
-
-    if (!missing(facet)) {
-      ncol_sum_df <- 4
-      facet_name <- deparse(substitute(facet))
-      list_group <-  list(df[[var_x_name]], df[[var_y_name]], df[[facet_name]])
-    } else {
-      ncol_sum_df <- 3
-      facet_name <- "weight"
-      list_group <-  list(df[[var_x_name]], df[[var_y_name]])
-    }
-
-    sum_df <-
-      stats::aggregate(df$weight, by = list_group, FUN = sum, na.rm = TRUE)
-
-    names(sum_df)[1] <- var_x_name
-    names(sum_df)[2] <- var_y_name
-    names(sum_df)[3] <- facet_name
-    names(sum_df)[ncol_sum_df] <- "weight"
-
-    print(sum_df)
+    n_x <- unique(df[[deparse(substitute(var_x))]]) |> length()
+    n_y <- unique(df[[deparse(substitute(var_y))]]) |> length()
 
     #if each group weighted the same, their weight would be 1/nrow(sum_df), ie
     #the average weight. I compare each weight to that average and then
     #take the log to avoid squeezing the scale.
     #I later also take the logs to define the breaks in the scale
-    sum_df[["log_weight"]] <- log10(sum_df[["weight"]] * nrow(sum_df))
-    # sum_df[["log_weight_trunc"]] <-
-    #   ifelse(sum_df[["log_weight"]] < log10(1/50), -2,
-    #     ifelse(sum_df[["log_weight"]] > log10(50), 2, sum_df[["log_weight"]]))
-
-    graph <- sum_df |>
+    graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
         y = {{ var_y }},
-        fill = log_weight
+        z = weight
         # label = round(weight, 3)
       )) +
-      ggplot2::geom_tile() +
+      ggplot2::stat_summary_2d(
+        fun = \(z) log10(sum(z, na.rm = TRUE)*n_x*n_y),
+        bins = c(n_x, n_y)
+      ) +
+      # ggplot2::geom_tile() +
       # ggplot2::geom_text() +
       ididvar::scale_fill_idid(colors = colors) +
       ggplot2::labs(
-        fill = "Weight, compared to the average weight",
-        x = var_x_name,
-        y = var_y_name
+        fill = "Weight, compared to the average weight"
+        # x = var_x_name,
+        # y = var_y_name
       )
   }
 
