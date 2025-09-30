@@ -1,0 +1,161 @@
+---
+title: "Specification and variation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Fixed effects and variation}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+This document discusses how `ididvar` can be used to discuss the impact of specification choices on the identifying variation weights and their distribution across observations. In particular, it discusses how the package can provide insights on how different levels of fixed effects affect the weights and the observations contributing to identification.
+
+For this example, we use the `gapminder` data set built on [gapminder.org](https://www.gapminder.org/) and made available by the [`gapminder` package](https://jennybc.github.io/gapminder/index.html). It contains data on life expectency, GDP per capita and population, for all countries in the world, every 5 years between 1952 and 2007. As such, it constitutes a panel. 
+
+```{r setup}
+library(ididvar)
+library(gapminder)
+library(fixest)
+library(ggplot2)
+library(dplyr)
+```
+
+In this example, we are interested in studying the relationship between life expectancy and (log-)GDP per capita. We will consider several sets of fixed effects and study their impact on the variation used for identification.
+
+## Exploration
+
+Let's consider 3 regression models: with country fixed effects, year fixed effects and both. We do not include any additional controls for simplicity.
+
+```{r reg}
+gapminder_ext <- gapminder |> 
+  dplyr::mutate(
+    l_gdpPercap = log(gdpPercap)
+  ) |> 
+  dplyr::left_join(gapminder::country_codes, by = join_by(country))
+
+reg_raw <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap)
+
+reg_twfe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country + as.factor(year))
+
+reg_country_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country)
+
+reg_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | as.factor(year))
+```
+
+Of course, the parameter on `l_gdpPercap` does not represent the same quantity in each model. In `reg_country_fe`, it represents the within country relationship between `lifeExp` and `l_gdpPercap`, *ie* comparing observations at different points in time, within a given country. In `reg_year_fe`, it represents the within year and therefore across countries.
+
+As always in applied econometrics, one the first steps in the analysis consists exploring the raw data and the relationship between the variables of interest.
+We can then plot the partialled out versions of the relationships to get a sense of the variation partialled out by the various sets of fixed effects.
+
+```{r idid_viz_bivar}
+idid_viz_bivar(reg_raw, "l_gdpPercap") + 
+  # geom_point(aes(color = country)) + 
+  # theme(legend.position = "none") +
+  ggplot2::xlim(c(-3, 4)) +
+  ggplot2::ylim(c(-40, 40))
+
+idid_viz_bivar(reg_year_fe, "l_gdpPercap") + 
+  # geom_point(aes(color = as.factor(year))) + 
+  ggplot2::xlim(c(-3, 4)) +
+  ggplot2::ylim(c(-40, 40))
+
+idid_viz_bivar(reg_country_fe, "l_gdpPercap") + 
+  # geom_point(aes(color = country)) + 
+  # theme(legend.position = "none") +
+  ggplot2::xlim(c(-3, 4)) +
+  ggplot2::ylim(c(-40, 40))
+
+idid_viz_bivar(reg_twfe, "l_gdpPercap") + 
+  ggplot2::xlim(c(-3, 4)) +
+  ggplot2::ylim(c(-40, 40))
+```
+
+These graphs hopefuly help understanding what the fixed effects are doing and what variation they are removing
+
+In this particular case, regardless the set of fixed effects, the relationship is positive, despite the quantity estimated being somehow radically different.
+
+## 
+
+We can 
+
+```{r fig.asp=2}
+graph_weights <- function(reg) {
+  reg |> 
+    idid_viz_weights("l_gdpPercap", var_x = year, var_y = country) +
+    facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+    theme(strip.text.y = element_text(angle = 0))
+}
+
+graph_weights(reg_raw)
+graph_weights(reg_year_fe)
+graph_weights(reg_country_fe)
+graph_weights(reg_twfe)
+```
+
+```{r fig.asp=2}
+graph_contrib <- function(reg) {
+  reg |> 
+    idid_viz_contrib("l_gdpPercap", var_x = year, var_y = country) +
+    facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+    theme(strip.text.y = element_text(angle = 0))
+}
+
+graph_contrib(reg_raw)
+graph_contrib(reg_year_fe)
+graph_contrib(reg_country_fe)
+graph_contrib(reg_twfe)
+```
+
+
+```{r}
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(sf)
+
+world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
+  dplyr::mutate(iso_alpha = sov_a3) |> 
+  dplyr::filter(iso_a3 != "ATA")
+
+idid_viz_weights_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
+  coord_sf(crs = st_crs("ESRI:54030"))
+
+```
+
+
+```{r}
+stats_raw <- reg_raw |> 
+  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
+  bind_rows()
+
+stats_year <- reg_year_fe |> 
+  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
+  bind_rows()
+
+stats_country <- reg_country_fe |> 
+  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
+  bind_rows()
+
+stats_twfe <- reg_twfe |> 
+  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
+  bind_rows()
+
+knitr::kable(rbind(stats_raw, stats_year, stats_country, stats_twfe))
+```
+
+
+
+
+
+
+
+
+
+
+
+
