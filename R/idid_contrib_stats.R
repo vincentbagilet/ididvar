@@ -44,6 +44,7 @@ idid_contrib_stats <- function(reg,
   contrib <- (weights > contrib_threshold)
 
   out <- list(
+    reg = deparse(substitute(reg)),
     n_initial = length(weights),
     n_nominal = sum(!is.na(weights)),
     n_effective = sum(contrib, na.rm = TRUE),

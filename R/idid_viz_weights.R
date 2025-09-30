@@ -6,8 +6,8 @@
 #'
 #' @details
 #' If there is more than on observation by group (i.e. for one category in
-#' var_x or in var_x x var_y), individual weights are added for that group,
-#' removing missing values.
+#' var_x or in var_x x var_y), the weight of the group is computed by summing
+#' individual weights in that group, removing missing values.
 #'
 #' @inheritParams idid_weights
 #' @inheritParams scale_fill_idid
@@ -53,7 +53,6 @@ idid_viz_weights <- function(reg,
                              ...) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  # df <- df[!is.na(df$weight), ]
 
   if (missing(var_y)) {
     graph <- df |>
@@ -64,15 +63,11 @@ idid_viz_weights <- function(reg,
 
     name_var_x <- deparse(substitute(var_x))
     name_var_y <- deparse(substitute(var_y))
-    n_x <- unique(df[[name_var_x]]) |> length()
-    n_y <- unique(df[[name_var_y]]) |> length()
-    if (n_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
-    if (n_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
+    n_cat_x <- unique(df[[name_var_x]]) |> length()
+    n_cat_y <- unique(df[[name_var_y]]) |> length()
+    if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
+    if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
 
-    #if each group weighted the same, their weight would be 1/nrow(sum_df), ie
-    #the average weight. I compare each weight to that average and then
-    #take the log to avoid squeezing the scale.
-    #I later also take the logs to define the breaks in the scale
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
@@ -80,19 +75,17 @@ idid_viz_weights <- function(reg,
         z = weight
         # label = round(weight, 3)
       )) +
+      #summarise the weights by var_x*vary_y groups (summing their values),
+      #take the ratio of the weight of each group over
+      #the average weight across groups (1/(n_x*n_y)) and then takes its log10
       ggplot2::stat_summary_2d(
-        fun = \(z) log10(sum(z, na.rm = TRUE)*n_x*n_y),
-        bins = c(n_x-1, n_y-1),
+        fun = \(z) log10(sum(z, na.rm = TRUE)*n_cat_x*n_cat_y),
+        bins = c(n_cat_x - 1, n_cat_y - 1),
         drop = FALSE
       ) +
-      # ggplot2::geom_tile() +
-      # ggplot2::geom_text() +
+      #break the log10 values into categories
       ididvar::scale_fill_idid(colors = colors) +
-      ggplot2::labs(
-        fill = "Weight, compared to the average weight"
-        # x = var_x_name,
-        # y = var_y_name
-      )
+      ggplot2::labs(fill = "Weight, compared to 1/n, the average weight")
   }
 
   graph <- graph +

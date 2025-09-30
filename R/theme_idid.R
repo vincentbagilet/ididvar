@@ -38,7 +38,12 @@ theme_idid <- function(...) {
         size = ggplot2::rel(1.1),
         margin = ggplot2::margin(b = 8)
       ),
-      plot.caption = ggplot2::element_text(hjust = 1, size = ggplot2::rel(0.8)),
+      plot.caption = ggplot2::element_text(
+        hjust = 1,
+        size = ggplot2::rel(0.8),
+        margin = ggplot2::margin(t = 10, unit = "pt")
+      ),
+      # plot.caption.position = "panel",
       # text = ggplot2::element_text(family = "lato"),
       panel.grid.major = ggplot2::element_blank(),
       panel.grid.minor = ggplot2::element_blank(),

@@ -9,10 +9,8 @@ reg_test |>
   idid_weights("displ")
 
 reg_test |>
-  idid_viz_weights("displ", year, manufacturer)
-
-s+
-  ggplot2::facet_wrap(~ manufacturer, scales = "free_y")
+  idid_viz_weights("displ", year, model) +
+  ggplot2::facet_wrap(~ manufacturer)
 
 
 dat <- eval(reg_test$call$data) |>

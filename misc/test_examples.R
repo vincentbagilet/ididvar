@@ -11,6 +11,7 @@ idid_viz_weights(reg_ex, "pce", var_x = year) +
 
 
 ex_data <- ggplot2::economics
+
 ex_data[["year"]] <- substr(ex_data[["date"]], 1, 4) |> as.numeric()
 
 reg_ex_lm <- lm(data = ex_data,

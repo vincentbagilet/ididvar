@@ -13,7 +13,9 @@ RoxygenNote: 7.3.2
 Imports: 
     ggplot2
 Suggests: 
+    dplyr,
     fixest,
+    gapminder,
     knitr,
     plm,
     rmarkdown,

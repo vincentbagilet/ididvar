@@ -8,13 +8,18 @@
 #' The partialling out procedure is implemented using the same estimation
 #' method as the one used in `reg`.
 #'
-#' @param reg A regression object.
-#' @param var_to_partial A string. The name of the variable to partial out.
+#' If `var_interest` is specified (and different from `var_to_partial`),
+#' `var_interest` is not partialled out. This is espetially interesting if one
+#' wants to partial out controls but not the variable of interest.
+#'
+#' @inheritParams idid_weights
+#' @param var_to_partial A string. The name of the variable for which to
+#' compute a partialled out version.
 #' @param ... Additional elements to pass to the regression function when
 #' partialling out controls.
 #'
 #' @returns
-#' A vector of the partialled out version of `var_to_partial`
+#' A vector of the partialled out version of `var_to_partial`.
 #'
 #' @export
 #'
@@ -38,7 +43,10 @@
 #'
 #' idid_partial_out(reg_ex_fixest, "volume") |>
 #'   head()
-idid_partial_out <- function(reg, var_to_partial, ...) {
+idid_partial_out <- function(reg,
+                             var_to_partial,
+                             var_interest = var_to_partial,
+                             ...) {
   #additional arguments to the regression
   # other_args <- list(
   #   na.action = na.exclude #add NAs to the weights when values missing for some regressors
@@ -47,10 +55,12 @@ idid_partial_out <- function(reg, var_to_partial, ...) {
 
   #define partial out formula if x or y
   if (var_to_partial == reg$call[[2]][[2]]) { #reg$call[[2]][[2]] = y in the reg
-    formula_partial <- stats::as.formula(paste(". ~ . -", var_to_partial))
+    formula_partial <- stats::as.formula(paste(". ~ . -", var_interest))
   } else if (var_to_partial %in% names(reg$coefficients)) {
     formula_partial <-
-      stats::as.formula(paste(var_to_partial, "~ . -", var_to_partial))
+      stats::as.formula(
+        paste(var_to_partial, "~ . -", var_to_partial, "-", var_interest)
+      )
   } else {
     stop(var_to_partial, " is not a variable in the regression")
   }

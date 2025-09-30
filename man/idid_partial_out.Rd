@@ -4,18 +4,21 @@
 \alias{idid_partial_out}
 \title{Partial out controls}
 \usage{
-idid_partial_out(reg, var_to_partial, ...)
+idid_partial_out(reg, var_to_partial, var_interest = var_to_partial, ...)
 }
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_to_partial}{A string. The name of the variable to partial out.}
+\item{var_to_partial}{A string. The name of the variable for which to
+compute a partialled out version.}
+
+\item{var_interest}{A string. The name of the main variable of interest.}
 
 \item{...}{Additional elements to pass to the regression function when
 partialling out controls.}
 }
 \value{
-A vector of the partialled out version of \code{var_to_partial}
+A vector of the partialled out version of \code{var_to_partial}.
 }
 \description{
 Compute the partialled out version of a variable based on the regression
@@ -24,6 +27,10 @@ model provided.
 \details{
 The partialling out procedure is implemented using the same estimation
 method as the one used in \code{reg}.
+
+If \code{var_interest} is specified (and different from \code{var_to_partial}),
+\code{var_interest} is not partialled out. This is espetially interesting if one
+wants to partial out controls but not the variable of interest.
 }
 \examples{
 # example with a lm regression

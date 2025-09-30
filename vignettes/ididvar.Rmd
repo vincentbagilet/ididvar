@@ -22,19 +22,24 @@ library(ggplot2)
 library(tigris)
 ```
 
-The goal of this document is to describe the capabilities of the package and to describe a typical workflow for analysis. A more thorough example of a practical implementation and analysis, with a thorough analysis of implications for the outcome of an economics research project is available on here, on the website of the research project for which the `ididvar` package has been developed.
-
-This vignette quickly presents a typical workflow for analysis, using a very basic example. It also provides an overview of most the functions available in the package.
+The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most [the functions](reference/index.html) available** in the package. 
 
 A more thorough example, with an actual analysis and interpretation of the results, is available on the research project website. 
 
 # Overview of a typical workflow
 
-The workflow to make a plot from scratch is straightforward: 
+The workflow to get a better understanding of observations of groups of observations contributing to identification is relatively straightforward: 
 
-1. Add a `weight` variable to the data set. Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion.
-1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group.
-1. Visualize the 
+1. Compute the **observation level weights** and add a `weight` variable to the data set (using the `idid_weights` function)
+1. **Visualize** the distribution of these weights (the cumulative one with `idid_viz_cumul`, the observation level one with `idid_viz_weights` or `idid_viz_weights_map`). One might already get a sense of the effective sample
+1. **Identify groups** for which there is a large heterogeneity in weights across groups (with `idid_grouping_var`)
+1. Visualize the weights of these groups (with `idid_viz_weights` or `idid_viz_weights_map`)
+1. Repeat this analysis to identify **observations that we can drop without too much altering the estimate**.
+1. **Compute and visualize the effective sample size** (with `idid_viz_drop_change` and `idid_contrib_stats`) 
+1. **Visualize contributing observations**, both individual and groups (using `idid_viz_contrib` and `idid_viz_contrib_map`
+
+<!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. -->
+<!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. -->
 
 # Compute weights
 
@@ -43,7 +48,7 @@ Let's assume we have already ran the regression of interest.
 ```{r reg_ex, message=FALSE}
 data_ex <- state.x77 |>
   as_tibble() |>
-  mutate(
+  dplyr::mutate(
     state = rownames(state.x77),
     pop_quartiles = cut_number(Population, 4, labels = FALSE),
     murder_quartiles = cut_number(Murder, 4, labels = FALSE),
@@ -61,15 +66,17 @@ data_ex_weights <- data_ex |>
   mutate(weight = idid_weights(reg_ex, "Income"))
 ```
 
-# Visualize the weights
+We can then visualize these weights. 
 
-We can then *visualize the weights*. 
+# Visualize the weights
 
 ## Weights distribution
 
 We can then plot the distribution of weights using the `idid_viz_cumul` function.
 
 ```{r idid_viz_cumul}
+#| fig-asp: 0.8
+
 idid_viz_cumul(data_ex_weights$weight)
 ```
 
@@ -80,6 +87,8 @@ We may then want to explore the distribution of weights along several variables.
 When the data has a geographical dimension, one may want to plot a map of the weights. The function `idid_viz_weights_map` allows to do easily do that by only providing a shape file in a `sf` format along with the join variable name.
 
 ```{r idid_viz_weights_map}
+#| fig-asp: 1
+
 states_sf <- tigris::states(
     cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
   tigris::shift_geometry() |> 
@@ -98,9 +107,11 @@ idid_grouping_var(
 knitr::kable()
 ```
 
-Once groups along which it makes sense to group the weights by have been identify, one can plot their distribution by group.
+Here, the larges between group variance is across `income_quartiles`, suggesting that some income group may have larger weights than others. Now that dimensions along which it makes sense to group the weights by have been identify, one can plot the weights distribution across groups.
 
 ```{r idid_viz_weights}
+#| fig-asp: 0.8
+
 idid_viz_weights(reg_ex, "Income", income_quartiles) +
   labs(
     x = "Income quartiles", 
@@ -116,6 +127,8 @@ Through all these explorations, one can get a sense of the distribution of weigh
 The goal of the analysis is really to determine which observations contribute to the estimation and which do not. The approach chosen to do so here is to identify observations with low weight that can be dropped without affecting the point estimate *and* standard errors by more than a given proportion.
 
 ```{r idid_viz_drop_change}
+#| fig-asp: 1
+
 idid_viz_drop_change(
   reg_ex, 
   "Income", 
@@ -137,8 +150,9 @@ idid_contrib_stats(reg_ex, "Income")
 The `ididvar` package also provides function to quickly explore which observations are part of this effective sample.
 
 ```{r}
-idid_viz_contrib(reg_ex, "Income", income_quartiles)
+#| fig-asp: 0.8
 
+idid_viz_contrib(reg_ex, "Income", income_quartiles)
 idid_viz_contrib_map(reg_ex, "Income", states_sf, "state")
 ```
 
@@ -151,7 +165,9 @@ idid_viz_contrib_map(reg_ex, "Income", states_sf, "state")
 It is almost always a good idea to look at the raw data. 
 one may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest:
 
-```{r}
+```{r xy_rel}
+#| fig-asp: 0.8
+
 data_partial <- 
   tibble(
     illiteracy_per = idid_partial_out(reg_ex, "Illiteracy"),

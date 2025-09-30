@@ -51,8 +51,8 @@ a bar chart, depending on the number of dimensions specified)
 }
 \details{
 If there is more than on observation by group (i.e. for one category in
-var_x or in var_x x var_y), individual weights are added for that group,
-removing missing values.
+var_x or in var_x x var_y), the weight of the group is computed by summing
+individual weights in that group, removing missing values.
 }
 \examples{
 # example with a lm regression and one dimension

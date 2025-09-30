@@ -21,7 +21,7 @@ library(dplyr)
 library(ggplot2)
 ```
 
-This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, some may want to *customize* their graphs or build their own. 
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own. 
 
 This vignette **provides code that can easily be copied/pasted to make your own customized plots**, going beyond the quick but less customizable functions provided in the package.
 
@@ -101,7 +101,7 @@ data_sf |>
         axis.text.x = element_blank())
 ``` 
 
-The maps here are not particularly interesting, the regression being only a simple example.
+The maps produced in this document are not particularly instructive since the regression model is paritcularly naive.
 
 <!-- # Why keeping the idid scale -->
 
