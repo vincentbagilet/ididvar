@@ -65,8 +65,8 @@ idid_viz_weights <- function(reg,
     name_var_y <- deparse(substitute(var_y))
     n_cat_x <- unique(df[[name_var_x]]) |> length()
     n_cat_y <- unique(df[[name_var_y]]) |> length()
-    if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
-    if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
+    # if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
+    # if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
@@ -79,7 +79,7 @@ idid_viz_weights <- function(reg,
       #take the ratio of the weight of each group over
       #the average weight across groups (1/(n_x*n_y)) and then takes its log10
       ggplot2::stat_summary_2d(
-        fun = \(z) log10(sum(z, na.rm = TRUE)*n_cat_x*n_cat_y),
+        fun = \(x) log10(sum(x, na.rm = TRUE)*n_cat_x*n_cat_y),
         bins = c(n_cat_x - 1, n_cat_y - 1),
         drop = FALSE
       ) +

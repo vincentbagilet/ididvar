@@ -105,7 +105,7 @@ graph_contrib <- function(reg) {
     facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
     theme(strip.text.y = element_text(angle = 0))
 }
-
+france
 graph_contrib(reg_raw)
 graph_contrib(reg_year_fe)
 graph_contrib(reg_country_fe)
@@ -119,7 +119,7 @@ library(rnaturalearthdata)
 library(sf)
 
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
-  dplyr::mutate(iso_alpha = sov_a3) |> 
+  dplyr::mutate(iso_alpha = adm0_a3) |> 
   dplyr::filter(iso_a3 != "ATA")
 
 idid_viz_weights_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +

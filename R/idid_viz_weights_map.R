@@ -11,6 +11,8 @@
 #' @param shape_file An \code{sf} object. The shape file to map the weights on.
 #' @param join_by A character string. The name of the variable in the original
 #' data and in `shape_file` and along which the matching should be performed.
+#' @param facet A character string. The name of the variable in the original
+#' data to facet the data graphs by.
 #'
 #' @returns
 #' A ggplot object.
@@ -32,25 +34,38 @@ idid_viz_weights_map <- function(reg,
                                  var_interest,
                                  shape_file,
                                  join_by,
+                                 facet,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
 
+  #define what to aggregate by, depending on whether use facet or not
+  if (missing(facet)) {
+    list_join <- list(dim_1 = df[[join_by]])
+    vect_names <- c(join_by, "weight")
+  } else {
+    list_join <- list(dim_1 = df[[join_by]], dim_2 = df[[facet]])
+    vect_names <- c(join_by, facet, "weight")
+  }
+
   #compute shape level weights
   aggr_df <- stats::aggregate(
     df$weight,
-    by = list(join_by = df[[join_by]]),
+    by = list_join,
     FUN = sum,
     na.rm = TRUE
   )
-  names(aggr_df) <- c(join_by, "weight")
+  names(aggr_df) <- vect_names
+
+  # print(aggr_df)
 
   #merge with shapefile
   merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
   merged[["weight_log"]] <- log10(merged$weight * nrow(merged))
 
-  merged |>
+  #make graph
+  graph <- merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
       ggplot2::aes(fill = weight_log),
@@ -67,4 +82,11 @@ idid_viz_weights_map <- function(reg,
       axis.text.y = ggplot2::element_blank(),
       axis.text.x = ggplot2::element_blank()
     )
+
+  if (missing(facet)) {
+    graph
+  } else {
+    graph +
+      ggplot2::facet_wrap(as.formula(paste("~", facet)))
+  }
 }

@@ -9,6 +9,7 @@ idid_viz_weights_map(
   var_interest,
   shape_file,
   join_by,
+  facet,
   colors = c("#C25807", "#FBE2C5", "#300D49"),
   ...
 )
@@ -22,6 +23,9 @@ idid_viz_weights_map(
 
 \item{join_by}{A character string. The name of the variable in the original
 data and in \code{shape_file} and along which the matching should be performed.}
+
+\item{facet}{A character string. The name of the variable in the original
+data to facet the data graphs by.}
 
 \item{colors}{A string vector of colors for the palette.
 I recommend to pass a vector of 3 distinct colors, with a lighter color in
