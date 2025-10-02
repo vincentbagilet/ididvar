@@ -1,4 +1,4 @@
-#' Visualization of the relationship, after partialling out
+#' Visualization of the relationship between x and y, after partialling out
 #'
 #' @description
 #' Makes a bivariate graph to visualize the data and relationship between the
@@ -7,7 +7,8 @@
 #' @inheritParams idid_weights
 #'
 #' @returns
-#' A ggplot2 graph of the relationship between the
+#' A ggplot2 scatter plot and regression line of the relationship between the
+#' outcome and the variable of interest, after partialling out controls.
 #'
 #' @export
 #'
@@ -22,7 +23,10 @@ idid_viz_bivar <- function(reg, var_interest) {
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = x_par, y = y_par)) +
-    ggplot2::geom_point(color = idid_colors_table[[1, "base"]]) +
+    ggplot2::geom_point(
+      color = idid_colors_table[[1, "base"]],
+      alpha = if (nrow(df) > 1000) 0.6 else 1
+    ) +
     ggplot2::geom_smooth(
       method = "lm",
       formula = 'y ~ x',

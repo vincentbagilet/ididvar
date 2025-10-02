@@ -30,18 +30,19 @@ A more thorough example, with an actual analysis and interpretation of the resul
 
 The workflow to get a better understanding of observations of groups of observations contributing to identification is relatively straightforward: 
 
-1. Compute the **observation level weights** and add a `weight` variable to the data set (using the `idid_weights` function)
+1. **Visualize the relationship** between x and y after partialling out (with the `idid_viz_bivar` function)
+1. Compute the **observation level weights** and add a `weight` variable to the data set (using `idid_weights`)
 1. **Visualize** the distribution of these weights (the cumulative one with `idid_viz_cumul`, the observation level one with `idid_viz_weights` or `idid_viz_weights_map`). One might already get a sense of the effective sample
 1. **Identify groups** for which there is a large heterogeneity in weights across groups (with `idid_grouping_var`)
-1. Visualize the weights of these groups (with `idid_viz_weights` or `idid_viz_weights_map`)
-1. Repeat this analysis to identify **observations that we can drop without too much altering the estimate**.
-1. **Compute and visualize the effective sample size** (with `idid_viz_drop_change` and `idid_contrib_stats`) 
-1. **Visualize contributing observations**, both individual and groups (using `idid_viz_contrib` and `idid_viz_contrib_map`
+1. **Visualize groups' weights** (with `idid_viz_weights` or `idid_viz_weights_map`)
+1. Repeat this analysis to **identify contributing observations**, *ie* observations that we can drop without too much altering the estimate.
+1. Compute and visualize the **effective sample size** (with `idid_viz_drop_change` and `idid_contrib_stats`) 
+1. **Visualize contributing observations**, both individual and groups (using `idid_viz_contrib` and `idid_viz_contrib_map`)
 
 <!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. -->
 <!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. -->
 
-# Compute weights
+# Visualize relationship
 
 Let's assume we have already ran the regression of interest. 
 
@@ -59,6 +60,14 @@ reg_ex <-lm(data = data_ex,
             formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
 ```
 
+We first visualize the relationship between x and y (here `Illiteracy` and `Income`) after partialling out to understand what we are estimating and to visualize what is driving our 
+
+```{r idid_viz_bivar}
+idid_viz_bivar(reg_ex, "Income")
+```
+
+# Compute weights
+
 We can **add the weights to the data**.
 
 ```{r data_ex_weights}
@@ -66,13 +75,11 @@ data_ex_weights <- data_ex |>
   mutate(weight = idid_weights(reg_ex, "Income"))
 ```
 
-We can then visualize these weights. 
-
 # Visualize the weights
 
 ## Weights distribution
 
-We can then plot the distribution of weights using the `idid_viz_cumul` function.
+We can plot the distribution of weights using the `idid_viz_cumul` function.
 
 ```{r idid_viz_cumul}
 #| fig-asp: 0.8
@@ -157,51 +164,5 @@ idid_viz_contrib_map(reg_ex, "Income", states_sf, "state")
 ```
 
 `r vignette("own-viz")` provides a discussion and code to customize these graphs.
-
-# Additional useful visualizations
-
-## Relationship between x and y
-
-It is almost always a good idea to look at the raw data. 
-one may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest:
-
-```{r xy_rel}
-#| fig-asp: 0.8
-
-data_partial <- 
-  tibble(
-    illiteracy_per = idid_partial_out(reg_ex, "Illiteracy"),
-    income_per = idid_partial_out(reg_ex, "Income"),
-    weight = (income_per - mean(income_per))^2
-  ) |> 
-  mutate(
-    weight = weight/sum(weight),
-    logweight = log10(weight * length(weight))
-  )
-
-data_partial |>
-  ggplot(aes(x = income_per, y = illiteracy_per, color = logweight)) +
-  geom_point(size = 2) +
-  geom_rug(linewidth = 0.8) +
-  # ggExtra::ggMarginal(type = "histogram") +
-  geom_smooth(
-    method = "lm", 
-    color = idid_colors_table[["base"]],
-    fill = idid_colors_table[["base"]], 
-    alpha = 0.1) +
-  theme_idid() +
-  scale_color_idid() +
-  labs(
-    title = "Relationship between illiteracy and income",
-    subtitle = "After partialling out controls",
-    color = "Weight, as compared to the average weight",
-    x = "Income (residualized)",
-    y = "Illiteracy (residualized)"
-  )
-```
-
-Such a mapping might be less legible when the sample size is large. In such instances, transparency or a bin or hex map can be useful tools to represent large numbers of observations.
-
-
 
 

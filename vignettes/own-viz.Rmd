@@ -106,3 +106,47 @@ The maps produced in this document are not particularly instructive since the re
 <!-- # Why keeping the idid scale -->
 
 <!-- I argue for keeping the idid scale -->
+
+## Relationship between x and y
+
+One may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest. To do so, they can use `idid_viz_bivar` or the following code:
+
+```{r xy_rel}
+#| fig-asp: 0.8
+
+data_partial <- 
+  tibble(
+    illiteracy_per = idid_partial_out(reg_ex, "Illiteracy"),
+    income_per = idid_partial_out(reg_ex, "Income"),
+    weight = (income_per - mean(income_per))^2
+  ) |> 
+  mutate(
+    weight = weight/sum(weight),
+    logweight = log10(weight * length(weight))
+  )
+
+data_partial |>
+  ggplot(aes(x = income_per, y = illiteracy_per, color = logweight)) +
+  geom_point(size = 2) +
+  geom_rug(linewidth = 0.8) +
+  # ggExtra::ggMarginal(type = "histogram") +
+  geom_smooth(
+    method = "lm", 
+    color = idid_colors_table[["base"]],
+    fill = idid_colors_table[["base"]], 
+    alpha = 0.1) +
+  theme_idid() +
+  scale_color_idid() +
+  labs(
+    title = "Relationship between illiteracy and income",
+    subtitle = "After partialling out controls",
+    color = "Weight, as compared to the average weight",
+    x = "Income (residualized)",
+    y = "Illiteracy (residualized)"
+  )
+```
+
+Such a mapping might be less legible when the sample size is large. In such instances, transparency or a bin or hex map can be useful tools to represent large numbers of observations.
+
+
+

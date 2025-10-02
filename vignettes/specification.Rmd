@@ -2,7 +2,7 @@
 title: "Specification and variation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Fixed effects and variation}
+  %\VignetteIndexEntry{Specification and variation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -18,7 +18,7 @@ This document discusses how `ididvar` can be used to discuss the impact of speci
 
 For this example, we use the `gapminder` data set built on [gapminder.org](https://www.gapminder.org/) and made available by the [`gapminder` package](https://jennybc.github.io/gapminder/index.html). It contains data on life expectency, GDP per capita and population, for all countries in the world, every 5 years between 1952 and 2007. As such, it constitutes a panel. 
 
-```{r setup}
+```{r setup, message=FALSE}
 library(ididvar)
 library(gapminder)
 library(fixest)
@@ -34,9 +34,8 @@ Let's consider 3 regression models: with country fixed effects, year fixed effec
 
 ```{r reg}
 gapminder_ext <- gapminder |> 
-  dplyr::mutate(
-    l_gdpPercap = log(gdpPercap)
-  ) |> 
+  dplyr::mutate(l_gdpPercap = log(gdpPercap)) |> 
+  # dplyr::filter(continent == "Americas") |> 
   dplyr::left_join(gapminder::country_codes, by = join_by(country))
 
 reg_raw <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap)
@@ -53,43 +52,110 @@ Of course, the parameter on `l_gdpPercap` does not represent the same quantity i
 As always in applied econometrics, one the first steps in the analysis consists exploring the raw data and the relationship between the variables of interest.
 We can then plot the partialled out versions of the relationships to get a sense of the variation partialled out by the various sets of fixed effects.
 
-```{r idid_viz_bivar}
-idid_viz_bivar(reg_raw, "l_gdpPercap") + 
-  # geom_point(aes(color = country)) + 
-  # theme(legend.position = "none") +
-  ggplot2::xlim(c(-3, 4)) +
-  ggplot2::ylim(c(-40, 40))
+## Bivariate graphs {.tabset}
 
-idid_viz_bivar(reg_year_fe, "l_gdpPercap") + 
-  # geom_point(aes(color = as.factor(year))) + 
-  ggplot2::xlim(c(-3, 4)) +
-  ggplot2::ylim(c(-40, 40))
+### Raw
 
-idid_viz_bivar(reg_country_fe, "l_gdpPercap") + 
-  # geom_point(aes(color = country)) + 
-  # theme(legend.position = "none") +
-  ggplot2::xlim(c(-3, 4)) +
-  ggplot2::ylim(c(-40, 40))
+```{r idid_viz_bivar, echo=FALSE}
+lims <- ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35)) 
 
-idid_viz_bivar(reg_twfe, "l_gdpPercap") + 
-  ggplot2::xlim(c(-3, 4)) +
-  ggplot2::ylim(c(-40, 40))
+bivar_raw <- idid_viz_bivar(reg_raw, "l_gdpPercap") + lims
+bivar_year_fe <- idid_viz_bivar(reg_year_fe, "l_gdpPercap") + lims
+bivar_country_fe <- idid_viz_bivar(reg_country_fe, "l_gdpPercap") + lims
+bivar_twfe <- idid_viz_bivar(reg_twfe, "l_gdpPercap") + lims
 ```
+
+```{r bivar_raw, fig.asp=0.8, echo=FALSE}
+bivar_raw
+```
+
+### Year FEs
+
+```{r bivar_year_fe, fig.asp=0.8, echo=FALSE}
+bivar_year_fe
+```
+
+### Country FEs
+
+```{r bivar_country_fe, fig.asp=0.8, echo=FALSE}
+bivar_country_fe
+```
+
+### TWFE
+
+```{r bivar_twfe, fig.asp=0.8, echo=FALSE}
+bivar_twfe
+```
+
+### Code
+
+```{r bivar_code, eval=FALSE}
+lims <- ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35)) 
+
+bivar_raw <- idid_viz_bivar(reg_raw, "l_gdpPercap") + lims
+bivar_year_fe <- idid_viz_bivar(reg_year_fe, "l_gdpPercap") + lims
+bivar_country_fe <- idid_viz_bivar(reg_country_fe, "l_gdpPercap") + lims
+bivar_twfe <- idid_viz_bivar(reg_twfe, "l_gdpPercap") + lims
+```
+
+## {-}
+
 
 These graphs hopefuly help understanding what the fixed effects are doing and what variation they are removing
 
 In this particular case, regardless the set of fixed effects, the relationship is positive, despite the quantity estimated being somehow radically different.
 
-## 
+## Weight graphs {.tabset}
 
-We can 
+### Raw
 
-```{r fig.asp=2}
+```{r weights, echo=FALSE}
 graph_weights <- function(reg) {
   reg |> 
     idid_viz_weights("l_gdpPercap", var_x = year, var_y = country) +
     facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
-    theme(strip.text.y = element_text(angle = 0))
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(
+      subtitle = paste("In the", deparse(substitute(reg)), "model"),
+      caption = paste("Model:", deparse(reg$call[[2]]))
+    )
+}
+```
+
+```{r weights_raw, fig.asp=3, echo=FALSE}
+graph_weights(reg_raw)
+```
+
+### Year FEs
+
+```{r weights_year_fe, fig.asp=3, echo=FALSE}
+graph_weights(reg_year_fe)
+```
+
+### Country FEs
+
+```{r weights_country_fe, fig.asp=3, echo=FALSE}
+graph_weights(reg_country_fe)
+```
+
+### TWFE
+
+```{r weights_twfe, fig.asp=3, echo=FALSE}
+graph_weights(reg_twfe)
+```
+
+### Code
+
+```{r code_weights, echo=TRUE, eval=FALSE}
+graph_weights <- function(reg) {
+  reg |> 
+    idid_viz_weights("l_gdpPercap", var_x = year, var_y = country) +
+    facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(
+      subtitle = paste("In the", deparse(substitute(reg)), "model"),
+      caption = paste("Model:", deparse(reg$call[[2]]))
+    )
 }
 
 graph_weights(reg_raw)
@@ -98,14 +164,63 @@ graph_weights(reg_country_fe)
 graph_weights(reg_twfe)
 ```
 
-```{r fig.asp=2}
+## {-}
+
+## Contribution graphs {.tabset}
+
+### Raw
+
+```{r contrib, echo=FALSE}
 graph_contrib <- function(reg) {
   reg |> 
     idid_viz_contrib("l_gdpPercap", var_x = year, var_y = country) +
     facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
-    theme(strip.text.y = element_text(angle = 0))
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(
+      caption = paste("Model:", deparse(reg$call[[2]])),
+      x = NULL, 
+      y = NULL
+    )
 }
-france
+```
+
+```{r contrib_raw, fig.asp=3, echo=FALSE}
+graph_contrib(reg_raw)
+```
+
+### Year FEs
+
+```{r contrib_year_fe, fig.asp=3, echo=FALSE}
+graph_contrib(reg_year_fe)
+```
+
+### Country FEs
+
+```{r contrib_country_fe, fig.asp=3, echo=FALSE}
+graph_contrib(reg_country_fe)
+```
+
+### TWFE
+
+```{r contrib_twfe, fig.asp=3, echo=FALSE}
+graph_contrib(reg_twfe)
+```
+
+### Code
+
+```{r code_contrib, echo=TRUE, eval=FALSE}
+graph_contrib <- function(reg) {
+  reg |> 
+    idid_viz_contrib("l_gdpPercap", var_x = year, var_y = country) +
+    facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(
+      caption = paste("Model:", deparse(reg$call[[2]])),
+      x = NULL, 
+      y = NULL
+    )
+}
+
 graph_contrib(reg_raw)
 graph_contrib(reg_year_fe)
 graph_contrib(reg_country_fe)
@@ -113,7 +228,10 @@ graph_contrib(reg_twfe)
 ```
 
 
-```{r}
+
+## Maps
+
+```{r map, message=FALSE}
 library(rnaturalearth)
 library(rnaturalearthdata)
 library(sf)
@@ -125,10 +243,13 @@ world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
 idid_viz_weights_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
   coord_sf(crs = st_crs("ESRI:54030"))
 
+idid_viz_contrib_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
+  coord_sf(crs = st_crs("ESRI:54030"))
 ```
 
+## Effective sample
 
-```{r}
+```{r effective_sample}
 stats_raw <- reg_raw |> 
   idid_contrib_stats(var_interest = "l_gdpPercap") |> 
   bind_rows()

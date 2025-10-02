@@ -50,6 +50,7 @@ reference:
   - idid_viz_contrib
   - idid_viz_contrib_map
   - idid_viz_drop_change
+  - idid_viz_bivar
 
 - title: Graph theming
   contents:
