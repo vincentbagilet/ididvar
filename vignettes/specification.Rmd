@@ -24,6 +24,7 @@ library(gapminder)
 library(fixest)
 library(ggplot2)
 library(dplyr)
+library(purrr)
 ```
 
 In this example, we are interested in studying the relationship between life expectancy and (log-)GDP per capita. We will consider several sets of fixed effects and study their impact on the variation used for identification.
@@ -35,16 +36,29 @@ Let's consider 3 regression models: with country fixed effects, year fixed effec
 ```{r reg}
 gapminder_ext <- gapminder |> 
   dplyr::mutate(l_gdpPercap = log(gdpPercap)) |> 
-  # dplyr::filter(continent == "Americas") |> 
+  dplyr::filter(continent %in% c("Africa", "Europe")) |>
   dplyr::left_join(gapminder::country_codes, by = join_by(country))
 
 reg_raw <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap)
 
-reg_twfe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country + as.factor(year))
+reg_continent_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | continent)
 
 reg_country_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country)
 
-reg_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | as.factor(year))
+reg_continent_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | continent^year)
+
+reg_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | year)
+
+reg_twfe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country + year)
+
+regs <- list(
+  reg_raw = reg_raw, 
+  reg_continent_fe = reg_continent_fe, 
+  reg_country_fe = reg_country_fe, 
+  reg_continent_year_fe = reg_continent_year_fe,
+  reg_year_fe = reg_year_fe, 
+  reg_twfe = reg_twfe
+)
 ```
 
 Of course, the parameter on `l_gdpPercap` does not represent the same quantity in each model. In `reg_country_fe`, it represents the within country relationship between `lifeExp` and `l_gdpPercap`, *ie* comparing observations at different points in time, within a given country. In `reg_year_fe`, it represents the within year and therefore across countries.
@@ -60,8 +74,10 @@ We can then plot the partialled out versions of the relationships to get a sense
 lims <- ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35)) 
 
 bivar_raw <- idid_viz_bivar(reg_raw, "l_gdpPercap") + lims
-bivar_year_fe <- idid_viz_bivar(reg_year_fe, "l_gdpPercap") + lims
+bivar_continent_fe <- idid_viz_bivar(reg_continent_fe, "l_gdpPercap") + lims
+bivar_country_year_fe <- idid_viz_bivar(reg_continent_year_fe, "l_gdpPercap") + lims
 bivar_country_fe <- idid_viz_bivar(reg_country_fe, "l_gdpPercap") + lims
+bivar_year_fe <- idid_viz_bivar(reg_year_fe, "l_gdpPercap") + lims
 bivar_twfe <- idid_viz_bivar(reg_twfe, "l_gdpPercap") + lims
 ```
 
@@ -69,16 +85,22 @@ bivar_twfe <- idid_viz_bivar(reg_twfe, "l_gdpPercap") + lims
 bivar_raw
 ```
 
-### Year FEs
+### Continent FEs
 
-```{r bivar_year_fe, fig.asp=0.8, echo=FALSE}
-bivar_year_fe
+```{r bivar_continent_fe, fig.asp=0.8, echo=FALSE}
+bivar_continent_fe
 ```
 
 ### Country FEs
 
 ```{r bivar_country_fe, fig.asp=0.8, echo=FALSE}
 bivar_country_fe
+```
+
+### Year FEs
+
+```{r bivar_year_fe, fig.asp=0.8, echo=FALSE}
+bivar_year_fe
 ```
 
 ### TWFE
@@ -90,18 +112,21 @@ bivar_twfe
 ### Code
 
 ```{r bivar_code, eval=FALSE}
-lims <- ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35)) 
+purrr::map(
+  regs, 
+  \(x) idid_viz_bivar(x, var_interest = "l_gdpPercap") + 
+    ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35))
+)
 
-bivar_raw <- idid_viz_bivar(reg_raw, "l_gdpPercap") + lims
-bivar_year_fe <- idid_viz_bivar(reg_year_fe, "l_gdpPercap") + lims
-bivar_country_fe <- idid_viz_bivar(reg_country_fe, "l_gdpPercap") + lims
-bivar_twfe <- idid_viz_bivar(reg_twfe, "l_gdpPercap") + lims
+# purrr::map(
+#   regs, 
+#   \(x) idid_viz_cumul(idid_weights(x, var_interest = "l_gdpPercap")) 
+# )
 ```
 
 ## {-}
 
-
-These graphs hopefuly help understanding what the fixed effects are doing and what variation they are removing
+These graphs hopefully help understanding what the fixed effects are doing and what variation they are removing
 
 In this particular case, regardless the set of fixed effects, the relationship is positive, despite the quantity estimated being somehow radically different.
 
@@ -117,7 +142,9 @@ graph_weights <- function(reg) {
     theme(strip.text.y = element_text(angle = 0)) +
     labs(
       subtitle = paste("In the", deparse(substitute(reg)), "model"),
-      caption = paste("Model:", deparse(reg$call[[2]]))
+      caption = paste("Model:", deparse(reg$call[[2]])),
+      x = NULL, 
+      y = NULL
     )
 }
 ```
@@ -126,16 +153,22 @@ graph_weights <- function(reg) {
 graph_weights(reg_raw)
 ```
 
-### Year FEs
+### Continent FEs
 
-```{r weights_year_fe, fig.asp=3, echo=FALSE}
-graph_weights(reg_year_fe)
+```{r weights_continent_fe, fig.asp=3, echo=FALSE}
+graph_weights(reg_continent_fe)
 ```
 
 ### Country FEs
 
 ```{r weights_country_fe, fig.asp=3, echo=FALSE}
 graph_weights(reg_country_fe)
+```
+
+### Year FEs
+
+```{r weights_year_fe, fig.asp=3, echo=FALSE}
+graph_weights(reg_year_fe)
 ```
 
 ### TWFE
@@ -154,14 +187,13 @@ graph_weights <- function(reg) {
     theme(strip.text.y = element_text(angle = 0)) +
     labs(
       subtitle = paste("In the", deparse(substitute(reg)), "model"),
-      caption = paste("Model:", deparse(reg$call[[2]]))
+      caption = paste("Model:", deparse(reg$call[[2]])),
+      x = NULL, 
+      y = NULL
     )
 }
 
-graph_weights(reg_raw)
-graph_weights(reg_year_fe)
-graph_weights(reg_country_fe)
-graph_weights(reg_twfe)
+map(regs, graph_weights)
 ```
 
 ## {-}
@@ -188,16 +220,22 @@ graph_contrib <- function(reg) {
 graph_contrib(reg_raw)
 ```
 
-### Year FEs
+### Continent FEs
 
-```{r contrib_year_fe, fig.asp=3, echo=FALSE}
-graph_contrib(reg_year_fe)
+```{r contrib_continent_fe, fig.asp=3, echo=FALSE}
+graph_weights(reg_continent_fe)
 ```
 
 ### Country FEs
 
 ```{r contrib_country_fe, fig.asp=3, echo=FALSE}
-graph_contrib(reg_country_fe)
+graph_weights(reg_country_fe)
+```
+
+### Year FEs
+
+```{r contrib_year_fe, fig.asp=3, echo=FALSE}
+graph_contrib(reg_year_fe)
 ```
 
 ### TWFE
@@ -221,10 +259,7 @@ graph_contrib <- function(reg) {
     )
 }
 
-graph_contrib(reg_raw)
-graph_contrib(reg_year_fe)
-graph_contrib(reg_country_fe)
-graph_contrib(reg_twfe)
+map(regs, graph_contrib)
 ```
 
 
@@ -250,23 +285,16 @@ idid_viz_contrib_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
 ## Effective sample
 
 ```{r effective_sample}
-stats_raw <- reg_raw |> 
-  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
-  bind_rows()
+#| message: false
 
-stats_year <- reg_year_fe |> 
-  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
-  bind_rows()
-
-stats_country <- reg_country_fe |> 
-  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
-  bind_rows()
-
-stats_twfe <- reg_twfe |> 
-  idid_contrib_stats(var_interest = "l_gdpPercap") |> 
-  bind_rows()
-
-knitr::kable(rbind(stats_raw, stats_year, stats_country, stats_twfe))
+purrr::map(
+  regs, 
+  \(x) idid_contrib_stats(x, var_interest = "l_gdpPercap") |> 
+    as_tibble() 
+) |> 
+  purrr::list_rbind() |> 
+  mutate(reg = names(regs), .before = 1) |> 
+  knitr::kable()
 ```
 
 

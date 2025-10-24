@@ -22,7 +22,7 @@ library(ggplot2)
 library(tigris)
 ```
 
-The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most [the functions](reference/index.html) available** in the package. 
+The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most of [the functions](reference/index.html) available** in the package. 
 
 A more thorough example, with an actual analysis and interpretation of the results, is available on the research project website. 
 
@@ -102,6 +102,8 @@ states_sf <- tigris::states(
   rename(state = NAME)
 
 idid_viz_weights_map(reg_ex, "Income", states_sf, "state")
+
+idid_viz_weights(reg_ex, "Income", pop_quartiles, state)
 ```
 
 In addition--or instead--, it is often interesting to analyse whether some groups have larger weights, *ie* contribute more, than others. One may have *a priori* ideas regarding which variables to group by. In cases when this might be less clear, one can use `idid_grouping_var` to identify variables for which groups created by each variable considered (in the `grouping_vars` argument of the function) have the most between group variance in weights, suggesting a large heterogeneity in weights across groups.

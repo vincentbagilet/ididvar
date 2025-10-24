@@ -116,8 +116,8 @@ One may want to visualize the weights as well as the relationship between the de
 
 data_partial <- 
   tibble(
-    illiteracy_per = idid_partial_out(reg_ex, "Illiteracy"),
-    income_per = idid_partial_out(reg_ex, "Income"),
+    illiteracy_per = idid_partial_out(reg, "Illiteracy"),
+    income_per = idid_partial_out(reg, "Income"),
     weight = (income_per - mean(income_per))^2
   ) |> 
   mutate(

@@ -80,7 +80,7 @@ idid_viz_weights <- function(reg,
       #the average weight across groups (1/(n_x*n_y)) and then takes its log10
       ggplot2::stat_summary_2d(
         fun = \(x) log10(sum(x, na.rm = TRUE)*n_cat_x*n_cat_y),
-        bins = c(n_cat_x - 1, n_cat_y - 1),
+        bins = c(n_cat_x, n_cat_y),
         drop = FALSE
       ) +
       #break the log10 values into categories

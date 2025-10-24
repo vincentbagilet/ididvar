@@ -31,7 +31,7 @@
 #' idid_partial_out(reg_ex_lm, "sales") |>
 #'  head()
 #'
-#' idid_partial_out(reg_ex_lm, "volume") |>
+#' idid_partial_out(reg_ex_lm, "volume", "sales") |>
 #'  head()
 #'
 #' # example with a fixest regression
@@ -41,7 +41,7 @@
 #' idid_partial_out(reg_ex_fixest, "sales") |>
 #'   head()
 #'
-#' idid_partial_out(reg_ex_fixest, "volume") |>
+#' idid_partial_out(reg_ex_fixest, "volume", "sales") |>
 #'   head()
 idid_partial_out <- function(reg,
                              var_to_partial,

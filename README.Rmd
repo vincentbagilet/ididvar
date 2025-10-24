@@ -42,7 +42,8 @@ First, the package provides a straightforward function to compute identifying va
 ```{r compute_weights, message=FALSE}
 library(ididvar)
 
-reg_ex_fixest <- ggplot2::txhousing  |>
+reg_ex_fixest <- ggplot2::txhousing |>
+  # dplyr::mutate(volume = log(median), sales = log(sales)) |> 
   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
 
 idid_weights(reg_ex_fixest, "sales") |>

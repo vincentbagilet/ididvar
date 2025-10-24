@@ -31,12 +31,13 @@ idid_viz_bivar <- function(reg, var_interest) {
       method = "lm",
       formula = 'y ~ x',
       color = idid_colors_table[[1, "complementary"]],
-      fill = idid_colors_table[[1, "complementary"]]
+      fill = idid_colors_table[[1, "complementary"]],
+      alpha = 0.15
     ) +
     ididvar::theme_idid() +
     ggplot2::labs(
       title = "Relationship after partialling out controls",
-      subtitle = paste("In the", deparse(substitute(reg)), "model"),
+      subtitle = paste("In the", substitute(reg), "model"),
       caption = paste("Full model:", deparse(reg$call[[2]])),
       x = paste(var_interest, "(residualized)"),
       y = paste(name_var_y, "(residualized)")

@@ -36,7 +36,16 @@ idid_drop_change <- function(reg,
     utils::head(n = nrow(df)*(1 - prop_drop))
 
   #compute new estimate
-  reg_sliced <- stats::update(reg, data = df_sliced)
+  reg_sliced <- stats::update(reg, data = df_sliced, use_calling_env = FALSE) |>
+    #handle warning linked to use_calling_env (necessary with fixest)
+    withCallingHandlers(
+      warning = function(w) {
+        if (grepl("use_calling_env",
+                  conditionMessage(w))) {
+          invokeRestart("muffleWarning")
+        }
+      }
+    )
 
   #retrieve point estimates and se
   if (inherits(reg, c("lm", "plm"))) {

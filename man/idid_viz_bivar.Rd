@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_viz_bivar.R
 \name{idid_viz_bivar}
 \alias{idid_viz_bivar}
-\title{Visualization of the relationship, after partialling out}
+\title{Visualization of the relationship between x and y, after partialling out}
 \usage{
 idid_viz_bivar(reg, var_interest)
 }
@@ -12,7 +12,8 @@ idid_viz_bivar(reg, var_interest)
 \item{var_interest}{A string. The name of the main variable of interest.}
 }
 \value{
-A ggplot2 graph of the relationship between the
+A ggplot2 scatter plot and regression line of the relationship between the
+outcome and the variable of interest, after partialling out controls.
 }
 \description{
 Makes a bivariate graph to visualize the data and relationship between the
