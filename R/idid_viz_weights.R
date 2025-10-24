@@ -59,8 +59,12 @@ idid_viz_weights <- function(reg,
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(y = "Weight")
+  } else if (missing(var_x)) {
+    graph <- df |>
+      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = weight)) +
+      ggplot2::geom_bar(fill = colors[length(colors)]) +
+      ggplot2::labs(x = "Weight")
   } else {
-
     name_var_x <- deparse(substitute(var_x))
     name_var_y <- deparse(substitute(var_y))
     n_cat_x <- unique(df[[name_var_x]]) |> length()
@@ -75,14 +79,7 @@ idid_viz_weights <- function(reg,
         z = weight
         # label = round(weight, 3)
       )) +
-      #summarise the weights by var_x*vary_y groups (summing their values),
-      #take the ratio of the weight of each group over
-      #the average weight across groups (1/(n_x*n_y)) and then takes its log10
-      ggplot2::stat_summary_2d(
-        fun = \(x) log10(sum(x, na.rm = TRUE)*n_cat_x*n_cat_y),
-        bins = c(n_cat_x, n_cat_y),
-        drop = FALSE
-      ) +
+      ididvar::geom_tile_weight() +
       #break the log10 values into categories
       ididvar::scale_fill_idid(colors = colors) +
       ggplot2::labs(fill = "Weight, compared to 1/n, the average weight")

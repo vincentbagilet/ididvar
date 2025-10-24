@@ -41,22 +41,22 @@ gapminder_ext <- gapminder |>
 
 reg_raw <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap)
 
-reg_continent_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | continent)
+reg_continent_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | continent, cluster = "continent")
 
-reg_country_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country)
+reg_country_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country, cluster = "country")
 
-reg_continent_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | continent^year)
+reg_continent_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | continent^year, cluster = c("continent^year"))
 
-reg_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | year)
+reg_year_fe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | year, cluster = "year")
 
-reg_twfe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country + year)
+reg_twfe <- feols(data = gapminder_ext, lifeExp ~ l_gdpPercap | country + year, cluster = c("country", "year"))
 
 regs <- list(
   reg_raw = reg_raw, 
   reg_continent_fe = reg_continent_fe, 
   reg_country_fe = reg_country_fe, 
-  reg_continent_year_fe = reg_continent_year_fe,
   reg_year_fe = reg_year_fe, 
+  reg_continent_year_fe = reg_continent_year_fe,
   reg_twfe = reg_twfe
 )
 ```
@@ -149,31 +149,31 @@ graph_weights <- function(reg) {
 }
 ```
 
-```{r weights_raw, fig.asp=3, echo=FALSE}
+```{r weights_raw, fig.asp=1.5, echo=FALSE}
 graph_weights(reg_raw)
 ```
 
 ### Continent FEs
 
-```{r weights_continent_fe, fig.asp=3, echo=FALSE}
+```{r weights_continent_fe, fig.asp=1.5, echo=FALSE}
 graph_weights(reg_continent_fe)
 ```
 
 ### Country FEs
 
-```{r weights_country_fe, fig.asp=3, echo=FALSE}
+```{r weights_country_fe, fig.asp=1.5, echo=FALSE}
 graph_weights(reg_country_fe)
 ```
 
 ### Year FEs
 
-```{r weights_year_fe, fig.asp=3, echo=FALSE}
+```{r weights_year_fe, fig.asp=1.5, echo=FALSE}
 graph_weights(reg_year_fe)
 ```
 
 ### TWFE
 
-```{r weights_twfe, fig.asp=3, echo=FALSE}
+```{r weights_twfe, fig.asp=1.5, echo=FALSE}
 graph_weights(reg_twfe)
 ```
 
@@ -216,31 +216,31 @@ graph_contrib <- function(reg) {
 }
 ```
 
-```{r contrib_raw, fig.asp=3, echo=FALSE}
+```{r contrib_raw, fig.asp=1.5, echo=FALSE}
 graph_contrib(reg_raw)
 ```
 
 ### Continent FEs
 
-```{r contrib_continent_fe, fig.asp=3, echo=FALSE}
-graph_weights(reg_continent_fe)
+```{r contrib_continent_fe, fig.asp=1.5, echo=FALSE}
+graph_contrib(reg_continent_fe)
 ```
 
 ### Country FEs
 
-```{r contrib_country_fe, fig.asp=3, echo=FALSE}
-graph_weights(reg_country_fe)
+```{r contrib_country_fe, fig.asp=1.5, echo=FALSE}
+graph_contrib(reg_country_fe)
 ```
 
 ### Year FEs
 
-```{r contrib_year_fe, fig.asp=3, echo=FALSE}
+```{r contrib_year_fe, fig.asp=1.5, echo=FALSE}
 graph_contrib(reg_year_fe)
 ```
 
 ### TWFE
 
-```{r contrib_twfe, fig.asp=3, echo=FALSE}
+```{r contrib_twfe, fig.asp=1.5, echo=FALSE}
 graph_contrib(reg_twfe)
 ```
 
