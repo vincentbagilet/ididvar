@@ -43,9 +43,11 @@ idid_viz_contrib <- function(reg,
                              var_y,
                              contrib_threshold,
                              threshold_change = 0.05,
+                             # arrange = TRUE,
                              keep_labels = TRUE,
                              ...) {
 
+  #error handling
   if (missing(contrib_threshold)) {
     message("Searching for the contribution threshold")
     contrib_threshold <- ididvar::idid_contrib_threshold(
@@ -57,19 +59,24 @@ idid_viz_contrib <- function(reg,
   }
 
   df <- eval(reg$call$data)
-  df[["weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
+  df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
+  df[["contrib"]] <- (df[["weight"]] > contrib_threshold)
   df[["contrib_name"]] <-
     ifelse(df[["contrib"]],
            "In the effective sample",
            "Outside the effective sample")
 
+  #build graph
   if (missing(var_y)) {
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, fill = contrib_name)) +
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
-      # ggplot2::coord_flip() +
       ggplot2::labs(y = "Number of observations")
+  } else if (missing(var_x)) {
+    graph <- df |>
+      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, fill = contrib_name)) +
+      ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
+      ggplot2::labs(x = "Number of observations")
   } else {
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(

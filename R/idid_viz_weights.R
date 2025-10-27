@@ -15,6 +15,9 @@
 #' x-axis.
 #' @param var_y A variable in the data set used in \code{reg} to plot on the
 #' y-axis (optional). If not specified, produces a bar chart.
+#' @param order A string (either "x", "y" or "xy") describing whether the
+#' graph should be order, along the x or y axis or both.
+#' If anything else is specified, no specific ordering will be applied.
 #' @param keep_labels A boolean (optional). If FALSE, remove y labels and ticks.
 #'
 #' @returns
@@ -48,6 +51,7 @@ idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
                              var_y,
+                             order = "",
                              colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
@@ -55,22 +59,51 @@ idid_viz_weights <- function(reg,
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
 
   if (missing(var_y)) {
+
+    #reorder x-axis
+    if (order == "x") {
+      name_var_x <- deparse(substitute(var_x))
+      df[[name_var_x]] <-
+        with(df, reorder(df[[name_var_x]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = TRUE))
+    }
+
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(y = "Weight")
+
   } else if (missing(var_x)) {
+
+    #reorder x-axis
+    if (order == "y") {
+      name_var_y <- deparse(substitute(var_y))
+      df[[name_var_y]] <-
+        with(df, reorder(df[[name_var_y]], df$weight, \(x) sum(x, na.rm = TRUE)))
+    }
+
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(x = "Weight")
+
   } else {
+
     name_var_x <- deparse(substitute(var_x))
     name_var_y <- deparse(substitute(var_y))
     n_cat_x <- unique(df[[name_var_x]]) |> length()
     n_cat_y <- unique(df[[name_var_y]]) |> length()
     # if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
     # if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
+
+    #order
+    if (order %in% c("y", "xy")) {
+      df[[name_var_y]] <-
+        with(df, reorder(df[[name_var_y]], df$weight, \(x) sum(x, na.rm = TRUE)))
+    }
+    if (order %in% c("x", "xy")) {
+      df[[name_var_x]] <-
+        with(df, reorder(df[[name_var_x]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = TRUE))
+    }
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(

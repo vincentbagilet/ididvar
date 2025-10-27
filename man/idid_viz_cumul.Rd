@@ -30,6 +30,5 @@ Visualization of the cumulative distribution of weights
 reg_ex <- ggplot2::txhousing |>
   lm(formula = volume ~ sales + listings + city + as.factor(date))
 
-idid_weights(reg_ex, "sales") |>
-  idid_viz_cumul()
+idid_viz_cumul(reg_ex, "sales")
 }

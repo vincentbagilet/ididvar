@@ -9,6 +9,7 @@ idid_viz_weights(
   var_interest,
   var_x,
   var_y,
+  order = "",
   colors = c("#C25807", "#FBE2C5", "#300D49"),
   keep_labels = TRUE,
   ...
@@ -24,6 +25,10 @@ x-axis.}
 
 \item{var_y}{A variable in the data set used in \code{reg} to plot on the
 y-axis (optional). If not specified, produces a bar chart.}
+
+\item{order}{A string (either "x", "y" or "xy") describing whether the
+graph should be order, along the x or y axis or both.
+If anything else is specified, no specific ordering will be applied.}
 
 \item{colors}{A string vector of colors for the palette.
 I recommend to pass a vector of 3 distinct colors, with a lighter color in

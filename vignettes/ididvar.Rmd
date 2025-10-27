@@ -22,7 +22,7 @@ library(ggplot2)
 library(tigris)
 ```
 
-The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most of [the functions](reference/index.html) available** in the package. 
+The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most of [the functions](docs/reference/index.html) available** in the package. 
 
 A more thorough example, with an actual analysis and interpretation of the results, is available on the research project website. 
 

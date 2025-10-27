@@ -58,10 +58,8 @@ through visualizations.
 ``` r
 library(ggplot2)
 
-idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+idid_viz_weights(reg_ex_fixest, "sales", date, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
-#> Warning: Removed 1426 rows containing non-finite outside the scale range
-#> (`stat_log_weight()`).
 ```
 
 <img src="man/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;" />
@@ -71,8 +69,7 @@ variation comes from a few cities: Houston, Dallas, Austin and San
 Antonio.
 
 ``` r
-idid_weights(reg_ex_fixest, "sales") |>
-  idid_viz_cumul()
+idid_viz_cumul(reg_ex_fixest, "sales")
 ```
 
 <img src="man/figures/README-plot_cumul-1.png" width="80%" style="display: block; margin: auto;" />
@@ -89,7 +86,8 @@ idid_viz_contrib(reg_ex_fixest, "sales", city) +
 
 <img src="man/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;" />
 
-The package provides a larger set of functions.The [Get started
+The package provides a larger [set of
+functions](docs/reference/index.html). The [Get started
 vignette](articles/ididvar.html) introduces them in a concise manner,
 while also describing a typical workflow for analysis.
 

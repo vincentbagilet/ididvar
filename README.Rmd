@@ -41,9 +41,9 @@ First, the package provides a straightforward function to compute identifying va
 
 ```{r compute_weights, message=FALSE}
 library(ididvar)
+library(ggplot2)
 
 reg_ex_fixest <- ggplot2::txhousing |>
-  # dplyr::mutate(volume = log(median), sales = log(sales)) |> 
   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
 
 idid_weights(reg_ex_fixest, "sales") |>
@@ -52,10 +52,8 @@ idid_weights(reg_ex_fixest, "sales") |>
 
 The package also allows for an effortless exploration of these weights through visualizations.
 
-```{r plot_weights, message=FALSE, fig.asp=1.5, fig.dpi=400}
-library(ggplot2)
-
-idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+```{r plot_weights, message=FALSE, warning=FALSE, fig.asp=1.5, fig.dpi=400}
+idid_viz_weights(reg_ex_fixest, "sales", date, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
 ```
 
@@ -68,12 +66,11 @@ idid_viz_cumul(reg_ex_fixest, "sales")
 It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained). 
 
 ```{r plot_contrib, message=FALSE, fig.asp=1.5, fig.dpi=400}
-idid_viz_contrib(reg_ex_fixest, "sales", city) +
-  ggplot2::labs(x = NULL) +
-  ggplot2::coord_flip()
+idid_viz_contrib(reg_ex_fixest, "sales", var_y = city) +
+  ggplot2::labs(y = NULL)
 ```
 
-The package provides a larger set of functions.The [Get started vignette](articles/ididvar.html) introduces them in a concise manner, while also describing a typical workflow for analysis. 
+The package provides a larger [set of functions](docs/reference/index.html). The [Get started vignette](articles/ididvar.html) introduces them in a concise manner, while also describing a typical workflow for analysis. 
 
 [Online appendices](https://vincentbagilet.github.io/causal_exaggeration/) of the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) complements this vignette by providing a thorough example of a practical implementation of an analysis using the `ididvar` package. 
 
