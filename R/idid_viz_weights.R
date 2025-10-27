@@ -58,6 +58,12 @@ idid_viz_weights <- function(reg,
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
 
+  # reorder_df <- function(var, decreasing) {
+  #   name_var <- deparse(substitute(var))
+  #   df[[name_var]] <-
+  #     with(df, reorder(df[[name_var]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = decreasing))
+  # }
+
   if (missing(var_y)) {
 
     #reorder x-axis

@@ -19,11 +19,15 @@ library(ididvar)
 library(tigris)
 library(dplyr)
 library(ggplot2)
+library(gapminder)
+library(fixest)
+library(rnaturalearth)
+library(rnaturalearthdata)
 ```
 
 This vignette **provides code that can easily be copied/pasted to make your own customized plots**, going beyond the quick but less customizable functions provided in the package.
 
-This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own. 
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own, hence this vignette. It does not use any viz function from `ididvar` (apart from the theming functions).
 
 ## Workflow to plot identifying variation weights
 
@@ -35,46 +39,144 @@ The workflow to make a plot from scratch is straightforward:
 
 ## Preparation
 
-Let's assume we have already ran the regression of interest.
+Let's assume we have already ran the regression of interest. We also add a `decade` variable and ISO codes from the `gapminder::country_codes` dataset that we are going to use later.  
 
 ```{r run_reg}
-data_state_clean <- state.x77 |> 
-  as_tibble() |> 
-  mutate(state_name = rownames(state.x77), .before = 1) 
+gapminder_sample <- gapminder |> 
+  mutate(
+    l_gdpPercap = log(gdpPercap),
+    decade = year %/% 10 * 10
+  ) |> 
+  filter(continent %in% c("Africa", "Europe")) |>
+  left_join(country_codes, by = join_by(country))
 
-reg <- data_state_clean |> 
-  lm(formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
+reg <- feols(
+  data = gapminder_sample, 
+  lifeExp ~ l_gdpPercap | country, 
+  cluster = "country"
+)
 ```
 
-We can then add a `weight` variable to our dataset, along with a `contrib` dummy. 
 
-Let's assume that we want to aggregate the data at the state level. We compute our weight and mean contribution at that level. Note that this step is useless here as our data is already at the state level. Next, we compare the weights to the average weight (the inverse of the number of observations) and take its log10. This step is crucial to then be able to apply the `scale_fill_idid` color scale and to build a graph with meaningful weights.
+## Relationship between x and y
 
-```{r agg_weights, fig.asp=0.8}
-data_state_weights <- data_state_clean |> 
-  mutate(
-    weight = idid_weights(reg, "Income"),
-    contrib = weight > idid_contrib_threshold(reg, "Income")
+Before anything, one may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest. 
+
+### Partialed out relationship
+
+```{r xy_rel, fig.asp=0.8}
+data_partial <- 
+  tibble(
+    lifeExp_per = idid_partial_out(reg, "lifeExp", "l_gdpPercap"),
+    l_gdpPercap_per = idid_partial_out(reg, "l_gdpPercap")
+  ) 
+
+data_partial |>
+  ggplot(aes(x = l_gdpPercap_per, y = lifeExp_per)) +
+  geom_point(size = 2, color = "#300D49") +
+  geom_smooth(
+    method = "lm", 
+    formula = 'y ~ x',
+    color = idid_colors_table[["complementary"]],
+    fill = idid_colors_table[["complementary"]], 
+    alpha = 0.1) +
+  theme_idid() +
+  labs(
+    title = "Relationship between life expectancy and log GDP per capita",
+    subtitle = "After partialling out country fixed effects",
+    x = "Log GDP per capita (residualized)",
+    y = "Life expectancy (residualized)"
+  )
+```
+
+Such a mapping might be less legible when the sample size is large. In such instances, transparency, a bin or hex map or a bin-scatter can be useful tools to represent large numbers of observations.
+
+### ididvar equivalent
+
+```{r idid_viz_bivar, fig.asp=0.8}
+idid_viz_bivar(reg, "l_gdpPercap")
+```
+
+To compute `data_partial` completely manually, one can do the following:
+
+```{r data_partial_manual}
+data_partial_manual <- 
+  tibble(
+    lifeExp_per = residuals(
+      feols(gapminder_sample, lifeExp ~ 1 | country, cluster = "country")
+    ),
+    l_gdpPercap_per = residuals(
+      feols(gapminder_sample, l_gdpPercap ~ 1 | country, cluster = "country")
+    ),
+    weight = (l_gdpPercap_per - mean(l_gdpPercap_per))^2
   ) |> 
-  group_by(state_name) |> 
+  mutate(
+    weight = weight/sum(weight),
+    logweight = log10(weight * length(weight))
+  )
+```
+
+
+## Cumulative weights
+
+We first start by plotting the cumulative distribution of weights. We can add a `weight` variable to our dataset, along with a `contrib` dummy. 
+
+```{r agg_weights, echo=TRUE, message=FALSE}
+gapminder_weights <- gapminder_sample |> 
+  mutate(
+    weight = idid_weights(reg, "l_gdpPercap"),
+    contrib = weight > idid_contrib_threshold(reg, "l_gdpPercap")
+  )
+```
+
+### Own cumulative graph
+
+```{r cum_weights, fig.asp=1}
+gapminder_weights |> 
+  arrange(weight) |> 
+  mutate(
+    obs_id = row_number(),
+    cum_weight = cumsum(weight)
+  ) |> 
+  ggplot(aes(x = obs_id, y = cum_weight)) + 
+  geom_line(linewidth = 1.2, color = "#300D49") +
+  geom_area(fill = "#300D49", alpha = 0.2) +
+  theme_idid(aspect.ratio = 1) +
+  labs(
+    title = "Cumulative distribution of weights",
+    x = "Observation index\n(smallest to largest weight)",
+    y = "Cummulative sum of weights"
+  )
+```
+
+### ididvar cumul equivalent
+
+```{r idid_viz_cumul, fig.asp=1}
+idid_viz_cumul(reg, "l_gdpPercap")
+```
+
+## Bar plots
+
+Let's assume that we want to compare weights across countries. We compute our weight and mean contribution at that level.
+
+```{r country_weights}
+country_weights <- gapminder_weights |> 
+  group_by(country, iso_alpha) |> 
   summarise(
     weight = sum(weight, na.rm = TRUE), 
     contrib = mean(contrib, na.rm = TRUE),
     .groups = "drop"
-  ) |> 
-  mutate(weight_log = log10(weight * length(weight))) 
+  )
 ```
 
-## Bar plots {.tabset}
+We then make bar plots. For readibility and to produce a better graph, we order the states by weight.
 
 ### Own weight graph
 
-We will first make bar plots. For readibility and to produce a better graph, we order the states by weight.
-
-```{r weight_bar_plot, echo=TRUE}
-data_state_weights |> 
-  mutate(state_name = forcats::fct_reorder(state_name, weight)) |> 
-  ggplot(aes(x = weight, y = state_name)) + 
+```{r weight_bar_plot, echo=TRUE, fig.asp=1.3}
+country_weights |> 
+  mutate(country = forcats::fct_reorder(country, weight)) |> 
+  ggplot(aes(x = weight, y = country)) + 
   geom_col(fill = "#300D49") +
   theme_idid() +
   labs(
@@ -84,10 +186,10 @@ data_state_weights |>
   ) 
 ```
 
-### ididvar weight equivalent
+### ididvar weight
 
-```{r idid_weight_bar_plot, echo=TRUE}
-idid_viz_weights(reg, "Income", var_y = state_name, order = "y") +
+```{r idid_weight_bar_plot, echo=TRUE, fig.asp=1.3}
+idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y") +
   labs(
     title = "Distribution of Identifying Variation Weights",
     x = "Weight",
@@ -95,56 +197,134 @@ idid_viz_weights(reg, "Income", var_y = state_name, order = "y") +
   ) 
 ```
 
-### Own contribution graph
+### Own contrib graph
 
-```{r contrib_bar_plot, echo=TRUE}
-data_state_weights |> 
-  # mutate(state_name = forcats::fct_reorder(state_name, contrib)) |> 
-  ggplot(aes(x = contrib, y = state_name)) + 
+```{r contrib_bar_plot, echo=TRUE, fig.asp=1.3}
+country_weights |> 
+  mutate(country = forcats::fct_reorder(country, contrib)) |>
+  ggplot(aes(x = contrib, y = country)) + 
   geom_col(fill = "#300D49") +
   theme_idid() +
   labs(
-    title = "Distribution of Identifying Variation Weights",
-    x = "Weight",
+    title = "Distribution of contributing observations",
+    x = "Share of contributing years",
     y = NULL
   ) 
 ```
 
-### ididvar contribution equivalent
+### ididvar contrib
 
-```{r idid_contrib_bar_plot, echo=TRUE}
-idid_viz_weights(reg, "Income", var_y = state_name, order = "y") +
+```{r idid_contrib_bar_plot, echo=TRUE, fig.asp=1.3, warning=FALSE}
+idid_viz_contrib(reg, "l_gdpPercap", var_y = country, order = "y") +
+  theme_idid() +
   labs(
-    title = "Distribution of Identifying Variation Weights",
-    x = "Weight",
+    title = "Distribution of contributing observations",
+    x = "Share of contributing years",
     y = NULL
   ) 
 ```
 
 ## Heatmaps
 
+Let's assume that we now want to compare observations across years and decades. To do that, we build heatmaps and thus first aggregate data at the level we are interested in:
+
+```{r country_decade_weights}
+country_decade_weights <- gapminder_weights |> 
+  group_by(country, decade, continent) |> 
+  summarise(
+    weight = sum(weight, na.rm = TRUE), 
+    contrib = mean(contrib, na.rm = TRUE),
+    .groups = "drop"
+  ) 
+```
+
+We can then make the graphs we want.
+
+### No scale
+
+```{r heatmap_no_scale, echo=TRUE, fig.asp=1.5}
+country_decade_weights |> 
+  mutate(country = forcats::fct_reorder(country, weight, sum)) |>
+  ggplot(aes(x = decade, y = country, fill = weight)) + 
+  geom_tile() +
+  theme_idid() +
+  scale_fill_gradientn(colors = c("#C25807", "#FBE2C5", "#300D49")) +
+  facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+  theme(strip.text.y = element_text(angle = 0)) +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    x = "Weight",
+    y = NULL
+  ) 
+```
+
+The graph above was made plotting the raw weights. However, one value is much larger than the others. It hides all the variation in weight magnitude. This is why I introduce a specific scale that puts various observations in bins. On addition, by scaling weights with respect to an average weight, this scale allows to make graphs comparable between each other. 
+
+### With scale
+
+```{r heatmap_with_scale, echo=TRUE, fig.asp=1.5}
+country_decade_weights |> 
+  mutate(weight_log = log10(weight * length(weight))) |> 
+  mutate(country = forcats::fct_reorder(country, weight, sum)) |>
+  ggplot(aes(x = decade, y = country, fill = weight_log)) + 
+  geom_tile() +
+  theme_idid() +
+  scale_fill_idid() +
+  #what's behind scale_fill_idid()
+  # scale_fill_stepsn( 
+  #   colors = c("#C25807", "#FBE2C5", "#300D49"),
+  #   breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
+  #   labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
+  #   limits = c(-2, 2),
+  #   na.value = "gray88"
+  # ) +
+  facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+  theme(strip.text.y = element_text(angle = 0)) +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    fill = "Weight",
+    x = NULL,
+    y = NULL
+  ) 
+```
+
+### ididvar weight equivalent
+
+```{r idid_weight_heatmap, echo=TRUE, fig.asp=1.5}
+idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade, order = "y") +
+  facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+  theme(strip.text.y = element_text(angle = 0)) +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    x = "Weight",
+    y = NULL
+  ) 
+```
+
 ## Maps
 
-To make a map, we need an `sf` object:
+We then plot the data. To make a map, we need an `sf` object:
 
-```{r states_sf}
-states_sf <- 
-  tigris::states(cb = TRUE, resolution = "20m", progress_bar = FALSE) |>
-  tigris::shift_geometry() |> 
-  rename(state_name = NAME)
+```{r world_sf}
+world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
+  mutate(iso_alpha = adm0_a3) |> 
+  filter(continent %in% c("Europe", "Africa")) |> 
+  filter(iso_alpha != "RUS") 
 ```
 
 We can then merge the data to the shape file and make the graphs of interest.
 
 ```{r map_weights, fig.asp=0.8}
-data_sf <- states_sf |> 
-  full_join(data_state_weights, by = join_by(state_name)) 
+data_sf <- world_sf |> 
+  full_join(country_weights, by = join_by(iso_alpha)) |> 
+  mutate(weight_log = log10(weight * length(weight))) 
 
 data_sf |> 
   ggplot() +
   geom_sf(aes(fill = weight_log), color = "white", linewidth = 0.1) +
   theme_idid() +
   scale_fill_idid() +
+  coord_sf(xlim = c(-20, NA)) +
   labs(
     title = "Distribution of Identifying Variation Weights",
     fill = "Weight, compared to the average weight"
@@ -156,62 +336,17 @@ data_sf |>
   ggplot() +
   geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
   theme_idid() +
-  scale_fill_gradient(low = "#FBE2C5", high = "#300D49") +
+  coord_sf(xlim = c(-20, NA)) +
+  scale_fill_gradient(low = "#FBE2C5", high = "#300D49", na.value = "gray88") +
   labs(
-    title = "Distribution of contributing observations per state",
-    fill = "Share of contributing observations",
-    caption = "In this particular example, there is only one observation per state.\nThe shares are threfore 0 or 1."
+    title = "Distribution of contributing obs.",
+    fill = "Share of contributing observations"
   ) +
   theme(axis.text.y = element_blank(), 
         axis.text.x = element_blank())
 ``` 
 
 The maps produced in this document are not particularly instructive since the regression model is paritcularly naive.
-
-<!-- # Why keeping the idid scale -->
-
-<!-- I argue for keeping the idid scale -->
-
-## Relationship between x and y
-
-One may want to visualize the weights as well as the relationship between the dependent variable and the independent variable of interest. To do so, they can use `idid_viz_bivar` or the following code:
-
-```{r xy_rel}
-#| fig-asp: 0.8
-
-data_partial <- 
-  tibble(
-    illiteracy_per = idid_partial_out(reg, "Illiteracy"),
-    income_per = idid_partial_out(reg, "Income"),
-    weight = (income_per - mean(income_per))^2
-  ) |> 
-  mutate(
-    weight = weight/sum(weight),
-    logweight = log10(weight * length(weight))
-  )
-
-data_partial |>
-  ggplot(aes(x = income_per, y = illiteracy_per, color = logweight)) +
-  geom_point(size = 2) +
-  geom_rug(linewidth = 0.8) +
-  # ggExtra::ggMarginal(type = "histogram") +
-  geom_smooth(
-    method = "lm", 
-    color = idid_colors_table[["base"]],
-    fill = idid_colors_table[["base"]], 
-    alpha = 0.1) +
-  theme_idid() +
-  scale_color_idid() +
-  labs(
-    title = "Relationship between illiteracy and income",
-    subtitle = "After partialling out controls",
-    color = "Weight, as compared to the average weight",
-    x = "Income (residualized)",
-    y = "Illiteracy (residualized)"
-  )
-```
-
-Such a mapping might be less legible when the sample size is large. In such instances, transparency or a bin or hex map can be useful tools to represent large numbers of observations.
 
 
 
