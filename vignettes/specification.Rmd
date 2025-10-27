@@ -117,11 +117,6 @@ purrr::map(
   \(x) idid_viz_bivar(x, var_interest = "l_gdpPercap") + 
     ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35))
 )
-
-# purrr::map(
-#   regs, 
-#   \(x) idid_viz_cumul(idid_weights(x, var_interest = "l_gdpPercap")) 
-# )
 ```
 
 ## {-}

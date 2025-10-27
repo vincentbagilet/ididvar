@@ -21,21 +21,21 @@ library(dplyr)
 library(ggplot2)
 ```
 
-This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own. 
-
 This vignette **provides code that can easily be copied/pasted to make your own customized plots**, going beyond the quick but less customizable functions provided in the package.
 
-## Making a plot
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own. 
+
+## Workflow to plot identifying variation weights
 
 The workflow to make a plot from scratch is straightforward: 
 
 1. Add a `weight` variable to the data set. Optionally, one can add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion.
 2. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group.
-3. Make a plot
+3. Plot them
 
+## Preparation
 
-
-Let's assume we have already ran the regression of interest and a `sf` object with our data.
+Let's assume we have already ran the regression of interest.
 
 ```{r run_reg}
 data_state_clean <- state.x77 |> 
@@ -44,15 +44,11 @@ data_state_clean <- state.x77 |>
 
 reg <- data_state_clean |> 
   lm(formula = Illiteracy ~  Income + Population + `Life Exp` + Frost)
-
-states_sf <- 
-  tigris::states(cb = TRUE, resolution = "20m", progress_bar = FALSE) |>
-  tigris::shift_geometry() |> 
-  rename(state_name = NAME)
 ```
 
+We can then add a `weight` variable to our dataset, along with a `contrib` dummy. 
 
-We can then add a `weight` variable to our dataset, along with a `contrib` dummy. We then compute our weight and mean contribution at the state level, *i.e.*, at the level at which we want build our choropleth map. Note that this step is useless here as our data is already at the state level. Next, we compare the weights to the average weight (the inverse of the number of observations) and take its log10. This step is crucial to then be able to apply the `scale_fill_idid` color scale.
+Let's assume that we want to aggregate the data at the state level. We compute our weight and mean contribution at that level. Note that this step is useless here as our data is already at the state level. Next, we compare the weights to the average weight (the inverse of the number of observations) and take its log10. This step is crucial to then be able to apply the `scale_fill_idid` color scale and to build a graph with meaningful weights.
 
 ```{r agg_weights, fig.asp=0.8}
 data_state_weights <- data_state_clean |> 
@@ -67,6 +63,75 @@ data_state_weights <- data_state_clean |>
     .groups = "drop"
   ) |> 
   mutate(weight_log = log10(weight * length(weight))) 
+```
+
+## Bar plots {.tabset}
+
+### Own weight graph
+
+We will first make bar plots. For readibility and to produce a better graph, we order the states by weight.
+
+```{r weight_bar_plot, echo=TRUE}
+data_state_weights |> 
+  mutate(state_name = forcats::fct_reorder(state_name, weight)) |> 
+  ggplot(aes(x = weight, y = state_name)) + 
+  geom_col(fill = "#300D49") +
+  theme_idid() +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    x = "Weight",
+    y = NULL
+  ) 
+```
+
+### ididvar weight equivalent
+
+```{r idid_weight_bar_plot, echo=TRUE}
+idid_viz_weights(reg, "Income", var_y = state_name, order = "y") +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    x = "Weight",
+    y = NULL
+  ) 
+```
+
+### Own contribution graph
+
+```{r contrib_bar_plot, echo=TRUE}
+data_state_weights |> 
+  # mutate(state_name = forcats::fct_reorder(state_name, contrib)) |> 
+  ggplot(aes(x = contrib, y = state_name)) + 
+  geom_col(fill = "#300D49") +
+  theme_idid() +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    x = "Weight",
+    y = NULL
+  ) 
+```
+
+### ididvar contribution equivalent
+
+```{r idid_contrib_bar_plot, echo=TRUE}
+idid_viz_weights(reg, "Income", var_y = state_name, order = "y") +
+  labs(
+    title = "Distribution of Identifying Variation Weights",
+    x = "Weight",
+    y = NULL
+  ) 
+```
+
+## Heatmaps
+
+## Maps
+
+To make a map, we need an `sf` object:
+
+```{r states_sf}
+states_sf <- 
+  tigris::states(cb = TRUE, resolution = "20m", progress_bar = FALSE) |>
+  tigris::shift_geometry() |> 
+  rename(state_name = NAME)
 ```
 
 We can then merge the data to the shape file and make the graphs of interest.
