@@ -15,8 +15,8 @@ reg_ols
 reg_iv <- feols(data = close_college_clean, fml = lwage ~ exper + black + south + married + smsa | 0 | educ ~ nearc4)
 reg_iv
 
-reg_regiv <- AER::ivreg(data = close_college_clean, formula = lwage ~ educ + exper + black + south + married + smsa | nearc4 + exper + black + south + married + smsa)
-summary(reg_regiv)
+reg_ivreg <- AER::ivreg(data = close_college_clean, formula = lwage ~ educ + exper + black + south + married + smsa | nearc4 + exper + black + south + married + smsa)
+summary(reg_ivreg)
 
 #control function approach
 ctrl <- feols(data = close_college_clean, fml = educ ~ nearc4 + exper + black + south + married + smsa) |> predict()
@@ -39,10 +39,6 @@ idid_viz_contrib(reg_ctrl, "ctrl", educ)
 
 idid_weights(reg_ctrl, "ctrl") |> idid_viz_cumul()
 
-
-
-
-idid_viz_weights(reg_regiv, "educ", exper)
 
 
 #######------------- OTHER EX ------------ ###

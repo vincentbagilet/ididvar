@@ -60,7 +60,7 @@ idid_weights <- function(reg, var_interest, ...) {
     stop("var_interest should be an explanatory variable")
   }
 
-  x_per <- ididvar::idid_partial_out(reg, var_interest, ...)
+  x_per <- ididvar::idid_partial_out(reg, var_to_partial = var_interest, ...)
 
   weight <- (x_per - mean(x_per, na.rm = TRUE))^2
   weight <- weight/sum(weight, na.rm = TRUE)

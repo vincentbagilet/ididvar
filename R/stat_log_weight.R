@@ -1,9 +1,8 @@
 #' StatLogWeight: automatic aggregation and log-transform for tiles
 #'
-#' #' A ggplot2 Stat that behaves like stat_summary_2d but automatically:
+#' A ggplot2 Stat that behaves like stat_summary_2d but automatically:
 #'   1. Sums z-values per (x, y)
 #'   2. Applies the transformation log10(sum(z) * n_x * n_y)
-#'   3. Ensures all (x, y) combinations are represented
 #'
 #'    summarise the weights by var_x*vary_y groups (summing their values),
 #'    take the ratio of the weight of each group over

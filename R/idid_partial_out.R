@@ -56,14 +56,14 @@ idid_partial_out <- function(reg,
   #define partial out formula if x or y
   if (var_to_partial == reg$call[[2]][[2]]) { #reg$call[[2]][[2]] = y in the reg
     formula_partial <- stats::as.formula(paste(". ~ . -", var_interest))
-  } else if (var_to_partial %in% names(reg$coefficients)) {
+  } else {#if (var_to_partial %in% names(reg$coefficients)) {
     formula_partial <-
       stats::as.formula(
         paste(var_to_partial, "~ . -", var_to_partial, "-", var_interest)
       )
-  } else {
-    stop(var_to_partial, " is not a variable in the regression")
-  }
+  }# else {
+  #   stop(var_to_partial, " is not a variable in the regression")
+  # }
 
   partialled_out <- update(reg, formula_partial, na.action = na.exclude, ...) |>
     residuals(na.rm = FALSE) |>

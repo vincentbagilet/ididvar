@@ -42,7 +42,8 @@ identifying variation weights.
 ``` r
 library(ididvar)
 
-reg_ex_fixest <- ggplot2::txhousing  |>
+reg_ex_fixest <- ggplot2::txhousing |>
+  # dplyr::mutate(volume = log(median), sales = log(sales)) |> 
   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
 
 idid_weights(reg_ex_fixest, "sales") |>
@@ -59,6 +60,8 @@ library(ggplot2)
 
 idid_viz_weights(reg_ex_fixest, "sales", date, city) +
   ggplot2::labs(x = NULL, y = NULL) 
+#> Warning: Removed 1426 rows containing non-finite outside the scale range
+#> (`stat_log_weight()`).
 ```
 
 <img src="man/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;" />
@@ -72,7 +75,7 @@ idid_weights(reg_ex_fixest, "sales") |>
   idid_viz_cumul()
 ```
 
-<img src="man/figures/README-plot_cumul-1.png" width="60%" style="display: block; margin: auto;" />
+<img src="man/figures/README-plot_cumul-1.png" width="80%" style="display: block; margin: auto;" />
 
 It also provide functions to identify observations that actually
 contribute to identification (in the sense that dropping the other

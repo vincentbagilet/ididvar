@@ -11,11 +11,10 @@ An object of class \code{StatLogWeight} (inherits from \code{Stat}, \code{ggprot
 StatLogWeight
 }
 \description{
-#' A ggplot2 Stat that behaves like stat_summary_2d but automatically:
+A ggplot2 Stat that behaves like stat_summary_2d but automatically:
 \enumerate{
 \item Sums z-values per (x, y)
 \item Applies the transformation log10(sum(z) * n_x * n_y)
-\item Ensures all (x, y) combinations are represented
 }
 }
 \details{
