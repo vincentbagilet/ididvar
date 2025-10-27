@@ -62,8 +62,7 @@ idid_viz_weights(reg_ex_fixest, "sales", date, city) +
 In this particular (somehow silly) regression, most of the identifying variation comes from a few cities: Houston, Dallas, Austin and San Antonio.
 
 ```{r plot_cumul, message=FALSE, fig.asp=1.3, fig.dpi=400, out.width='80%'}
-idid_weights(reg_ex_fixest, "sales") |>
-  idid_viz_cumul()
+idid_viz_cumul(reg_ex_fixest, "sales")
 ```
 
 It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained). 

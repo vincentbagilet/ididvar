@@ -1,6 +1,6 @@
 #' Visualization of the cumulative distribution of weights
-#'
-#' @param weights A numeric vector of weights
+
+#' @inheritParams idid_viz_weights
 #' @param prop_weights A numeric (between 0 and 1). A proportion of weights
 #' that to consider as contributing the most to identification.
 #' Used to build the subtitle.
@@ -15,9 +15,13 @@
 #' reg_ex <- ggplot2::txhousing |>
 #'   lm(formula = volume ~ sales + listings + city + as.factor(date))
 #'
-#' idid_weights(reg_ex, "sales") |>
-#'   idid_viz_cumul()
-idid_viz_cumul <- function(weights, prop_weights = 0.2, color = "#300D49") {
+#' idid_viz_cumul(reg_ex, "sales")
+idid_viz_cumul <- function(reg,
+                           var_interest,
+                           prop_weights = 0.2,
+                           color = "#300D49",
+                           ...) {
+  weights <- ididvar::idid_weights(reg, var_interest, ...)
   weights_sorted <- sort(weights)
   cum_sum <- cumsum(weights_sorted)
   lorenz <- cum_sum/max(cum_sum)

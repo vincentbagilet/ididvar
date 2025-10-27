@@ -84,7 +84,7 @@ We can plot the distribution of weights using the `idid_viz_cumul` function.
 ```{r idid_viz_cumul}
 #| fig-asp: 0.8
 
-idid_viz_cumul(data_ex_weights$weight)
+idid_viz_cumul(reg_ex, "Income")
 ```
 
 That allows us to analyse the extend to which the weights are evenly distributed. A very unequal distribution should hint that some observations contribute much more to identification and that some observations may not contribute much.
