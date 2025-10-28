@@ -57,18 +57,11 @@ idid_viz_weights <- function(reg,
                              ...) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-
-  #ORDERING AXES
-  name_var_x <- deparse(substitute(var_x))
-  name_var_y <- deparse(substitute(var_y))
-  if (order %in% c("y", "xy") & !missing(var_y)) {
-    df[[name_var_y]] <-
-      with(df, reorder(df[[name_var_y]], df$weight, \(x) sum(x, na.rm = TRUE)))
-  }
-  if (order %in% c("x", "xy") & !missing(var_x)) {
-    df[[name_var_x]] <-
-      with(df, reorder(df[[name_var_x]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = TRUE))
-  }
+  df <- ididvar:::order_axes(df,
+                             deparse(substitute(var_x)),
+                             deparse(substitute(var_y)),
+                             order,
+                             by = "weight")
 
   #GRAPHS
   if (missing(var_y)) {
@@ -87,8 +80,8 @@ idid_viz_weights <- function(reg,
 
   } else {
 
-    n_cat_x <- unique(df[[name_var_x]]) |> length()
-    n_cat_y <- unique(df[[name_var_y]]) |> length()
+    n_cat_x <- unique(df[[deparse(substitute(var_x))]]) |> length()
+    n_cat_y <- unique(df[[deparse(substitute(var_y))]]) |> length()
     # if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
     # if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
 
@@ -100,7 +93,6 @@ idid_viz_weights <- function(reg,
         # label = round(weight, 3)
       )) +
       ididvar::geom_tile_weight() +
-      #break the log10 values into categories
       ididvar::scale_fill_idid(colors = colors) +
       ggplot2::labs(fill = "Weight, compared to 1/n, the average weight")
   }

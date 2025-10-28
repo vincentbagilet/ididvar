@@ -10,7 +10,7 @@ geom_tile_weight <- function(mapping = NULL,
   layer(
     data = data,
     mapping = mapping,
-    stat = StatLogWeight,
+    stat = ididvar:::StatLogWeight,
     geom = ggplot2::GeomTile,
     position = position,
     inherit.aes = TRUE,

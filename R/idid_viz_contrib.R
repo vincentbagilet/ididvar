@@ -43,7 +43,7 @@ idid_viz_contrib <- function(reg,
                              var_y,
                              contrib_threshold,
                              threshold_change = 0.05,
-                             # arrange = TRUE,
+                             order = "",
                              keep_labels = TRUE,
                              ...) {
 
@@ -65,6 +65,11 @@ idid_viz_contrib <- function(reg,
     ifelse(df[["contrib"]],
            "In the effective sample",
            "Outside the effective sample")
+  df <- ididvar:::order_axes(df,
+                             deparse(substitute(var_x)),
+                             deparse(substitute(var_y)),
+                             order,
+                             by = "contrib")
 
   #build graph
   if (missing(var_y)) {

@@ -11,6 +11,7 @@ idid_viz_contrib(
   var_y,
   contrib_threshold,
   threshold_change = 0.05,
+  order = "",
   keep_labels = TRUE,
   ...
 )
@@ -33,6 +34,10 @@ If not provided, will be determined by running
 
 \item{threshold_change}{A double (between 0 and 1). The change threshold in
 estimate and s.e. when dropping observations.}
+
+\item{order}{A string (either "x", "y" or "xy") describing whether the
+graph should be order, along the x or y axis or both.
+If anything else is specified, no specific ordering will be applied.}
 
 \item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
 

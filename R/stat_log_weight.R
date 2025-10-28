@@ -1,4 +1,4 @@
-#' StatLogWeight: automatic aggregation and log-transform for tiles
+#' Automatic aggregation and log-transform for tiles
 #'
 #' A ggplot2 Stat that behaves like stat_summary_2d but automatically:
 #'   1. Sums z-values per (x, y)

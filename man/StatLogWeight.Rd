@@ -3,7 +3,7 @@
 \docType{data}
 \name{StatLogWeight}
 \alias{StatLogWeight}
-\title{StatLogWeight: automatic aggregation and log-transform for tiles}
+\title{Automatic aggregation and log-transform for tiles}
 \format{
 An object of class \code{StatLogWeight} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.
 }
