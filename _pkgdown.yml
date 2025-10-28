@@ -56,7 +56,3 @@ reference:
   - theme_idid
   - scale_fill_idid
   - idid_colors_table
-
-- title: Stats and geoms for log scale
-  contents:
-  - geom_tile_weight

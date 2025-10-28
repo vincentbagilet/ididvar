@@ -13,8 +13,11 @@ order_axes(df, name_var_x, name_var_y, order, by = "weight")
 graph should be order, along the x or y axis or both.
 If anything else is specified, no specific ordering will be applied.}
 }
+\value{
+\code{df} but ordered along the \code{order} axis and according to the value of \code{by}
+}
 \description{
 Orders axes depending on the order desired
-Used in \code{idid_viz_weights} and \code{idid_viz_contrib}
+Used in \code{idid_viz_weights} and \code{idid_viz_contrib}.
 }
 \keyword{internal}

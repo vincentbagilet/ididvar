@@ -92,7 +92,7 @@ idid_viz_weights <- function(reg,
         z = weight
         # label = round(weight, 3)
       )) +
-      ididvar::geom_tile_weight() +
+      ggplot2::geom_tile(stat = ididvar:::StatLogWeight) +
       ididvar::scale_fill_idid(colors = colors) +
       ggplot2::labs(fill = "Weight, compared to 1/n, the average weight")
   }

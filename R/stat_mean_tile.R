@@ -1,7 +1,7 @@
-#' Automatic aggregation and log-transform for tiles
+#' Automatic mean aggregation for tiles
 #'
 #' A ggplot2 Stat that behaves like stat_summary_2d but automatically:
-#'   1. Sums z-values per (x, y)
+#'   1. Sums fill-values per (x, y)
 #'   2. Applies the transformation log10(sum(z) * n_x * n_y)
 #'
 #'    summarise the weights by var_x*vary_y groups (summing their values),
@@ -9,19 +9,15 @@
 #'    the average weight across groups (1/(n_x*n_y)) and then takes its log10
 #'
 #' @keywords internal
-StatLogWeight <- ggplot2::ggproto(
-  "StatLogWeight",
+StatMeanTile <- ggplot2::ggproto(
+  "StatMeanTile",
   ggplot2::Stat,
   required_aes = c("x", "y", "z"),
-  default_aes = ggplot2::aes(fill = ggplot2::after_stat(log_weight)),
+  default_aes = ggplot2::aes(fill = ggplot2::after_stat(share_contrib)),
   compute_panel = function(data, scales, ...) {
-    n_cat_x <- unique(data$x) |> length()
-    n_cat_y <- unique(data$y) |> length()
-
     agg <-
       stats::aggregate(data$z, list(x = data$x, y = data$y), sum, na.rm = TRUE)
-    names(agg)[3] <- "weight"
-    agg$log_weight <- log10(agg$weight * n_cat_x * n_cat_y)
+    names(agg)[3] <- "share_contrib"
 
     return(agg)
   }

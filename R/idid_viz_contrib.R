@@ -77,24 +77,42 @@ idid_viz_contrib <- function(reg,
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, fill = contrib_name)) +
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
-      ggplot2::labs(y = "Number of observations")
+      ggplot2::labs(y = "Number of observations", fill = NULL) +
+      ggplot2::scale_fill_manual(
+        values = c("#562A62", "#E79232"),
+        na.value = "gray88"
+      )
 
   } else if (missing(var_x)) {
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, fill = contrib_name)) +
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
-      ggplot2::labs(x = "Number of observations")
+      ggplot2::labs(x = "Number of observations", fill = NULL) +
+      ggplot2::scale_fill_manual(
+        values = c("#562A62", "#E79232"),
+        na.value = "gray88"
+      )
 
   } else {
+
+    # if (n_cat_x*n_cat_y ==)
+
+    df[["contrib"]] <- as.numeric(df[["contrib"]])
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
         y = {{ var_y }},
-        fill = contrib_name)
+        z = contrib)
       ) +
-      ggplot2::geom_tile()
+      ggplot2::geom_tile(stat = ididvar:::StatMeanTile) +
+      ggplot2::scale_fill_gradient(
+        low = "#FBE2C5",
+        high = "#300D49",
+        na.value = "gray88"
+      ) +
+      ggplot2::labs(fill = "Share of contributing observations")
 
   }
 
@@ -108,15 +126,10 @@ would change the point estimate and s.e. by less than ',
           round(threshold_change*100, 2),
           "%",
           sep = ""
-        ),
-      fill = NULL
+        )
     ) +
     # theme and palette
-    ididvar::theme_idid() +
-    ggplot2::scale_fill_manual(
-      values = c("#562A62", "#E79232"),
-      na.value = "gray88"
-    )
+    ididvar::theme_idid()
 
   if (!keep_labels) {
     graph <- graph +
