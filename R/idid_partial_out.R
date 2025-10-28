@@ -65,8 +65,8 @@ idid_partial_out <- function(reg,
   #   stop(var_to_partial, " is not a variable in the regression")
   # }
 
-  partialled_out <- update(reg, formula_partial, na.action = na.exclude, ...) |>
-    residuals(na.rm = FALSE) |>
+  partialled_out <- stats::update(reg, formula_partial, na.action = stats::na.exclude, ...) |>
+    stats::residuals(na.rm = FALSE) |>
     #handle warning when using feols for instance:
     #feols does not have a 'na.action' argument
     withCallingHandlers(

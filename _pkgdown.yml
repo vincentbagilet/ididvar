@@ -18,12 +18,12 @@ figures:
   dpi: 300
   # fig.asp: 1.2
 
-navbar:
-  structure:
-    right: [github]
-  contents:
-    - Quick workflow
-    - Own visualizations
+# navbar:
+#   structure:
+#     right: [github]
+#   contents:
+#     - Quick workflow
+#     - Own visualizations
 
 # articles:
 # - title: Customise your site

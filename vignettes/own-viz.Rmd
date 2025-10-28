@@ -313,7 +313,11 @@ country_decade_weights |>
   ggplot(aes(x = decade, y = country, fill = contrib)) + 
   geom_tile() +
   theme_idid() +
-  scale_fill_gradient(low = "#FBE2C5", high = "#300D49") +
+  scale_fill_gradient(
+    low = idid_colors_table[["mid"]],
+    high = idid_colors_table[["base"]],
+    na.value = "gray88"
+  ) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
   labs(
@@ -379,7 +383,11 @@ data_sf |>
   geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
   theme_idid() +
   coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
-  scale_fill_gradient(low = "#FBE2C5", high = "#300D49", na.value = "gray88") +
+  scale_fill_gradient(
+    low = idid_colors_table[["mid"]],
+    high = idid_colors_table[["base"]],
+    na.value = "gray88"
+  ) +
   labs(
     title = "Distribution of contributing obs.",
     fill = "Number of contributing observations"

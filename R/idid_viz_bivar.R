@@ -12,6 +12,17 @@
 #'
 #' @export
 #'
+#' @examples
+#' reg_few_ctrl <- ggplot2::txhousing |>
+#'   lm(formula = volume ~ sales + listings)
+#'
+#' idid_viz_bivar(reg_few_ctrl, "sales")
+#'
+#' reg_more_ctrl <- ggplot2::txhousing |>
+#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'
+#' idid_viz_bivar(reg_more_ctrl, "sales")
+#'
 idid_viz_bivar <- function(reg, var_interest) {
   df <- eval(reg$call$data)
   name_var_y <- reg$call[[2]][[2]]

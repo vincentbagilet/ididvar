@@ -33,20 +33,21 @@
 #' @export
 #'
 #' @examples
-#' # example with a lm regression and one dimension
-#' reg_ex_lm <- ggplot2::economics |>
+#' # example one dimension
+#' reg_ex_one_dim <- ggplot2::economics |>
 #'   transform(year = substr(date, 1, 4) |> as.numeric()) |>
 #'   lm(formula = unemploy ~ pce + uempmed + psavert + pop + year)
 #'
-#' idid_viz_weights(reg_ex_lm, "pce", var_x = year) +
+#' idid_viz_weights(reg_ex_one_dim, "pce", var_x = year) +
 #'   ggplot2::labs(x = NULL)
 #'
-#' # example with a fixest regression and two dimensions
-#' reg_ex_fixest <- ggplot2::txhousing |>
-#'   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+#' # example with two dimensions
+#' reg_ex_two_dim <- ggplot2::txhousing |>
+#'   lm(formula = volume ~ sales + listings + as.factor(date) + city)
 #'
-#' idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+#' idid_viz_weights(reg_ex_two_dim, "sales", date, city, order = "y") +
 #'   ggplot2::labs(x = NULL, y = NULL)
+#'
 idid_viz_weights <- function(reg,
                              var_interest,
                              var_x,
@@ -57,7 +58,7 @@ idid_viz_weights <- function(reg,
                              ...) {
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  df <- ididvar:::order_axes(df,
+  df <- order_axes(df,
                              deparse(substitute(var_x)),
                              deparse(substitute(var_y)),
                              order,
@@ -90,7 +91,7 @@ idid_viz_weights <- function(reg,
         y = {{ var_y }},
         z = weight_scaled
       )) +
-      ggplot2::geom_tile(stat = ididvar:::StatLogWeight) +
+      ggplot2::geom_tile(stat = StatLogWeight) +
       ididvar::scale_fill_idid(colors = colors) +
       ggplot2::labs(fill = "Weight, compared to 1/n, the average weight")
   }

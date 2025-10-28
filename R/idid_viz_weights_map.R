@@ -87,6 +87,6 @@ idid_viz_weights_map <- function(reg,
     graph
   } else {
     graph +
-      ggplot2::facet_wrap(as.formula(paste("~", facet)))
+      ggplot2::facet_wrap(stats::as.formula(paste("~", facet)))
   }
 }

@@ -13,6 +13,7 @@ color for large values in multiple color graphs}
 \item{mid}{Middle color in multiple color graphs}
 \item{complementary}{complementary color for one color graphs and
 color for small values in multiple color graphs}
+\item{text}{Text color}
 ...
 }
 }

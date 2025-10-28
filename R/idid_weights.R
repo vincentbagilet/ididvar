@@ -30,31 +30,12 @@
 #' @export
 #'
 #' @examples
-#' # example with a lm regression
 #' reg_ex_lm <- ggplot2::txhousing |>
 #'   lm(formula = volume ~ sales + listings + city + as.factor(date))
 #'
 #' idid_weights(reg_ex_lm, "sales") |>
 #'  head()
 #'
-#' # example with a fixest regression
-#' reg_ex_fixest <- ggplot2::txhousing  |>
-#'   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
-#'
-#' idid_weights(reg_ex_fixest, "sales") |>
-#'   head()
-#'
-#' # example with a plm regression
-#' reg_ex_plm <- ggplot2::txhousing  |>
-#'   plm::plm(
-#'     formula = volume ~ sales + listings,
-#'     index = c("date", "city"),
-#'     model = "within",
-#'     effect = "twoways"
-#'   )
-#'
-#' idid_weights(reg_ex_plm, "sales") |>
-#'   head()
 idid_weights <- function(reg, var_interest, ...) {
   if (var_interest == reg$call[[2]][[2]]) { #reg$call[[2]][[2]] is y in the reg
     stop("var_interest should be an explanatory variable")

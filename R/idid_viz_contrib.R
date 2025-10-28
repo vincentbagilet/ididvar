@@ -31,12 +31,11 @@
 #' reg_ex <- ggplot2::txhousing |>
 #'   lm(formula = volume ~ sales + listings + city + as.factor(date))
 #'
-#' idid_viz_contrib(reg_ex, "sales", date, city) +
+#' idid_viz_contrib(reg_ex, "sales", year, city, order = "y") +
 #'   ggplot2::labs(x = NULL, y = NULL)
 #'
-#' idid_viz_contrib(reg_ex, "sales", city) +
-#'   ggplot2::labs(x = NULL) +
-#'   ggplot2::coord_flip()
+#' idid_viz_contrib(reg_ex, "sales", var_y = city, order = "y") +
+#'   ggplot2::labs(x = NULL)
 idid_viz_contrib <- function(reg,
                              var_interest,
                              var_x,
@@ -65,7 +64,7 @@ idid_viz_contrib <- function(reg,
     ifelse(df[["contrib"]],
            "In the effective sample",
            "Outside the effective sample")
-  df <- ididvar:::order_axes(df,
+  df <- order_axes(df,
                              deparse(substitute(var_x)),
                              deparse(substitute(var_y)),
                              order,
@@ -103,7 +102,7 @@ idid_viz_contrib <- function(reg,
         y = {{ var_y }},
         z = contrib)
       ) +
-      ggplot2::geom_tile(stat = ididvar:::StatSumTile) +
+      ggplot2::geom_tile(stat = StatSumTile) +
       ggplot2::scale_fill_gradient(
         low = "#FBE2C5",
         high = "#300D49",

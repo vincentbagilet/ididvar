@@ -19,3 +19,15 @@ outcome and the variable of interest, after partialling out controls.
 Makes a bivariate graph to visualize the data and relationship between the
 outcome and the variable of interest, after having partialLed out controls.
 }
+\examples{
+reg_few_ctrl <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings)
+
+idid_viz_bivar(reg_few_ctrl, "sales")
+
+reg_more_ctrl <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + city + as.factor(date))
+
+idid_viz_bivar(reg_more_ctrl, "sales")
+
+}

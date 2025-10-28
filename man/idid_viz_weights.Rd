@@ -60,18 +60,19 @@ var_x or in var_x x var_y), the weight of the group is computed by summing
 individual weights in that group, removing missing values.
 }
 \examples{
-# example with a lm regression and one dimension
-reg_ex_lm <- ggplot2::economics |>
+# example one dimension
+reg_ex_one_dim <- ggplot2::economics |>
   transform(year = substr(date, 1, 4) |> as.numeric()) |>
   lm(formula = unemploy ~ pce + uempmed + psavert + pop + year)
 
-idid_viz_weights(reg_ex_lm, "pce", var_x = year) +
+idid_viz_weights(reg_ex_one_dim, "pce", var_x = year) +
   ggplot2::labs(x = NULL)
 
-# example with a fixest regression and two dimensions
-reg_ex_fixest <- ggplot2::txhousing |>
-  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+# example with two dimensions
+reg_ex_two_dim <- ggplot2::txhousing |>
+  lm(formula = volume ~ sales + listings + as.factor(date) + city)
 
-idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+idid_viz_weights(reg_ex_two_dim, "sales", date, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL)
+
 }

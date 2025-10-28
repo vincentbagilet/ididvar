@@ -66,10 +66,9 @@ specified.
 reg_ex <- ggplot2::txhousing |>
   lm(formula = volume ~ sales + listings + city + as.factor(date))
 
-idid_viz_contrib(reg_ex, "sales", date, city) +
+idid_viz_contrib(reg_ex, "sales", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL)
 
-idid_viz_contrib(reg_ex, "sales", city) +
-  ggplot2::labs(x = NULL) +
-  ggplot2::coord_flip()
+idid_viz_contrib(reg_ex, "sales", var_y = city, order = "y") +
+  ggplot2::labs(x = NULL)
 }
