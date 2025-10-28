@@ -3,9 +3,9 @@
 \docType{data}
 \name{StatSumTile}
 \alias{StatSumTile}
-\title{Automatic aggregation and log-transform for tiles}
+\title{Automatic mean aggregation for tiles}
 \format{
-An object of class \code{StatSumTile} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.
+An object of class \code{StatSumTile} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.
 }
 \usage{
 StatSumTile
@@ -13,7 +13,7 @@ StatSumTile
 \description{
 A ggplot2 Stat that behaves like stat_summary_2d but automatically:
 \enumerate{
-\item Sums z-values per (x, y)
+\item Sums fill-values per (x, y)
 \item Applies the transformation log10(sum(z) * n_x * n_y)
 }
 }

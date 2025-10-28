@@ -106,13 +106,13 @@ idid_viz_contrib <- function(reg,
         y = {{ var_y }},
         z = contrib)
       ) +
-      ggplot2::geom_tile(stat = ididvar:::StatMeanTile) +
+      ggplot2::geom_tile(stat = ididvar:::StatSumTile) +
       ggplot2::scale_fill_gradient(
         low = "#FBE2C5",
         high = "#300D49",
         na.value = "gray88"
       ) +
-      ggplot2::labs(fill = "Share of contributing observations")
+      ggplot2::labs(fill = "Number of contributing observations")
 
   }
 

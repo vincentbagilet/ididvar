@@ -5,7 +5,7 @@
 \alias{StatLogWeight}
 \title{Automatic aggregation and log-transform for tiles}
 \format{
-An object of class \code{StatLogWeight} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 3.
+An object of class \code{StatLogWeight} (inherits from \code{Stat}, \code{ggproto}, \code{gg}) of length 4.
 }
 \usage{
 StatLogWeight

@@ -9,14 +9,14 @@
 #'    the average weight across groups (1/(n_x*n_y)) and then takes its log10
 #'
 #' @keywords internal
-StatMeanTile <- ggplot2::ggproto(
-  "StatMeanTile",
+StatSumTile <- ggplot2::ggproto(
+  "StatSumTile",
   ggplot2::Stat,
   required_aes = c("x", "y", "z"),
   default_aes = ggplot2::aes(fill = ggplot2::after_stat(share_contrib)),
   compute_panel = function(data, scales, ...) {
     agg <-
-      stats::aggregate(data$z, list(x = data$x, y = data$y), mean, na.rm = TRUE)
+      stats::aggregate(data$z, list(x = data$x, y = data$y), sum, na.rm = TRUE)
     names(agg)[3] <- "share_contrib"
 
     return(agg)
