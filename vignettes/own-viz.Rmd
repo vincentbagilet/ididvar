@@ -265,19 +265,19 @@ The graph above was made plotting the raw weights. However, one value is much la
 ```{r heatmap_with_scale, echo=TRUE, fig.asp=1.5}
 country_decade_weights |> 
   mutate(weight_log = log10(weight * length(weight))) |> 
-  mutate(country = forcats::fct_reorder(country, weight, sum)) |>
-  ggplot(aes(x = decade, y = country, fill = weight_log)) + 
+  # mutate(country = forcats::fct_reorder(country, weight, sum)) |>
+  ggplot(aes(x = decade, y = country, fill = weight_log, z = weight_log)) + 
   geom_tile() +
   theme_idid() +
-  scale_fill_idid() +
+  # scale_fill_idid() +
   #what's behind scale_fill_idid()
-  # scale_fill_stepsn( 
-  #   colors = c("#C25807", "#FBE2C5", "#300D49"),
-  #   breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
-  #   labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
-  #   limits = c(-2, 2),
-  #   na.value = "gray88"
-  # ) +
+  scale_fill_stepsn(
+    colors = c("#C25807", "#FBE2C5", "#300D49"),
+    breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
+    labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
+    limits = c(-2, 2),
+    na.value = "gray88"
+  ) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
   labs(
@@ -291,12 +291,12 @@ country_decade_weights |>
 ### ididvar weight equivalent
 
 ```{r idid_weight_heatmap, echo=TRUE, fig.asp=1.5}
-idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade, order = "y") +
+idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
   labs(
     title = "Distribution of Identifying Variation Weights",
-    x = "Weight",
+    x = NULL,
     y = NULL
   ) 
 ```

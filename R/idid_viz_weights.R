@@ -58,20 +58,20 @@ idid_viz_weights <- function(reg,
   df <- eval(reg$call$data)
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
 
-  # reorder_df <- function(var, decreasing) {
-  #   name_var <- deparse(substitute(var))
-  #   df[[name_var]] <-
-  #     with(df, reorder(df[[name_var]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = decreasing))
-  # }
+  #ORDERING AXES
+  name_var_x <- deparse(substitute(var_x))
+  name_var_y <- deparse(substitute(var_y))
+  if (order %in% c("y", "xy") & !missing(var_y)) {
+    df[[name_var_y]] <-
+      with(df, reorder(df[[name_var_y]], df$weight, \(x) sum(x, na.rm = TRUE)))
+  }
+  if (order %in% c("x", "xy") & !missing(var_x)) {
+    df[[name_var_x]] <-
+      with(df, reorder(df[[name_var_x]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = TRUE))
+  }
 
+  #GRAPHS
   if (missing(var_y)) {
-
-    #reorder x-axis
-    if (order == "x") {
-      name_var_x <- deparse(substitute(var_x))
-      df[[name_var_x]] <-
-        with(df, reorder(df[[name_var_x]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = TRUE))
-    }
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = weight)) +
@@ -80,13 +80,6 @@ idid_viz_weights <- function(reg,
 
   } else if (missing(var_x)) {
 
-    #reorder x-axis
-    if (order == "y") {
-      name_var_y <- deparse(substitute(var_y))
-      df[[name_var_y]] <-
-        with(df, reorder(df[[name_var_y]], df$weight, \(x) sum(x, na.rm = TRUE)))
-    }
-
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
@@ -94,22 +87,10 @@ idid_viz_weights <- function(reg,
 
   } else {
 
-    name_var_x <- deparse(substitute(var_x))
-    name_var_y <- deparse(substitute(var_y))
     n_cat_x <- unique(df[[name_var_x]]) |> length()
     n_cat_y <- unique(df[[name_var_y]]) |> length()
     # if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
     # if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
-
-    #order
-    if (order %in% c("y", "xy")) {
-      df[[name_var_y]] <-
-        with(df, reorder(df[[name_var_y]], df$weight, \(x) sum(x, na.rm = TRUE)))
-    }
-    if (order %in% c("x", "xy")) {
-      df[[name_var_x]] <-
-        with(df, reorder(df[[name_var_x]], df$weight, \(x) sum(x, na.rm = TRUE), decreasing = TRUE))
-    }
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
@@ -125,10 +106,7 @@ idid_viz_weights <- function(reg,
   }
 
   graph <- graph +
-    ggplot2::labs(
-      title = "Distribution of Identifying Variation Weights"
-    ) +
-    # theme and palette
+    ggplot2::labs(title = "Distribution of Identifying Variation Weights") +
     ididvar::theme_idid()
 
   if (!keep_labels) {
