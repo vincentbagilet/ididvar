@@ -315,9 +315,10 @@ country_decade_weights |>
   ) 
 ```
 
+### Own contribution heatmap
 
 ```{r idid_contrib_heatmap, echo=TRUE, fig.asp=1.3, warning=FALSE}
-idid_viz_contrib(reg, "l_gdpPercap", decade, country, order = "y") +
+idid_viz_contrib(reg, "l_gdpPercap", year, country, order = "y") +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   labs(x = NULL, y = NULL)
 ```
