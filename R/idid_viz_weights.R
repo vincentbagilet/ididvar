@@ -82,15 +82,13 @@ idid_viz_weights <- function(reg,
 
     n_cat_x <- unique(df[[deparse(substitute(var_x))]]) |> length()
     n_cat_y <- unique(df[[deparse(substitute(var_y))]]) |> length()
-    # if (n_cat_x < 5) df[[name_var_x]] <- as.factor(df[[name_var_x]])
-    # if (n_cat_y < 10) df[[name_var_y]] <- as.factor(df[[name_var_y]])
+    df[["weight_scaled"]] <- df[["weight"]] * n_cat_x * n_cat_y
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
         y = {{ var_y }},
-        z = weight
-        # label = round(weight, 3)
+        z = weight_scaled
       )) +
       ggplot2::geom_tile(stat = ididvar:::StatLogWeight) +
       ididvar::scale_fill_idid(colors = colors) +

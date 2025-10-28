@@ -15,13 +15,13 @@ StatLogWeight <- ggplot2::ggproto(
   required_aes = c("x", "y", "z"),
   default_aes = ggplot2::aes(fill = ggplot2::after_stat(log_weight)),
   compute_panel = function(data, scales, ...) {
-    n_cat_x <- unique(data$x) |> length()
-    n_cat_y <- unique(data$y) |> length()
+    # n_cat_x <- unique(data$x) |> length()
+    # n_cat_y <- unique(data$y) |> length()
 
     agg <-
       stats::aggregate(data$z, list(x = data$x, y = data$y), sum, na.rm = TRUE)
     names(agg)[3] <- "weight"
-    agg$log_weight <- log10(agg$weight * n_cat_x * n_cat_y)
+    agg$log_weight <- log10(agg$weight)
 
     return(agg)
   }

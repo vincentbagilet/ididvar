@@ -11,15 +11,6 @@ An object of class \code{StatSumTile} (inherits from \code{Stat}, \code{ggproto}
 StatSumTile
 }
 \description{
-A ggplot2 Stat that behaves like stat_summary_2d but automatically:
-\enumerate{
-\item Sums fill-values per (x, y)
-\item Applies the transformation log10(sum(z) * n_x * n_y)
-}
-}
-\details{
-summarise the weights by var_x\emph{vary_y groups (summing their values),
-take the ratio of the weight of each group over
-the average weight across groups (1/(n_x}n_y)) and then takes its log10
+A ggplot2 Stat that sums the values provided in z for each tile
 }
 \keyword{internal}

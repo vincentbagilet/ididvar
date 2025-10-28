@@ -95,9 +95,6 @@ idid_viz_contrib <- function(reg,
       )
 
   } else {
-
-    # if (n_cat_x*n_cat_y ==)
-
     df[["contrib"]] <- as.numeric(df[["contrib"]])
 
     graph <- df |>

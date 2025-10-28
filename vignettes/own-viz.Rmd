@@ -27,7 +27,7 @@ library(rnaturalearthdata)
 
 This vignette **provides code that can easily be copied/pasted to make your own customized plots**, going beyond the quick but less customizable functions provided in the package.
 
-This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own, hence this vignette. It does not use any viz function from `ididvar` (apart from the theming functions).
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to very quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own, hence this vignette. 
 
 ## Workflow to plot identifying variation weights
 
@@ -164,7 +164,7 @@ Let's assume that we want to compare weights across countries. We compute our we
 
 ```{r country_weights}
 country_weights <- gapminder_weights |> 
-  group_by(country, iso_alpha) |> 
+  group_by(country, iso_alpha, continent) |> 
   summarise(
     weight = sum(weight, na.rm = TRUE), 
     contrib = sum(contrib, na.rm = TRUE),
@@ -176,28 +176,36 @@ We then make bar plots. For readibility and to produce a better graph, we order 
 
 ### Own weight graph
 
-```{r weight_bar_plot, echo=TRUE, fig.asp=1.3}
+```{r weight_bar_plot, echo=TRUE, fig.asp=1.5}
 country_weights |> 
   mutate(country = forcats::fct_reorder(country, weight)) |> 
   ggplot(aes(x = weight, y = country)) + 
-  geom_col(fill = "#300D49") +
+  geom_col(aes(fill = continent)) +
+  scale_fill_manual(values = c("#497C89", "#cf816b")) +
+  # facet_wrap(~ continent, scales = "free_y", space = "free_y") + 
   theme_idid() +
   labs(
     title = "Distribution of Identifying Variation Weights",
     x = "Weight",
-    y = NULL
+    y = NULL,
+    fill = NULL
   ) 
 ```
 
 ### ididvar weight
 
-```{r idid_weight_bar_plot, echo=TRUE, fig.asp=1.3}
-idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y")
+```{r idid_weight_bar_plot, echo=TRUE, fig.asp=1.5}
+idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y") + 
+  geom_col(aes(x = weight, y = country, fill = continent)) +
+  scale_fill_manual(values = c("#497C89", "#cf816b")) +
+  labs(y = NULL, fill = NULL)
 ```
+
+Note that we can put additional geoms on top of existing ones, to add some coloring scheme for instance.
 
 ### Own contrib graph
 
-```{r contrib_bar_plot, echo=TRUE, fig.asp=1.3}
+```{r contrib_bar_plot, echo=TRUE, fig.asp=0.8, message=FALSE}
 gapminder_weights |> 
   count(decade, contrib_name) |> 
   ggplot(aes(x = decade, y = n, fill = forcats::fct_rev(contrib_name))) + 
@@ -215,8 +223,9 @@ gapminder_weights |>
 
 ### ididvar contrib
 
-```{r idid_contrib_bar_plot, echo=TRUE, fig.asp=1.3, warning=FALSE}
-idid_viz_contrib(reg, "l_gdpPercap", var_y = decade)
+```{r idid_contrib_bar_plot, echo=TRUE, fig.asp=0.8, warning=FALSE}
+idid_viz_contrib(reg, "l_gdpPercap", var_y = decade) +
+  labs(y = NULL)
 ```
 
 ## Heatmaps
@@ -237,7 +246,7 @@ We can then make the graphs we want.
 
 ### Weights with no scale
 
-```{r heatmap_no_scale, echo=TRUE, fig.asp=1.5}
+```{r heatmap_no_scale, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
   mutate(country = forcats::fct_reorder(country, weight, sum)) |>
   ggplot(aes(x = decade, y = country, fill = weight)) + 
@@ -257,27 +266,27 @@ The graph above was made plotting the raw weights. However, one value is much la
 
 ### Weights with scale
 
-```{r heatmap_with_scale, echo=TRUE, fig.asp=1.5}
+```{r heatmap_with_scale, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
   mutate(weight_log = log10(weight * length(weight))) |> 
   # mutate(country = forcats::fct_reorder(country, weight, sum)) |>
-  ggplot(aes(x = decade, y = country, fill = weight_log, z = weight_log)) + 
+  ggplot(aes(x = decade, y = country, fill = weight_log)) + 
   geom_tile() +
   theme_idid() +
-  # scale_fill_idid() +
+  scale_fill_idid() +
   #what's behind scale_fill_idid()
-  scale_fill_stepsn(
-    colors = c("#C25807", "#FBE2C5", "#300D49"),
-    breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
-    labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
-    limits = c(-2, 2),
-    na.value = "gray88"
-  ) +
+  # scale_fill_stepsn(
+  #   colors = c("#C25807", "#FBE2C5", "#300D49"),
+  #   breaks = log10(c(1/100, 1/50, 1/10, 1/2, 2, 10, 50, 100)),
+  #   labels = c("0", "1/50x", "1/10x", "1/2x", "2x", "10x", "50x", "Inf"),
+  #   limits = c(-2, 2),
+  #   na.value = "gray88"
+  # ) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
   labs(
     title = "Distribution of Identifying Variation Weights",
-    fill = "Weight",
+    fill = "Weight, compared to 1/n, the average weight",
     x = NULL,
     y = NULL
   ) 
@@ -285,7 +294,7 @@ country_decade_weights |>
 
 ### ididvar weight equivalent
 
-```{r idid_weight_heatmap, echo=TRUE, fig.asp=1.5}
+```{r idid_weight_heatmap, echo=TRUE, fig.asp=1.6}
 idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -298,7 +307,7 @@ idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
 
 ### Contributing observations
 
-```{r heatmap_contrib, echo=TRUE, fig.asp=1.5}
+```{r heatmap_contrib, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
   mutate(country = forcats::fct_reorder(country, contrib, sum)) |>
   ggplot(aes(x = decade, y = country, fill = contrib)) + 
@@ -311,13 +320,13 @@ country_decade_weights |>
     title = "Distribution of Identifying Variation Weights",
     x = NULL,
     y = NULL,
-    fill = "Share of contributing observations"
+    fill = "Number of contributing observations"
   ) 
 ```
 
-### Own contribution heatmap
+### ididvar contribution heatmap
 
-```{r idid_contrib_heatmap, echo=TRUE, fig.asp=1.3, warning=FALSE}
+```{r idid_contrib_heatmap, echo=TRUE, fig.asp=1.6, message=FALSE}
 idid_viz_contrib(reg, "l_gdpPercap", decade, country, order = "y") +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   labs(x = NULL, y = NULL)
@@ -329,46 +338,61 @@ We then plot the data. To make a map, we need an `sf` object:
 
 ```{r world_sf}
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
-  mutate(iso_alpha = adm0_a3) |> 
-  filter(continent %in% c("Europe", "Africa")) |> 
-  filter(iso_alpha != "RUS") 
+  mutate(iso_alpha = adm0_a3) 
 ```
 
 We can then merge the data to the shape file and make the graphs of interest.
 
-```{r map_weights, fig.asp=0.8}
+### Weights map
+
+```{r map_weights, fig.asp=1.3}
 data_sf <- world_sf |> 
   full_join(country_weights, by = join_by(iso_alpha)) |> 
-  mutate(weight_log = log10(weight * length(weight))) 
+  mutate(weight_log = log10(weight * nrow(country_weights))) 
 
 data_sf |> 
   ggplot() +
   geom_sf(aes(fill = weight_log), color = "white", linewidth = 0.1) +
   theme_idid() +
   scale_fill_idid() +
-  coord_sf(xlim = c(-20, NA)) +
+  coord_sf(crs = "+proj=ortho +x_0=0 +y_0=0 +lon_0=30 +lat_0=28") +
   labs(
     title = "Distribution of Identifying Variation Weights",
     fill = "Weight, compared to the average weight"
   ) +
-  theme(axis.text.y = element_blank(), 
-        axis.text.x = element_blank())
+  theme(panel.grid.major = element_line(colour = "gray90"))
+``` 
 
+### ididvar weights map
+
+```{r ididvar_map_weight, fig.asp=1.3, message=FALSE}
+idid_viz_weights_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
+  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
+  theme(panel.grid.major = element_line(colour = "gray90")) 
+```
+
+### Contrib map
+
+```{r map_contrib, fig.asp=1.3}
 data_sf |> 
   ggplot() +
   geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
   theme_idid() +
-  coord_sf(xlim = c(-20, NA)) +
+  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
   scale_fill_gradient(low = "#FBE2C5", high = "#300D49", na.value = "gray88") +
   labs(
     title = "Distribution of contributing obs.",
     fill = "Number of contributing observations"
   ) +
-  theme(axis.text.y = element_blank(), 
-        axis.text.x = element_blank())
+  theme(panel.grid.major = element_line(colour = "gray90"))
 ``` 
 
-The maps produced in this document are not particularly instructive since the regression model is paritcularly naive.
+### ididvar contrib map
 
+```{r ididvar_map_contrib, fig.asp=1.3, message=FALSE}
+idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
+  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
+  theme(panel.grid.major = element_line(colour = "gray93")) 
+```
 
 

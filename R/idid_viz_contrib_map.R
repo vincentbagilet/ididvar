@@ -46,23 +46,26 @@ idid_viz_contrib_map <- function(reg,
   df <- eval(reg$call$data)
   df[["weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df[["contrib"]] <- (df[["weights"]] > contrib_threshold)
+  df[["contrib"]] <- as.integer(df[["contrib"]])
 
   #compute shape level weights
-  aggr_df <- stats::aggregate(
+  agg_df <- stats::aggregate(
     df$contrib,
     by = list(join_by = df[[join_by]]),
-    FUN = mean,
+    FUN = sum,
     na.rm = TRUE
   )
-  names(aggr_df) <- c(join_by, "share_contrib")
+  names(agg_df) <- c(join_by, "n_contrib")
 
   #merge with shapefile
-  merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
+  merged <- base::merge(shape_file, agg_df, by = join_by, all = TRUE)
+
+  # print(glimpse(merged))
 
   merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
-      ggplot2::aes(fill = share_contrib),
+      ggplot2::aes(fill = n_contrib),
       color = "white",
       linewidth = 0.1
     ) +
@@ -75,7 +78,7 @@ idid_viz_contrib_map <- function(reg,
     ggplot2::labs(
       title = "Set of observations contributing to identification",
       subtitle = paste('Without the "non-contributing" observations, point estimate and s.e. would vary by less than ', round(threshold_change*100, 2), "%", sep = ""),
-      fill =  "Share of contributing observations"
+      fill =  "Number of contributing observations"
     ) +
     ggplot2::theme(
       axis.text.y = ggplot2::element_blank(),
