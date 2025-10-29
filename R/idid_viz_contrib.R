@@ -74,7 +74,7 @@ idid_viz_contrib <- function(reg,
   if (missing(var_y)) {
 
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, fill = contrib_name)) +
+      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, fill = .data$contrib_name)) +
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
       ggplot2::labs(y = "Number of observations", fill = NULL) +
       ggplot2::scale_fill_manual(
@@ -85,7 +85,7 @@ idid_viz_contrib <- function(reg,
   } else if (missing(var_x)) {
 
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, fill = contrib_name)) +
+      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, fill = .data$contrib_name)) +
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
       ggplot2::labs(x = "Number of observations", fill = NULL) +
       ggplot2::scale_fill_manual(
@@ -100,7 +100,7 @@ idid_viz_contrib <- function(reg,
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
         y = {{ var_y }},
-        z = contrib)
+        z = .data$contrib)
       ) +
       ggplot2::geom_tile(stat = StatSumTile) +
       ggplot2::scale_fill_gradient(

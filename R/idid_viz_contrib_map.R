@@ -65,7 +65,7 @@ idid_viz_contrib_map <- function(reg,
   merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
-      ggplot2::aes(fill = n_contrib),
+      ggplot2::aes(fill = .data$n_contrib),
       color = "white",
       linewidth = 0.1
     ) +
@@ -77,7 +77,8 @@ idid_viz_contrib_map <- function(reg,
     ) +
     ggplot2::labs(
       title = "Set of observations contributing to identification",
-      subtitle = paste('Without the "non-contributing" observations, point estimate and s.e. would vary by less than ', round(threshold_change*100, 2), "%", sep = ""),
+      subtitle = paste('Without the "non-contributing" observations,
+point est. and s.e. would vary by less than ', round(threshold_change*100, 2), "%", sep = ""),
       fill =  "Number of contributing observations"
     ) +
     ggplot2::theme(

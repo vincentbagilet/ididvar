@@ -68,14 +68,14 @@ idid_viz_weights <- function(reg,
   if (missing(var_y)) {
 
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = weight)) +
+      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = .data$weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(y = "Weight")
 
   } else if (missing(var_x)) {
 
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = weight)) +
+      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = .data$weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(x = "Weight")
 
@@ -89,7 +89,7 @@ idid_viz_weights <- function(reg,
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
         y = {{ var_y }},
-        z = weight_scaled
+        z = .data$weight_scaled
       )) +
       ggplot2::geom_tile(stat = StatLogWeight) +
       ididvar::scale_fill_idid(colors = colors) +

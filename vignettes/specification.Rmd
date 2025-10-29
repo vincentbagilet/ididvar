@@ -188,7 +188,7 @@ graph_weights <- function(reg) {
     )
 }
 
-map(regs, graph_weights)
+purrr::map(regs, graph_weights)
 ```
 
 ## {-}
@@ -254,7 +254,7 @@ graph_contrib <- function(reg) {
     )
 }
 
-map(regs, graph_contrib)
+purrr::map(regs, graph_contrib)
 ```
 
 

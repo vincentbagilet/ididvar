@@ -53,7 +53,7 @@ idid_viz_drop_change <- function(reg,
   drop_change_se[["measure"]] <- "Std. Error"
 
   rbind(drop_change_est, drop_change_se) |>
-    ggplot2::ggplot(ggplot2::aes(x = prop_drop, y = abs(prop_change*100))) +
+    ggplot2::ggplot(ggplot2::aes(x = .data$prop_drop, y = abs(.data$prop_change*100))) +
     ggplot2::geom_line(linewidth = 1.4, color = color) +
     ggplot2::geom_hline(
       yintercept = threshold_change*100,

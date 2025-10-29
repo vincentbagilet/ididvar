@@ -68,7 +68,7 @@ idid_viz_weights_map <- function(reg,
   graph <- merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
-      ggplot2::aes(fill = weight_log),
+      ggplot2::aes(fill = .data$weight_log),
       color = "white",
       linewidth = 0.1
     ) +

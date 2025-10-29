@@ -28,12 +28,14 @@ idid_viz_cumul <- function(reg,
 
   df <- data.frame(obs_nb = 1:length(lorenz), lorenz)
 
+  #compute prop of contributing observations
   df_contrib <- subset(df, lorenz > prop_weights)
   n_contrib <- nrow(df) - df_contrib[[1, "obs_nb"]]
   prop_contrib <- n_contrib/nrow(df)
 
+  #graph
   df |>
-    ggplot2::ggplot(ggplot2::aes(x = obs_nb, y = lorenz)) +
+    ggplot2::ggplot(ggplot2::aes(x = .data$obs_nb, y = .data$lorenz)) +
     ggplot2::geom_line(linewidth = 1.4, color = color) +
     ggplot2::geom_area(fill = color, alpha = 0.2) +
     ggplot2::annotate(

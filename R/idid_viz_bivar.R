@@ -33,16 +33,16 @@ idid_viz_bivar <- function(reg, var_interest) {
   # df[["weight_log"]] <- log10(df$weight * nrow(df))
 
   df |>
-    ggplot2::ggplot(ggplot2::aes(x = x_par, y = y_par)) +
+    ggplot2::ggplot(ggplot2::aes(x = .data$x_par, y = .data$y_par)) +
     ggplot2::geom_point(
-      color = idid_colors_table[[1, "base"]],
+      color = ididvar::idid_colors_table[[1, "base"]],
       alpha = if (nrow(df) > 1000) 0.6 else 1
     ) +
     ggplot2::geom_smooth(
       method = "lm",
       formula = 'y ~ x',
-      color = idid_colors_table[[1, "complementary"]],
-      fill = idid_colors_table[[1, "complementary"]],
+      color = ididvar::idid_colors_table[[1, "complementary"]],
+      fill = ididvar::idid_colors_table[[1, "complementary"]],
       alpha = 0.15
     ) +
     ididvar::theme_idid() +
