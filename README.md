@@ -41,9 +41,9 @@ identifying variation weights.
 
 ``` r
 library(ididvar)
+library(ggplot2)
 
 reg_ex_fixest <- ggplot2::txhousing |>
-  # dplyr::mutate(volume = log(median), sales = log(sales)) |> 
   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
 
 idid_weights(reg_ex_fixest, "sales") |>
@@ -56,8 +56,6 @@ The package also allows for an effortless exploration of these weights
 through visualizations.
 
 ``` r
-library(ggplot2)
-
 idid_viz_weights(reg_ex_fixest, "sales", date, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
 ```
@@ -79,9 +77,8 @@ contribute to identification (in the sense that dropping the other
 observations does not significantly affect the estimate obtained).
 
 ``` r
-idid_viz_contrib(reg_ex_fixest, "sales", city) +
-  ggplot2::labs(x = NULL) +
-  ggplot2::coord_flip()
+idid_viz_contrib(reg_ex_fixest, "sales", var_y = city, order = "y") +
+  ggplot2::labs(y = NULL)
 ```
 
 <img src="man/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;" />

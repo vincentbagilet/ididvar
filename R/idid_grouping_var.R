@@ -33,7 +33,7 @@ idid_grouping_var <- function(reg,
                               var_interest,
                               grouping_vars,
                               ...) {
-  df <- eval(reg$call$data)
+  df <- eval(reg$call$data, envir = environment(formula(reg)))
   df[["weight"]] = idid_weights(reg, var_interest, ...)
 
   between_var <- NULL

@@ -26,7 +26,7 @@ idid_drop_change <- function(reg,
                              var_interest,
                              prop_drop,
                              ...) {
-  df <- eval(reg$call$data)
+  df <- eval(reg$call$data, envir = environment(formula(reg)))
   # fml <- reg$call$formula
 
   df[["idid_weights"]] <- ididvar::idid_weights(reg, var_interest, ...)

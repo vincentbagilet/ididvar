@@ -342,7 +342,7 @@ We then plot the data. To make a map, we need an `sf` object:
 
 ```{r world_sf}
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
-  mutate(iso_alpha = adm0_a3) 
+  mutate(iso_alpha = adm0_a3)
 ```
 
 We can then merge the data to the shape file and make the graphs of interest.
