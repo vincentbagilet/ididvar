@@ -32,3 +32,4 @@ Depends:
     R (>= 4.1.0)
 LazyData: true
 Config/testthat/edition: 3
+URL: https://vincentbagilet.github.io/ididvar/

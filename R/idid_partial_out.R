@@ -52,13 +52,13 @@ idid_partial_out <- function(reg,
     formula_partial <-
       stats::as.formula(
         paste(". ~ . -", var_interest)
-        # env = environment(formula(reg))
+        # env = environment(stats::formula(reg))
       )
   } else {
     formula_partial <-
       stats::as.formula(
         paste(var_to_partial, "~ . -", var_to_partial, "-", var_interest)
-        # env = environment(formula(reg))
+        # env = environment(stats::formula(reg))
       )
   }
 
@@ -83,7 +83,7 @@ idid_partial_out <- function(reg,
 
   #add NAs back for plm (because na.action not fully supported by plm)
   if (inherits(reg, "plm")) {
-    df <- eval(reg$call$data, envir = environment(formula(reg)))
+    df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
     miss_val <- rep(NA, nrow(df))
     miss_val[as.numeric(rownames(reg$model))] <- partialled_out
     partialled_out <- miss_val

@@ -8,6 +8,13 @@
 \description{
 Provides a set of tools to identify where the identifying variation in a regression comes from.
 }
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://vincentbagilet.github.io/ididvar/}
+}
+
+}
 \author{
 \strong{Maintainer}: Vincent Bagilet \email{vincent.bagilet@ens-lyon.fr}
 

@@ -37,7 +37,7 @@ idid_viz_weights_map <- function(reg,
                                  facet,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
-  df <- eval(reg$call$data, envir = environment(formula(reg)))
+  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
 
   #define what to aggregate by, depending on whether use facet or not

@@ -57,7 +57,7 @@ idid_viz_weights <- function(reg,
                              colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
-  df <- eval(reg$call$data, envir = environment(formula(reg)))
+  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df <- order_axes(df,
                              deparse(substitute(var_x)),

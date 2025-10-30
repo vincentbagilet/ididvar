@@ -73,7 +73,7 @@ data_partial <-
 
 data_partial |>
   ggplot(aes(x = l_gdpPercap_per, y = lifeExp_per)) +
-  geom_point(size = 2, color = "#300D49") +
+  geom_point(size = 2, color = idid_colors_table[["base"]]) +
   geom_smooth(
     method = "lm", 
     formula = 'y ~ x',
@@ -142,8 +142,8 @@ gapminder_weights |>
     cum_weight = cumsum(weight)
   ) |> 
   ggplot(aes(x = obs_id, y = cum_weight)) + 
-  geom_line(linewidth = 1.2, color = "#300D49") +
-  geom_area(fill = "#300D49", alpha = 0.2) +
+  geom_line(linewidth = 1.2, color = idid_colors_table[["base"]]) +
+  geom_area(fill = idid_colors_table[["base"]], alpha = 0.2) +
   theme_idid(aspect.ratio = 1) +
   labs(
     title = "Cumulative distribution of weights",
@@ -212,7 +212,7 @@ gapminder_weights |>
   geom_col() +
   coord_flip() +
   theme_idid() +
-  scale_fill_manual(values = c("#E79232", "#562A62")) +
+  scale_fill_manual(values = c(idid_colors_table[["mid"]], idid_colors_table[["base"]])) +
   labs(
     title = "Set of observations contributing to identification",
     y = "Number of observations",
@@ -252,7 +252,11 @@ country_decade_weights |>
   ggplot(aes(x = decade, y = country, fill = weight)) + 
   geom_tile() +
   theme_idid() +
-  scale_fill_gradientn(colors = c("#C25807", "#FBE2C5", "#300D49")) +
+  scale_fill_gradientn(
+    colors = c(idid_colors_table[["complementary"]], 
+               idid_colors_table[["mid"]], 
+               idid_colors_table[["base"]])
+  ) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
   labs(

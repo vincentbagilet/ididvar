@@ -58,7 +58,7 @@ idid_viz_contrib <- function(reg,
     )
   }
 
-  df <- eval(reg$call$data, envir = environment(formula(reg)))
+  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
   df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df[["contrib"]] <- (df[["weight"]] > contrib_threshold)
   df[["contrib_name"]] <-

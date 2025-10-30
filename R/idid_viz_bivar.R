@@ -24,7 +24,7 @@
 #' idid_viz_bivar(reg_more_ctrl, "sales")
 #'
 idid_viz_bivar <- function(reg, var_interest) {
-  df <- eval(reg$call$data, envir = environment(formula(reg)))
+  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
   name_var_y <- reg$call[[2]][[2]]
 
   df[["y_par"]] <- ididvar::idid_partial_out(reg, name_var_y, var_interest)

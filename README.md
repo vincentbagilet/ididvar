@@ -9,9 +9,7 @@
 
 This package provides tools to easily **identify the identifying
 variation in a regression**, specifically in **applied economics**
-analyses. It does not provide new metrics per say but instead
-facilitates the implementation of slightly modified versions of existing
-ones.
+analyses.
 
 This package is built as part of a [research
 project](https://vincentbagilet.github.io/causal_exaggeration/). As

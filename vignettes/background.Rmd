@@ -1,0 +1,126 @@
+---
+title: "Background on the weights"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Background on the weights}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup, code_fold=TRUE, message=FALSE}
+library(ididvar)
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+library(fixest)
+```
+
+This document very quickly introduces the maths and theory behind the weights. More detail is available in the [associated research paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf).
+
+<!-- The main objective of the `ididvar` package is to facilitate the computation and analysis of identifying variation weights.  -->
+
+## Intuition
+
+These weights correspond to the leverage of each observation **after partialling out all the controls**. They are equvalent--up to a normalization to one--to the multiple regression weights defined by [Aronow and Samii (2016)](https://onlinelibrary.wiley.com/doi/abs/10.1111/ajps.12185) and previously discussed in [Angrist and Pischke (2009)](https://www.jstor.org/stable/j.ctvcm4j72). They represent how much each observation contributes to the identification of a treatment variable of interest. They roughly correspond to the leverage of the bivariate regression of the independent variable on the treatment or main variable of interest, after partialling out the controls, including fixed effects. Observations for which the main variable of interest is well explained by controls only contribute little to identification; the controls or fixed effects absorb most of the variation. 
+
+## Theoretical formula
+
+The weight of each observation $i \in \{1, ..., N\}$ is: 
+
+$$w_i = \dfrac{\left( x_i - \mathbb{E}[x_i | C_i] \right)^2 }{\sum_j w_j}$$
+where $x$ is the variable of interest and $C$ the vector of controls and fixed effects. 
+
+## Computing observation level weights
+
+These weights are therefore the squared residuals of the regression of $x$ on the full set of controls. They are computed using the same estimation procedure as the one used in the main regression, just replacing the outcome variable with the dependent variable of interest.
+
+## Group level weights 
+
+One can compute group level weights by summing the weights of observation within that group. This allows for a quick computation and interpretation of weights at higher aggregation level.They correspond to the within-group variance of the conditional treatment status.
+
+## What do they represent really?
+
+By definition, in the partialled out regression, these weights represent the squared-distance to the center of the distribution of the variable of interest, after partialling out the controls:
+
+```{r bivar_partial, code_fold=TRUE}
+gapminder_sample <- gapminder |> 
+  mutate(l_gdpPercap = log(gdpPercap)
+  ) |> 
+  filter(continent %in% c("Africa", "Europe")) |>
+  left_join(country_codes, by = join_by(country))
+
+reg_ex <- feols(
+  data = gapminder_sample, 
+  lifeExp ~ l_gdpPercap | country, 
+  cluster = "country"
+)
+
+data_partial <- eval(reg_ex$call$data) |> 
+  mutate(
+    lifeExp_per = idid_partial_out(reg_ex, "lifeExp", "l_gdpPercap"),
+    l_gdpPercap_per = idid_partial_out(reg_ex, "l_gdpPercap"),
+    weight = idid_weights(reg_ex, "l_gdpPercap"),
+    weight_log = log10(weight * length(weight))
+  )
+
+data_partial |>
+  ggplot(aes(x = l_gdpPercap_per, y = lifeExp_per, color = weight_log)) +
+  geom_point(size = 1.5) +
+  geom_smooth(
+    method = "lm",
+    formula = 'y ~ x',
+    color = idid_colors_table[["base"]],
+    fill = idid_colors_table[["base"]],
+    alpha = 0.1
+  ) +
+  geom_rug(linewidth = 0.2) +
+  theme_idid() +
+  scale_color_idid() +
+  labs(
+    title = "Relationship between life expectancy and log GDP per capita",
+    subtitle = "After partialling out country fixed effects",
+    x = "Log GDP per capita (residualized)",
+    y = "Life expectancy (residualized)",
+    color = "Weight, compared to 1/n, the average weight",
+  )
+```
+
+While this pattern appears clearly in the partialled out regression, it is much less visible when plotting the raw relationship:
+
+```{r bivar_raw, code_fold=TRUE}
+data_partial |>
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = weight_log)) +
+  geom_point(size = 1.5) +
+  geom_rug(linewidth = 0.2) +
+  theme_idid() +
+  scale_color_idid() +
+  scale_x_log10() +
+  labs(
+    title = "Relationship between life expectancy and GDP per capita",
+    subtitle = "Raw relationship",
+    x = "GDP per capita",
+    y = "Life expectancy",
+    color = "Weight, compared to 1/n, the average weight",
+  )
+```
+
+
+<!-- # Are these weights actually weights? -->
+
+
+<!-- # Equivalence between leverage and multiple regression weights -->
+
+
+
+
+
+
+
+

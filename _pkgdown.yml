@@ -1,3 +1,4 @@
+url: https://vincentbagilet.github.io/ididvar/
 template:
   bootstrap: 5
   bootswatch: journal
@@ -7,9 +8,6 @@ template:
     heading_font: {google: "Lato"}
     primary: "#300D49"
 
-pkgdown:
-  title: "ididvar"
-
 authors:
   Vincent Bagilet:
     href: https://vincentbagilet.github.io/
@@ -17,19 +15,6 @@ authors:
 figures:
   dpi: 300
   # fig.asp: 1.2
-
-# navbar:
-#   structure:
-#     right: [github]
-#   contents:
-#     - Quick workflow
-#     - Own visualizations
-
-# articles:
-# - title: Customise your site
-#   navbar: ~
-#   contents:
-#   -
 
 reference:
 - title: Computation
