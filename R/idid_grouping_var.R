@@ -1,13 +1,13 @@
 #' Compute the between-group variances in weights
 #'
 #' @description
-#' Allows to identify variables for which groups may contribute differentialy
+#' Identify variables along which groups may contribute heterogeneously
 #' to identification.
 #'
 #' @details
-#' This function allows to identify variables for which grouping by this
-#' variable yields the most heterogeneous between groups variance (i.e. the
-#' largest between-groups variance.
+#' Identify variables for which grouping by this
+#' variable yields the most heterogeneous between-groups differences in weights
+#' (i.e. the largest between-groups variance).
 #'
 #' @inheritParams idid_weights
 #' @param grouping_vars A string vector of variable names or \code{"everything"}.

@@ -60,8 +60,6 @@ idid_viz_contrib_map <- function(reg,
   #merge with shapefile
   merged <- base::merge(shape_file, agg_df, by = join_by, all = TRUE)
 
-  # print(glimpse(merged))
-
   merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
@@ -72,7 +70,7 @@ idid_viz_contrib_map <- function(reg,
     ididvar::theme_idid() +
     ggplot2::scale_fill_gradient(
       high = colors[length(colors)],
-      low = colors[2],
+      low = colors[round(length(colors)/2)],
       na.value = "gray88"
     ) +
     ggplot2::labs(

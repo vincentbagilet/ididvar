@@ -203,9 +203,9 @@ idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y") +
 
 Note that we can put additional geoms on top of existing ones, to add some coloring scheme for instance.
 
-### Own contrib graph
+### Own contribution graph
 
-```{r contrib_bar_plot, echo=TRUE, fig.asp=0.8, message=FALSE}
+```{r contrib_bar_plot, echo=TRUE, fig.asp=0.7, message=FALSE}
 gapminder_weights |> 
   count(decade, contrib_name) |> 
   ggplot(aes(x = decade, y = n, fill = forcats::fct_rev(contrib_name))) + 
@@ -221,9 +221,9 @@ gapminder_weights |>
   ) 
 ```
 
-### ididvar contrib
+### ididvar contribution
 
-```{r idid_contrib_bar_plot, echo=TRUE, fig.asp=0.8, warning=FALSE}
+```{r idid_contrib_bar_plot, echo=TRUE, fig.asp=0.7, warning=FALSE}
 idid_viz_contrib(reg, "l_gdpPercap", var_y = decade) +
   labs(y = NULL)
 ```
@@ -298,11 +298,7 @@ country_decade_weights |>
 idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
-  labs(
-    title = "Distribution of Identifying Variation Weights",
-    x = NULL,
-    y = NULL
-  ) 
+  labs(x = NULL, y = NULL) 
 ```
 
 ### Contributing observations
@@ -343,6 +339,10 @@ We then plot the data. To make a map, we need an `sf` object:
 ```{r world_sf}
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
   mutate(iso_alpha = adm0_a3)
+
+#define a projection
+proj_globe <-
+  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) 
 ```
 
 We can then merge the data to the shape file and make the graphs of interest.
@@ -357,21 +357,25 @@ data_sf <- world_sf |>
 data_sf |> 
   ggplot() +
   geom_sf(aes(fill = weight_log), color = "white", linewidth = 0.1) +
+  proj_globe +
   theme_idid() +
   scale_fill_idid() +
-  coord_sf(crs = "+proj=ortho +x_0=0 +y_0=0 +lon_0=30 +lat_0=28") +
   labs(
     title = "Distribution of Identifying Variation Weights",
     fill = "Weight, compared to the average weight"
   ) +
-  theme(panel.grid.major = element_line(colour = "gray90"))
+  theme(
+    panel.grid.major = element_line(colour = "gray90"),
+    axis.text.y = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_blank()
+  )
 ``` 
 
 ### ididvar weights map
 
 ```{r ididvar_map_weight, fig.asp=1.3, message=FALSE}
 idid_viz_weights_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
-  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
+  proj_globe +
   theme(panel.grid.major = element_line(colour = "gray90")) 
 ```
 
@@ -382,7 +386,7 @@ data_sf |>
   ggplot() +
   geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
   theme_idid() +
-  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
+  proj_globe +
   scale_fill_gradient(
     low = idid_colors_table[["mid"]],
     high = idid_colors_table[["base"]],
@@ -392,14 +396,18 @@ data_sf |>
     title = "Distribution of contributing obs.",
     fill = "Number of contributing observations"
   ) +
-  theme(panel.grid.major = element_line(colour = "gray90"))
+  theme(
+    panel.grid.major = element_line(colour = "gray90"),
+    axis.text.y = ggplot2::element_blank(),
+    axis.text.x = ggplot2::element_blank()
+  )
 ``` 
 
 ### ididvar contrib map
 
 ```{r ididvar_map_contrib, fig.asp=1.3, message=FALSE}
 idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
-  coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28") +
+  proj_globe +
   theme(panel.grid.major = element_line(colour = "gray93")) 
 ```
 

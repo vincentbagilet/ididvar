@@ -32,12 +32,10 @@ The workflow to get a better understanding of observations of groups of observat
 
 1. **Visualize the relationship** between x and y after partialling out (with the `idid_viz_bivar` function)
 1. Compute the **observation level weights** and add a `weight` variable to the data set (using `idid_weights`)
-1. **Visualize** the distribution of these weights (the cumulative one with `idid_viz_cumul`, the observation level one with `idid_viz_weights` or `idid_viz_weights_map`). One might already get a sense of the effective sample
-1. **Identify groups** for which there is a large heterogeneity in weights across groups (with `idid_grouping_var`)
-1. **Visualize groups' weights** (with `idid_viz_weights` or `idid_viz_weights_map`)
-1. Repeat this analysis to **identify contributing observations**, *ie* observations that we can drop without too much altering the estimate.
-1. Compute and visualize the **effective sample size** (with `idid_viz_drop_change` and `idid_contrib_stats`) 
+1. **Visualize** the distribution of these weights (the cumulative with `idid_viz_cumul`, at the observation and group level with `idid_viz_weights` or `idid_viz_weights_map`. To **identify groups** and variables for which there is a large heterogeneity in weights across groups, use `idid_grouping_var`). At this stage, one might already get a sense of the effective sample
+1. Compute the set of **identify contributing observations**, *ie* observations that we can drop without too much altering the estimate (observations whose weight is larger than a threshold computed with `idid_contrib_threshold`).
 1. **Visualize contributing observations**, both individual and groups (using `idid_viz_contrib` and `idid_viz_contrib_map`)
+1. Compute and visualize the **effective sample size** (with `idid_viz_drop_change` and `idid_contrib_stats`) 
 
 <!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. -->
 <!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. -->

@@ -43,6 +43,7 @@ idid_viz_contrib <- function(reg,
                              contrib_threshold,
                              threshold_change = 0.05,
                              order = "",
+                             colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
 
@@ -78,7 +79,7 @@ idid_viz_contrib <- function(reg,
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
       ggplot2::labs(y = "Number of observations", fill = NULL) +
       ggplot2::scale_fill_manual(
-        values = c("#562A62", "#E79232"),
+        values = c(colors[length(colors)], colors[round(length(colors)/2)]),
         na.value = "gray88"
       )
 
@@ -89,7 +90,7 @@ idid_viz_contrib <- function(reg,
       ggplot2::geom_bar(position = ggplot2::position_stack(reverse = TRUE)) +
       ggplot2::labs(x = "Number of observations", fill = NULL) +
       ggplot2::scale_fill_manual(
-        values = c("#562A62", "#E79232"),
+        values = c(colors[length(colors)], colors[round(length(colors)/2)]),
         na.value = "gray88"
       )
 
@@ -104,8 +105,8 @@ idid_viz_contrib <- function(reg,
       ) +
       ggplot2::geom_tile(stat = StatSumTile) +
       ggplot2::scale_fill_gradient(
-        low = "#FBE2C5",
-        high = "#300D49",
+        high = colors[length(colors)],
+        low = colors[round(length(colors)/2)],
         na.value = "gray88"
       ) +
       ggplot2::labs(fill = "Number of contributing observations")

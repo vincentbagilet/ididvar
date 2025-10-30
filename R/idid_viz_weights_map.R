@@ -58,8 +58,6 @@ idid_viz_weights_map <- function(reg,
   )
   names(aggr_df) <- vect_names
 
-  # print(aggr_df)
-
   #merge with shapefile
   merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
   merged[["weight_log"]] <- log10(merged$weight * nrow(aggr_df))

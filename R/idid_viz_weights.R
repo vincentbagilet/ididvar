@@ -18,7 +18,8 @@
 #' @param order A string (either "x", "y" or "xy") describing whether the
 #' graph should be order, along the x or y axis or both.
 #' If anything else is specified, no specific ordering will be applied.
-#' @param keep_labels A boolean (optional). If FALSE, remove y labels and ticks.
+#' @param keep_labels A boolean (optional). If FALSE, removes y labels and ticks.
+#' This option is useful for panels with a large number of individuals.
 #'
 #' @returns
 #' A ggplot2 graph of identifying variation weights.

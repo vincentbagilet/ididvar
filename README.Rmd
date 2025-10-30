@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package provides tools to easily **identify the identifying variation in a regression**, specifically in **applied economics** analyses. It does not provide new metrics per say but instead facilitates the implementation of slightly modified versions of existing ones.
+This package provides tools to easily **identify the identifying variation in a regression**, specifically in **applied economics** analyses.
 
 This package is built as part of a [research project](https://vincentbagilet.github.io/causal_exaggeration/). As such, the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) provides a detailed scientific description of its content and of its underpinnings. 
 

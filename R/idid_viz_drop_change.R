@@ -67,8 +67,8 @@ idid_viz_drop_change <- function(reg,
       panel.grid.major.y = ggplot2::element_line()
     ) +
     ggplot2::labs(
-      title = "Variation of the estimate when dropping observations",
-      x = "Proportion of observations dropped",
-      y = "Variation (in %)\nas compared to the full sample estimate "
+      title = "Impact of dropping low-weight observations",
+      x = "Proportion of dropped observations",
+      y = "Variation (in %) as compared\nto the full sample estimate "
     )
 }

@@ -12,6 +12,7 @@ idid_viz_contrib(
   contrib_threshold,
   threshold_change = 0.05,
   order = "",
+  colors = c("#C25807", "#FBE2C5", "#300D49"),
   keep_labels = TRUE,
   ...
 )
@@ -39,7 +40,13 @@ estimate and s.e. when dropping observations.}
 graph should be order, along the x or y axis or both.
 If anything else is specified, no specific ordering will be applied.}
 
-\item{keep_labels}{A boolean (optional). If FALSE, remove y labels and ticks.}
+\item{colors}{A string vector of colors for the palette.
+I recommend to pass a vector of 3 distinct colors, with a lighter color in
+the middle, constituting a diverging scale. It allows a clear distinction
+between contributing and non contributing observations.}
+
+\item{keep_labels}{A boolean (optional). If FALSE, removes y labels and ticks.
+This option is useful for panels with a large number of individuals.}
 
 \item{...}{Additional elements to pass to the regression function when
 partialling out controls.}

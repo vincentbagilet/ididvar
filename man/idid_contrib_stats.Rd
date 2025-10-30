@@ -29,7 +29,7 @@ estimate and s.e. when dropping observations.}
 partialling out controls.}
 }
 \value{
-A list with 4 entries:
+A dataframe with 4 columns:
 \itemize{
 \item \code{n_total}: the total sample size, before dropping observations with
 missing values

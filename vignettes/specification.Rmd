@@ -284,11 +284,11 @@ idid_viz_contrib_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
 
 purrr::map(
   regs, 
-  \(x) idid_contrib_stats(x, var_interest = "l_gdpPercap") |> 
-    as_tibble() 
+  \(x) idid_contrib_stats(x, var_interest = "l_gdpPercap") 
 ) |> 
   purrr::list_rbind() |> 
   mutate(reg = names(regs), .before = 1) |> 
+  arrange(desc(n_effective)) |> 
   knitr::kable()
 ```
 

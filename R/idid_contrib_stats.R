@@ -9,7 +9,7 @@
 #' @inheritParams idid_viz_contrib
 #'
 #' @returns
-#' A list with 4 entries:
+#' A dataframe with 4 columns:
 #' - `n_total`: the total sample size, before dropping observations with
 #' missing values
 #' - `n_nominal`: the nominal sample size, ie the number of observations in the
@@ -43,7 +43,7 @@ idid_contrib_stats <- function(reg,
   weights <- ididvar::idid_weights(reg, var_interest, ...)
   contrib <- (weights > contrib_threshold)
 
-  out <- list(
+  out <- data.frame(
     n_initial = length(weights),
     n_nominal = sum(!is.na(weights)),
     n_effective = sum(contrib, na.rm = TRUE),
