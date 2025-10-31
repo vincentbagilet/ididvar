@@ -89,32 +89,33 @@ wants to partial out controls but not the variable of interest.</p>
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
     <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="co"># example with a lm regression</span></span></span>
 <span class="r-in"><span><span class="va">reg_ex_lm</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/txhousing.html" class="external-link">txhousing</a></span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="va">volume</span> <span class="op">~</span> <span class="va">sales</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">+</span> <span class="va">city</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sales</span><span class="op">)</span> <span class="op">~</span> <span class="va">median</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">+</span> <span class="va">city</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_lm</span>, <span class="st">"sales"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_lm</span>, <span class="st">"median"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>           1           2           3           4           5           6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 233.7775324 133.3108474  45.0092613  57.7680298  -0.3324471 -15.6634819 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>         1         2         3         4         5         6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> 10160.214 -3303.202 -4227.209  3889.547  2092.269 -3574.464 </span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_lm</span>, <span class="st">"volume"</span>, <span class="st">"sales"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_lm</span>, <span class="st">"log(sales)"</span>, <span class="st">"median"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>        1        2        3        4        5        6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 74216729 55076059 41667817 46298043 28720881 25818547 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span>            1            2            3            4            5            6 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> -0.050652563 -0.045605122  0.005417663 -0.160510848 -0.033033531  0.002041210 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with a fixest regression</span></span></span>
 <span class="r-in"><span><span class="va">reg_ex_fixest</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/txhousing.html" class="external-link">txhousing</a></span>  <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu">fixest</span><span class="fu">::</span><span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span>fml <span class="op">=</span> <span class="va">volume</span> <span class="op">~</span> <span class="va">sales</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">|</span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">+</span> <span class="va">city</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> NOTE: 1,426 observations removed because of NA values (LHS: 568, RHS: 1,426).</span>
+<span class="r-in"><span>  <span class="fu">fixest</span><span class="fu">::</span><span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span>fml <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sales</span><span class="op">)</span> <span class="op">~</span> <span class="va">median</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">|</span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">+</span> <span class="va">city</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> NOTE: 1,434 observations removed because of NA values (LHS: 568, RHS: 1,434).</span>
 <span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"sales"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
+<span class="r-msg co"><span class="r-pr">#&gt;</span> NOTE: 1,434 observations removed because of NA values (LHS: 616, RHS: 1,424).</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 10160.214 -3303.202 -4227.209  3889.547  2092.269 -3574.464</span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"log(sales)"</span>, <span class="st">"median"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> NOTE: 1,426 observations removed because of NA values (LHS: 568, RHS: 1,424).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 233.7775324 133.3108474  45.0092613  57.7680298  -0.3324471 -15.6634819</span>
-<span class="r-in"><span></span></span>
-<span class="r-in"><span><span class="fu">idid_partial_out</span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"volume"</span>, <span class="st">"sales"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
-<span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> NOTE: 1,426 observations removed because of NA values (LHS: 568, RHS: 1,424).</span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 74216729 55076059 41667817 46298043 28720881 25818547</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] -0.050652563 -0.045605122  0.005417663 -0.160510848 -0.033033530</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6]  0.002041210</span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

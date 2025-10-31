@@ -30,7 +30,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -67,17 +67,13 @@
 
     
     
-<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentbagilet.github.io/ididvar/">ididvar</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/walkerke/tigris" class="external-link">tigris</a></span><span class="op">)</span></span></code></pre></div>
 <p>The present vignette quickly <strong>presents a typical workflow for
 analysis</strong>, using a very basic example. It also provides an
 <strong>overview of most of <a href="docs/reference/index.html">the
 functions</a> available</strong> in the package.</p>
 <p>A more thorough example, with an actual analysis and interpretation
-of the results, is available on the research project website.</p>
+of the results, is <a href="https://vincentbagilet.github.io/causal_exaggeration/ididvar.html" class="external-link">available
+on the research project’s website</a>. The present</p>
 <div class="section level2">
 <h2 id="overview-of-a-typical-workflow">Overview of a typical workflow<a class="anchor" aria-label="anchor" href="#overview-of-a-typical-workflow"></a>
 </h2>
@@ -111,7 +107,11 @@ individual and groups (using <code>idid_viz_contrib</code> and
 (with <code>idid_viz_drop_change</code> and
 <code>idid_contrib_stats</code>)</li>
 </ol>
-<!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. --><!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. -->
+<!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. --><!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. --><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentbagilet.github.io/ididvar/">ididvar</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/walkerke/tigris" class="external-link">tigris</a></span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="visualize-relationship">Visualize relationship<a class="anchor" aria-label="anchor" href="#visualize-relationship"></a>

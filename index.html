@@ -67,7 +67,7 @@
 <p>You can install the development version of <code>ididvar</code> from <a href="https://github.com/vincentbagilet/ididvar" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vincentbagilet/ididvar"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"vincentbagilet/ididvar"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -79,28 +79,41 @@
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">reg_ex_fixest</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/txhousing.html" class="external-link">txhousing</a></span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu">fixest</span><span class="fu">::</span><span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span>fml <span class="op">=</span> <span class="va">volume</span> <span class="op">~</span> <span class="va">sales</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">|</span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">+</span> <span class="va">city</span><span class="op">)</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>l_sales <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sales</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu">fixest</span><span class="fu">::</span><span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span>fml <span class="op">=</span> <span class="va">l_sales</span> <span class="op">~</span> <span class="va">median</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">|</span> <span class="va">year</span> <span class="op">+</span> <span class="va">city</span>, vcov <span class="op">=</span> <span class="st">"twoway"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/idid_weights.html">idid_weights</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"sales"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="fu"><a href="reference/idid_weights.html">idid_weights</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="co">#&gt; [1] 9.955586e-05 3.237369e-05 3.690329e-06 6.079059e-06 2.013290e-10</span></span>
-<span><span class="co">#&gt; [6] 4.469283e-07</span></span></code></pre></div>
+<span><span class="co">#&gt; [1] 1.417497e-05 5.163932e-05 5.908480e-05 1.918702e-06 7.089139e-08</span></span>
+<span><span class="co">#&gt; [6] 7.372159e-09</span></span></code></pre></div>
 <p>The package also allows for an effortless exploration of these weights through visualizations.</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"sales"</span>, <span class="va">date</span>, <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span>, <span class="va">year</span>, <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="reference/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;"></p>
 <p>In this particular (somehow silly) regression, most of the identifying variation comes from a few cities: Houston, Dallas, Austin and San Antonio.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_cumul.html">idid_viz_cumul</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"sales"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_cumul.html">idid_viz_cumul</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_cumul-1.png" width="80%" style="display: block; margin: auto;"></p>
 <p>It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"sales"</span>, var_y <span class="op">=</span> <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span>, var_y <span class="op">=</span> <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
+<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
+<span><span class="co">#&gt; ?vcov).</span></span>
+<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
+<span><span class="co">#&gt; ?vcov).</span></span>
+<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
+<span><span class="co">#&gt; ?vcov).</span></span>
+<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
+<span><span class="co">#&gt; ?vcov).</span></span>
+<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
+<span><span class="co">#&gt; ?vcov).</span></span>
+<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
+<span><span class="co">#&gt; ?vcov).</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;"></p>
 <p>The package provides a larger <a href="docs/reference/index.html">set of functions</a>. The <a href="articles/ididvar.html">Get started vignette</a> introduces them in a concise manner, while also describing a typical workflow for analysis.</p>
-<p><a href="https://vincentbagilet.github.io/causal_exaggeration/" class="external-link">Online appendices</a> of the <a href="https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf" class="external-link">associated paper</a> complements this vignette by providing a thorough example of a practical implementation of an analysis using the <code>ididvar</code> package.</p>
+<p><a href="https://vincentbagilet.github.io/causal_exaggeration/ididvar.html" class="external-link">Online appendices</a> of the <a href="https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf" class="external-link">associated paper</a> complements this vignette by providing an example of a practical implementation of an analysis using the <code>ididvar</code> package.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
