@@ -37,7 +37,7 @@ idid_viz_weights(reg_ctrl, "ctrl", exper)
 idid_viz_bivar(reg_ctrl, "ctrl")
 idid_viz_contrib(reg_ctrl, "ctrl", educ)
 
-idid_weights(reg_ctrl, "ctrl") |> idid_viz_cumul()
+idid_viz_cumul(reg_ctrl, "ctrl")
 
 
 

@@ -13,9 +13,9 @@
 #'
 #' @examples
 #' reg_ex <- ggplot2::txhousing |>
-#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'   lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 #'
-#' idid_viz_cumul(reg_ex, "sales")
+#' idid_viz_cumul(reg_ex, "median")
 idid_viz_cumul <- function(reg,
                            var_interest,
                            prop_weights = 0.2,

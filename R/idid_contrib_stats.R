@@ -22,9 +22,9 @@
 #'
 #' @examples
 #' reg_ex <- ggplot2::txhousing |>
-#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'   lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 #'
-#' idid_contrib_stats(reg_ex, "sales")
+#' idid_contrib_stats(reg_ex, "median")
 idid_contrib_stats <- function(reg,
                                var_interest,
                                contrib_threshold,

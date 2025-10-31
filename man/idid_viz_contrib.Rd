@@ -71,11 +71,11 @@ specified.
 }
 \examples{
 reg_ex <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_viz_contrib(reg_ex, "sales", year, city, order = "y") +
+idid_viz_contrib(reg_ex, "median", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL)
 
-idid_viz_contrib(reg_ex, "sales", var_y = city, order = "y") +
+idid_viz_contrib(reg_ex, "median", var_y = city, order = "y") +
   ggplot2::labs(x = NULL)
 }

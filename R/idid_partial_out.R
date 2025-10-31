@@ -26,22 +26,22 @@
 #' @examples
 #' # example with a lm regression
 #' reg_ex_lm <- ggplot2::txhousing |>
-#'   lm(formula = volume ~ sales + listings + city + as.factor(date))
+#'   lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 #'
-#' idid_partial_out(reg_ex_lm, "sales") |>
+#' idid_partial_out(reg_ex_lm, "median") |>
 #'  head()
 #'
-#' idid_partial_out(reg_ex_lm, "volume", "sales") |>
+#' idid_partial_out(reg_ex_lm, "log(sales)", "median") |>
 #'  head()
 #'
 #' # example with a fixest regression
 #' reg_ex_fixest <- ggplot2::txhousing  |>
-#'   fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+#'   fixest::feols(fml = log(sales) ~ median + listings |  as.factor(date) + city)
 #'
-#' idid_partial_out(reg_ex_fixest, "sales") |>
+#' idid_partial_out(reg_ex_fixest, "median") |>
 #'   head()
 #'
-#' idid_partial_out(reg_ex_fixest, "volume", "sales") |>
+#' idid_partial_out(reg_ex_fixest, "log(sales)", "median") |>
 #'   head()
 idid_partial_out <- function(reg,
                              var_to_partial,
@@ -69,17 +69,17 @@ idid_partial_out <- function(reg,
       na.action = stats::na.exclude,
       ...
     ) |>
-    stats::residuals(na.rm = FALSE) |>
     #handle warning when using feols for instance:
     #feols does not have a 'na.action' argument
     withCallingHandlers(
       warning = function(w) {
-        if (grepl("na.action is not a valid argument for function",
+        if (grepl("na.action is not a valid",
                   conditionMessage(w))) {
           invokeRestart("muffleWarning")
         }
       }
-    )
+    ) |>
+    stats::residuals(na.rm = FALSE)
 
   #add NAs back for plm (because na.action not fully supported by plm)
   if (inherits(reg, "plm")) {

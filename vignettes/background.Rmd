@@ -49,7 +49,7 @@ One can compute group level weights by summing the weights of observation within
 
 By definition, in the partialled out regression, these weights represent the squared-distance to the center of the distribution of the variable of interest, after partialling out the controls:
 
-```{r bivar_partial, code_fold=TRUE}
+```{r bivar_partial, code_fold=TRUE, fig.asp=0.8}
 gapminder_sample <- gapminder |> 
   mutate(l_gdpPercap = log(gdpPercap)
   ) |> 
@@ -94,7 +94,7 @@ data_partial |>
 
 While this pattern appears clearly in the partialled out regression, it is much less visible when plotting the raw relationship:
 
-```{r bivar_raw, code_fold=TRUE}
+```{r bivar_raw, code_fold=TRUE, fig.asp=0.8}
 data_partial |>
   ggplot(aes(x = gdpPercap, y = lifeExp, color = weight_log)) +
   geom_point(size = 1.5) +

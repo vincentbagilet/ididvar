@@ -49,7 +49,7 @@ observations dropped.
 }
 \examples{
 reg_ex <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_viz_drop_change(reg_ex, "sales", search_end = 0.3)
+idid_viz_drop_change(reg_ex, "median", search_end = 0.6)
 }

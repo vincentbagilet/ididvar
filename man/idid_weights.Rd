@@ -38,9 +38,9 @@ to \code{idid_weights}.
 }
 \examples{
 reg_ex_lm <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_weights(reg_ex_lm, "sales") |>
+idid_weights(reg_ex_lm, "median") |>
  head()
 
 }

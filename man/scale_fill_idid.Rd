@@ -31,9 +31,9 @@ are specific to ididvar application and built with weights whose sum equals
 }
 \examples{
 reg_ex_fixest <- ggplot2::txhousing |>
-  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+  fixest::feols(fml = log(sales) ~ median + listings |  as.factor(date) + city)
 
-idid_viz_weights(reg_ex_fixest, "sales", date, city) +
+idid_viz_weights(reg_ex_fixest, "median", year, city) +
   ggplot2::labs(x = NULL, y = NULL) +
   scale_fill_idid(colors = c("#19304d", "#fae7d3", "#84141e"))
 

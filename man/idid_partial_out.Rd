@@ -35,21 +35,21 @@ wants to partial out controls but not the variable of interest.
 \examples{
 # example with a lm regression
 reg_ex_lm <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_partial_out(reg_ex_lm, "sales") |>
+idid_partial_out(reg_ex_lm, "median") |>
  head()
 
-idid_partial_out(reg_ex_lm, "volume", "sales") |>
+idid_partial_out(reg_ex_lm, "log(sales)", "median") |>
  head()
 
 # example with a fixest regression
 reg_ex_fixest <- ggplot2::txhousing  |>
-  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+  fixest::feols(fml = log(sales) ~ median + listings |  as.factor(date) + city)
 
-idid_partial_out(reg_ex_fixest, "sales") |>
+idid_partial_out(reg_ex_fixest, "median") |>
   head()
 
-idid_partial_out(reg_ex_fixest, "volume", "sales") |>
+idid_partial_out(reg_ex_fixest, "log(sales)", "median") |>
   head()
 }

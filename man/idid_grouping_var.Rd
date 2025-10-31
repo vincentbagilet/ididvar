@@ -36,11 +36,11 @@ variable yields the most heterogeneous between-groups differences in weights
 }
 \examples{
 reg_ex <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_grouping_var(reg_ex, "sales", grouping_vars = c("city", "year", "month"))
+idid_grouping_var(reg_ex, "median", grouping_vars = c("city", "year", "month"))
 
 #We can now then explore the weights along the dimension with the largest
 #variance: year
-idid_viz_weights(reg_ex, "sales", year)
+idid_viz_weights(reg_ex, "median", year)
 }

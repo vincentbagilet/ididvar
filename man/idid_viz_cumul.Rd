@@ -28,7 +28,7 @@ Visualization of the cumulative distribution of weights
 }
 \examples{
 reg_ex <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_viz_cumul(reg_ex, "sales")
+idid_viz_cumul(reg_ex, "median")
 }

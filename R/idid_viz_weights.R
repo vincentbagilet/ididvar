@@ -44,9 +44,9 @@
 #'
 #' # example with two dimensions
 #' reg_ex_two_dim <- ggplot2::txhousing |>
-#'   lm(formula = volume ~ sales + listings + as.factor(date) + city)
+#'   lm(formula = log(sales) ~ median + listings + as.factor(date) + city)
 #'
-#' idid_viz_weights(reg_ex_two_dim, "sales", date, city, order = "y") +
+#' idid_viz_weights(reg_ex_two_dim, "median", year, city, order = "y") +
 #'   ggplot2::labs(x = NULL, y = NULL)
 #'
 idid_viz_weights <- function(reg,

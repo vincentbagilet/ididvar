@@ -14,17 +14,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-
-```{r setup, message=FALSE}
-library(ididvar)
-library(dplyr)
-library(ggplot2)
-library(tigris)
-```
-
 The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most of [the functions](docs/reference/index.html) available** in the package. 
 
-A more thorough example, with an actual analysis and interpretation of the results, is available on the research project website. 
+A more thorough example, with an actual analysis and interpretation of the results, is [available on the research project's website](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html). The present 
 
 # Overview of a typical workflow
 
@@ -39,6 +31,14 @@ The workflow to get a better understanding of observations of groups of observat
 
 <!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. -->
 <!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. -->
+
+```{r setup, message=FALSE}
+library(ididvar)
+library(dplyr)
+library(ggplot2)
+library(tigris)
+```
+
 
 # Visualize relationship
 

@@ -44,33 +44,34 @@ library(ididvar)
 library(ggplot2)
 
 reg_ex_fixest <- ggplot2::txhousing |>
-  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+  dplyr::mutate(l_sales = log(sales)) |> 
+  fixest::feols(fml = l_sales ~ median + listings | year + city, vcov = "twoway")
 
-idid_weights(reg_ex_fixest, "sales") |>
+idid_weights(reg_ex_fixest, "median") |>
   head()
 ```
 
 The package also allows for an effortless exploration of these weights through visualizations.
 
 ```{r plot_weights, message=FALSE, warning=FALSE, fig.asp=1.5, fig.dpi=400}
-idid_viz_weights(reg_ex_fixest, "sales", date, city, order = "y") +
+idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
 ```
 
 In this particular (somehow silly) regression, most of the identifying variation comes from a few cities: Houston, Dallas, Austin and San Antonio.
 
 ```{r plot_cumul, message=FALSE, fig.asp=1.3, fig.dpi=400, out.width='80%'}
-idid_viz_cumul(reg_ex_fixest, "sales")
+idid_viz_cumul(reg_ex_fixest, "median")
 ```
 
 It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained). 
 
 ```{r plot_contrib, message=FALSE, fig.asp=1.5, fig.dpi=400}
-idid_viz_contrib(reg_ex_fixest, "sales", var_y = city, order = "y") +
+idid_viz_contrib(reg_ex_fixest, "median", var_y = city, order = "y") +
   ggplot2::labs(y = NULL)
 ```
 
 The package provides a larger [set of functions](docs/reference/index.html). The [Get started vignette](articles/ididvar.html) introduces them in a concise manner, while also describing a typical workflow for analysis. 
 
-[Online appendices](https://vincentbagilet.github.io/causal_exaggeration/) of the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) complements this vignette by providing a thorough example of a practical implementation of an analysis using the `ididvar` package. 
+[Online appendices](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html) of the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) complements this vignette by providing an example of a practical implementation of an analysis using the `ididvar` package. 
 

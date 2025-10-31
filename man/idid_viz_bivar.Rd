@@ -21,13 +21,13 @@ outcome and the variable of interest, after having partialLed out controls.
 }
 \examples{
 reg_few_ctrl <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings)
+  lm(formula = log(sales) ~ median)
 
-idid_viz_bivar(reg_few_ctrl, "sales")
+idid_viz_bivar(reg_few_ctrl, "median")
 
 reg_more_ctrl <- ggplot2::txhousing |>
-  lm(formula = volume ~ sales + listings + city + as.factor(date))
+  lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
-idid_viz_bivar(reg_more_ctrl, "sales")
+idid_viz_bivar(reg_more_ctrl, "median")
 
 }

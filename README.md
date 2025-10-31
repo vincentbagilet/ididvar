@@ -42,19 +42,20 @@ library(ididvar)
 library(ggplot2)
 
 reg_ex_fixest <- ggplot2::txhousing |>
-  fixest::feols(fml = volume ~ sales + listings |  as.factor(date) + city)
+  dplyr::mutate(l_sales = log(sales)) |> 
+  fixest::feols(fml = l_sales ~ median + listings | year + city, vcov = "twoway")
 
-idid_weights(reg_ex_fixest, "sales") |>
+idid_weights(reg_ex_fixest, "median") |>
   head()
-#> [1] 9.955586e-05 3.237369e-05 3.690329e-06 6.079059e-06 2.013290e-10
-#> [6] 4.469283e-07
+#> [1] 1.417497e-05 5.163932e-05 5.908480e-05 1.918702e-06 7.089139e-08
+#> [6] 7.372159e-09
 ```
 
 The package also allows for an effortless exploration of these weights
 through visualizations.
 
 ``` r
-idid_viz_weights(reg_ex_fixest, "sales", date, city, order = "y") +
+idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
 ```
 
@@ -65,7 +66,7 @@ variation comes from a few cities: Houston, Dallas, Austin and San
 Antonio.
 
 ``` r
-idid_viz_cumul(reg_ex_fixest, "sales")
+idid_viz_cumul(reg_ex_fixest, "median")
 ```
 
 <img src="man/figures/README-plot_cumul-1.png" width="80%" style="display: block; margin: auto;" />
@@ -75,8 +76,20 @@ contribute to identification (in the sense that dropping the other
 observations does not significantly affect the estimate obtained).
 
 ``` r
-idid_viz_contrib(reg_ex_fixest, "sales", var_y = city, order = "y") +
+idid_viz_contrib(reg_ex_fixest, "median", var_y = city, order = "y") +
   ggplot2::labs(y = NULL)
+#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
+#> ?vcov).
+#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
+#> ?vcov).
+#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
+#> ?vcov).
+#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
+#> ?vcov).
+#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
+#> ?vcov).
+#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
+#> ?vcov).
 ```
 
 <img src="man/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;" />
@@ -87,8 +100,8 @@ vignette](articles/ididvar.html) introduces them in a concise manner,
 while also describing a typical workflow for analysis.
 
 [Online
-appendices](https://vincentbagilet.github.io/causal_exaggeration/) of
-the [associated
+appendices](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html)
+of the [associated
 paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf)
-complements this vignette by providing a thorough example of a practical
+complements this vignette by providing an example of a practical
 implementation of an analysis using the `ididvar` package.
