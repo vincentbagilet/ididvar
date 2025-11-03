@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ididvar
+# ididvar <a href="https://vincentbagilet.github.io/ididvar/"><img src="man/figures/logo.png" align="right" height="119" alt="ididvar website" /></a>
 
 <!-- badges: start -->
 
@@ -17,6 +17,9 @@ such, the [associated
 paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf)
 provides a detailed scientific description of its content and of its
 underpinnings.
+
+**This package is under active development and some functions may not
+work perfectly, yet.**
 
 ## Installation
 
@@ -78,30 +81,24 @@ observations does not significantly affect the estimate obtained).
 ``` r
 idid_viz_contrib(reg_ex_fixest, "median", var_y = city, order = "y") +
   ggplot2::labs(y = NULL)
-#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
-#> ?vcov).
-#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
-#> ?vcov).
-#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
-#> ?vcov).
-#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
-#> ?vcov).
-#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
-#> ?vcov).
-#> Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see
-#> ?vcov).
 ```
 
 <img src="man/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;" />
 
-The package provides a larger [set of
-functions](docs/reference/index.html). The [Get started
-vignette](articles/ididvar.html) introduces them in a concise manner,
-while also describing a typical workflow for analysis.
-
+The package provides a large [set of functions](reference/index.html).
+The [Get started vignette](articles/ididvar.html) introduces them in a
+concise manner, while also describing a typical workflow for analysis.
 [Online
 appendices](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html)
 of the [associated
 paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf)
 complements this vignette by providing an example of a practical
 implementation of an analysis using the `ididvar` package.
+
+## Feedback and contributions
+
+Feedback and contributions are more than welcome. If you find a bug or
+if the package does not work on your specific case, do not hesitate to
+[create a new issue on
+Github](https://github.com/vincentbagilet/ididvar/issues/new) or send me
+an email at [vincent.bagilet@ens-lyon.fr](vincent.bagilet@ens-lyon.fr).

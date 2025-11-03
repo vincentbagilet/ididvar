@@ -14,11 +14,11 @@ knitr::opts_chunk$set(
 )
 ```
 
-The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most of [the functions](docs/reference/index.html) available** in the package. 
+The present vignette quickly **presents a typical workflow for analysis**, using a very basic example. It also provides an **overview of most of [the functions](./reference/index.html) available** in the package. 
 
-A more thorough example, with an actual analysis and interpretation of the results, is [available on the research project's website](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html). The present 
+A more thorough example, with an actual analysis and interpretation of the results, is [available on the research project's website](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html). 
 
-# Overview of a typical workflow
+## Overview of a typical workflow
 
 The workflow to get a better understanding of observations of groups of observations contributing to identification is relatively straightforward: 
 
@@ -32,19 +32,17 @@ The workflow to get a better understanding of observations of groups of observat
 <!-- Optionally, we can also add a `contrib` dummy. For that we need to determine the contribution threshold. Here I use the `idid_contrib_threshold` to find a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. -->
 <!-- 1. Compute the weights at a group level of interest (here state level) by summing weights of observations in this group. -->
 
-```{r setup, message=FALSE}
-library(ididvar)
-library(dplyr)
-library(ggplot2)
-library(tigris)
-```
-
-
-# Visualize relationship
+## Visualize relationship
 
 Let's assume we have already ran the regression of interest. 
 
 ```{r reg_ex, message=FALSE}
+library(ididvar)
+library(dplyr)
+library(ggplot2)
+library(tigris)
+library(knitr)
+
 data_ex <- state.x77 |>
   as_tibble() |>
   dplyr::mutate(
@@ -64,18 +62,16 @@ We first visualize the relationship between x and y (here `Illiteracy` and `Inco
 idid_viz_bivar(reg_ex, "Income")
 ```
 
-# Compute weights
+## Compute weights
 
-We can **add the weights to the data**.
+We can **add the weights to the data**. This step is optional as most functions will recompute the weights.
 
 ```{r data_ex_weights}
 data_ex_weights <- data_ex |> 
-  mutate(weight = idid_weights(reg_ex, "Income"))
+  mutate(idid_weight = idid_weights(reg_ex, "Income"))
 ```
 
-# Visualize the weights
-
-## Weights distribution
+## Visualize the weights
 
 We can plot the distribution of weights using the `idid_viz_cumul` function.
 
@@ -87,7 +83,13 @@ idid_viz_cumul(reg_ex, "Income")
 
 That allows us to analyse the extend to which the weights are evenly distributed. A very unequal distribution should hint that some observations contribute much more to identification and that some observations may not contribute much.
 
-We may then want to explore the distribution of weights along several variables. Depending on the shape of the data, there might be some obvious way to analyse it: if the data is an individual-time panel, one may want to group it by individual and time. That can be done with, by providing these two dimensions as the `var_x` and `var_y` arguments.
+We may then want to explore the distribution of weights, using the `idid_viz_weights` function. This function makes a graph to visualize the identifying variation weights (a heatmap or a bar chart, depending on the number of dimensions specified). Depending on the shape of the data, there might be some obvious way to analyse it: if, as in the present example, the data is a cross-section, one may want to plot the data by individuals, only providing `var_x` or `var_y` to the `idid_viz_weights`.^[The `order` parameter allows to sort individuals by weight, along the specified axis (here y)]
+
+```{r idid_viz_weights, fig.asp=1}
+idid_viz_weights(reg_ex, "Income", var_y = state, order = "y")
+```
+
+If the data is an individual-time panel, one may want to plot each observation using a heatmap. That can be done with, by providing these two dimensions as the `var_x` and `var_y` arguments of `idid_viz_weights`. 
 
 When the data has a geographical dimension, one may want to plot a map of the weights. The function `idid_viz_weights_map` allows to do easily do that by only providing a shape file in a `sf` format along with the join variable name.
 
@@ -102,6 +104,8 @@ states_sf <- tigris::states(
 idid_viz_weights_map(reg_ex, "Income", states_sf, "state")
 ```
 
+## Groups
+
 In addition--or instead--, it is often interesting to analyse whether some groups have larger weights, *ie* contribute more, than others. One may have *a priori* ideas regarding which variables to group by. In cases when this might be less clear, one can use `idid_grouping_var` to identify variables for which groups created by each variable considered (in the `grouping_vars` argument of the function) have the most between group variance in weights, suggesting a large heterogeneity in weights across groups.
 
 ```{r idid_grouping_var}
@@ -114,7 +118,7 @@ knitr::kable()
 
 Here, the larges between group variance is across `income_quartiles`, suggesting that some income group may have larger weights than others. Now that dimensions along which it makes sense to group the weights by have been identify, one can plot the weights distribution across groups.
 
-```{r idid_viz_weights}
+```{r idid_viz_weights_group}
 #| fig-asp: 0.8
 
 idid_viz_weights(reg_ex, "Income", income_quartiles) +
@@ -125,11 +129,21 @@ idid_viz_weights(reg_ex, "Income", income_quartiles) +
   )
 ```
 
+Such an analysis can also be implemented for two variables at the same time, thus building heatmaps. This is done with the same method as the one used for individual observations discussed above.
+
+```{r heatmap, fig.asp=1}
+idid_viz_weights(reg_ex, "Income", income_quartiles, pop_quartiles) +
+  coord_fixed() +
+  labs(x = "Income quartiles", y = "Population quartiles")
+```
+
 Through all these explorations, one can get a sense of the distribution of weights, through space or groups. 
 
-# Contribution
+## Contribution
 
-The goal of the analysis is really to determine which observations contribute to the estimation and which do not. The approach chosen to do so here is to identify observations with low weight that can be dropped without affecting the point estimate *and* standard errors by more than a given proportion.
+We now may wonder which observations contribute to the estimation and which do not. To do so, the present package identifies observations with low weight that can be dropped without affecting the point estimate *and* standard errors by more than a given proportion. 
+
+This can also be illustrated via the `idid_viz_drop_change` function. It plots a faceted line graph describing the percentage variation of the point estimate and s.e. of interest as a function of the proportion of observations dropped.
 
 ```{r idid_viz_drop_change}
 #| fig-asp: 1
@@ -142,25 +156,38 @@ idid_viz_drop_change(
 )
 ```
 
-This function just loops over the `idid_drop_change` function which, for a given proportion of observations dropped, computes a variation of the point estimate and standard errors of the coefficient of interest when dropping low weight observations.
+This function loops over the `idid_drop_change` function which, for a given proportion of observations dropped, computes a variation of the point estimate and standard errors of the coefficient of interest when dropping low weight observations.
 
-Using the `idid_contrib_threshold` one can thus identify a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion. 
+Using the `idid_contrib_threshold` one can identify a weight threshold below which removing observations does not change the point estimate or the standard error of the estimate of interest by more than a given proportion, *se* 5%:
 
-We can thus define an effective sample whose weights are below the aforementioned threshold. We can then use the `idid_contrib_stats` function to compute quick descriptive statistics on this effective sample:
-
-```{r idid_contrib_stats}
-idid_contrib_stats(reg_ex, "Income")
+```{r idid_contrib_threshold}
+idid_contrib_threshold(reg_ex, "Income", threshold_change = 0.05)
 ```
 
-The `ididvar` package also provides function to quickly explore which observations are part of this effective sample.
+All observations with a weight below `r round(idid_contrib_threshold(reg_ex, "Income", threshold_change = 0.05), 6)` can be dropped without changing the estimate of interest by more than 5%.
 
-```{r}
+We define the **effective sample** as the set of observations whose weights are above the aforementioned threshold. 
+
+We first use the `idid_contrib_stats` function to compute the size of this effective sample (as well as of the initial and nominal one):
+
+```{r idid_contrib_stats}
+idid_contrib_stats(reg_ex, "Income") |> 
+  knitr::kable()
+```
+
+We then characterize this effective sample using the `idid_viz_contrib` and `idid_viz_contrib_map` functions. They work in a similar ways as `idid_viz_weights` and `idid_viz_weights_map`.
+
+```{r idid_viz_contrib}
 #| fig-asp: 0.8
 
 idid_viz_contrib(reg_ex, "Income", income_quartiles)
 idid_viz_contrib_map(reg_ex, "Income", states_sf, "state")
 ```
 
-`r vignette("own-viz")` provides a discussion and code to customize these graphs.
+[Online appendices](https://vincentbagilet.github.io/causal_exaggeration/ididvar.html) of the [associated paper](https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf) complements the present vignette by providing an example of a practical implementation of an analysis using the `ididvar` package. 
+
+The ["Own visualizations" vignette](own-viz.html) provides a discussion and code to customize these graphs.
+
+
 
 

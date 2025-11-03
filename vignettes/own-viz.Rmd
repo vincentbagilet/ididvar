@@ -14,20 +14,10 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r load_packages, message=FALSE}
-library(ididvar)
-library(tigris)
-library(dplyr)
-library(ggplot2)
-library(gapminder)
-library(fixest)
-library(rnaturalearth)
-library(rnaturalearthdata)
-```
 
 This vignette **provides code that can easily be copied/pasted to make your own customized plots**, going beyond the quick but less customizable functions provided in the package.
 
-This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to very quickly visualize those weights. These functions have names starting by `idid_viz`. However, one may want to *customize* their graphs or build their own, hence this vignette. 
+This package exists to facilitate the computation and analysis of identifying variation weights. It therefore includes a set of functions to very quickly visualize those weights. These functions have names starting by `idid_viz` and are aimed to be used for exploration. However, one may also want to build graphs for communication and therefore they may want to *customize* their graphs or build their own. This vignette provides code to do so quickly and compares the resulting plots to the output of visualization functions from the `ididvar` package.
 
 ## Workflow to plot identifying variation weights
 
@@ -41,7 +31,16 @@ The workflow to make a plot from scratch is straightforward:
 
 Let's assume we have already ran the regression of interest. We also add a `decade` variable and ISO codes from the `gapminder::country_codes` dataset that we are going to use later.  
 
-```{r run_reg}
+```{r run_reg, message=FALSE}
+library(ididvar)
+library(tigris)
+library(dplyr)
+library(ggplot2)
+library(gapminder)
+library(fixest)
+library(rnaturalearth)
+library(rnaturalearthdata)
+
 gapminder_sample <- gapminder |> 
   mutate(
     l_gdpPercap = log(gdpPercap),
@@ -201,9 +200,11 @@ idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y") +
   labs(y = NULL, fill = NULL)
 ```
 
-Note that we can put additional geoms on top of existing ones, to add some coloring scheme for instance.
+Note that, in `idid_viz` functions, additional geoms can be added on top of existing ones, to add some coloring scheme for instance.
 
 ### Own contribution graph
+
+We can also plot graphs to represent and characterize the set of contributing observations.
 
 ```{r contrib_bar_plot, echo=TRUE, fig.asp=0.7, message=FALSE}
 gapminder_weights |> 
@@ -266,9 +267,11 @@ country_decade_weights |>
   ) 
 ```
 
-The graph above was made plotting the raw weights. However, one value is much larger than the others. It hides all the variation in weight magnitude. This is why I introduce a specific scale that puts various observations in bins. On addition, by scaling weights with respect to an average weight, this scale allows to make graphs comparable between each other. 
+The graph above was made plotting the raw weights. However, one value is much larger than the others. It hides all the variation in weight magnitude. 
 
 ### Weights with scale
+
+I therefore introduced a specific scale that puts various observations in bins. In addition, by scaling weights with respect to an average weight, this scale allows to make graphs comparable to each other. 
 
 ```{r heatmap_with_scale, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
@@ -307,6 +310,8 @@ idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
 
 ### Contributing observations
 
+We can also make heatmaps of contributing observations:
+
 ```{r heatmap_contrib, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
   mutate(country = forcats::fct_reorder(country, contrib, sum)) |>
@@ -338,7 +343,7 @@ idid_viz_contrib(reg, "l_gdpPercap", decade, country, order = "y") +
 
 ## Maps
 
-We then plot the data. To make a map, we need an `sf` object:
+Finally, we can make maps. To to that, we need a shape file (a `sf` object) that we merge to the data.
 
 ```{r world_sf}
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
@@ -349,11 +354,10 @@ proj_globe <-
   coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) 
 ```
 
-We can then merge the data to the shape file and make the graphs of interest.
 
 ### Weights map
 
-```{r map_weights, fig.asp=1.3}
+```{r map_weights, fig.asp=1}
 data_sf <- world_sf |> 
   full_join(country_weights, by = join_by(iso_alpha)) |> 
   mutate(weight_log = log10(weight * nrow(country_weights))) 
@@ -377,7 +381,7 @@ data_sf |>
 
 ### ididvar weights map
 
-```{r ididvar_map_weight, fig.asp=1.3, message=FALSE}
+```{r ididvar_map_weight, fig.asp=1, message=FALSE}
 idid_viz_weights_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
   proj_globe +
   theme(panel.grid.major = element_line(colour = "gray90")) 
@@ -385,7 +389,7 @@ idid_viz_weights_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
 
 ### Contrib map
 
-```{r map_contrib, fig.asp=1.3}
+```{r map_contrib, fig.asp=1}
 data_sf |> 
   ggplot() +
   geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
@@ -409,7 +413,7 @@ data_sf |>
 
 ### ididvar contrib map
 
-```{r ididvar_map_contrib, fig.asp=1.3, message=FALSE}
+```{r ididvar_map_contrib, fig.asp=1, message=FALSE}
 idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
   proj_globe +
   theme(panel.grid.major = element_line(colour = "gray93")) 

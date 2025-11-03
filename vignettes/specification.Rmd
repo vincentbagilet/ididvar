@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 This document discusses how `ididvar` can be used to discuss the impact of specification choices on the identifying variation weights and their distribution across observations. In particular, it discusses how the package can provide insights on how different levels of fixed effects affect the weights and the observations contributing to identification.
 
-For this example, we use the `gapminder` data set built on [gapminder.org](https://www.gapminder.org/) and made available by the [`gapminder` package](https://jennybc.github.io/gapminder/index.html). It contains data on life expectency, GDP per capita and population, for all countries in the world, every 5 years between 1952 and 2007. As such, it constitutes a panel. 
+For this example, let's use the `gapminder` data set built on [gapminder.org](https://www.gapminder.org/) and made available by the [`gapminder` package](https://jennybc.github.io/gapminder/index.html). It contains data on life expectancy, GDP per-capita and population, for all countries in the world, every 5 years between 1952 and 2007. It is therefore a panel. 
 
 ```{r setup, message=FALSE}
 library(ididvar)
@@ -25,13 +25,17 @@ library(fixest)
 library(ggplot2)
 library(dplyr)
 library(purrr)
+library(knitr)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(sf)
 ```
 
 In this example, we are interested in studying the relationship between life expectancy and (log-)GDP per capita. We will consider several sets of fixed effects and study their impact on the variation used for identification.
 
-## Exploration
+## Specifications
 
-Let's consider 3 regression models: with country fixed effects, year fixed effects and both. We do not include any additional controls for simplicity.
+Let's consider 5 regression models: with country, continent, year, continent-year, and country-year fixed effects. We do not include any additional controls for simplicity.
 
 ```{r reg}
 gapminder_ext <- gapminder |> 
@@ -63,22 +67,33 @@ regs <- list(
 
 Of course, the parameter on `l_gdpPercap` does not represent the same quantity in each model. In `reg_country_fe`, it represents the within country relationship between `lifeExp` and `l_gdpPercap`, *ie* comparing observations at different points in time, within a given country. In `reg_year_fe`, it represents the within year and therefore across countries.
 
-As always in applied econometrics, one the first steps in the analysis consists exploring the raw data and the relationship between the variables of interest.
-We can then plot the partialled out versions of the relationships to get a sense of the variation partialled out by the various sets of fixed effects.
+The goal of this document is to compare across specification the sets of observations that contribute to identification.
 
-## Bivariate graphs {.tabset}
+## Bivariate graphs 
+
+As always in applied econometrics, one the first steps of analysis consists in exploring the raw data and the relationship between the variables of interest. 
+
+We can thus plot the partialled out versions of the relationships to get a sense of the variation partialled out by the various sets of fixed effects. These graphs hopefully help understanding what the fixed effects how the fixed effects are affecting the relationship of interest and what variation they are removing. In this particular case, regardless the set of fixed effects, the relationship is positive, despite the quantity estimated being somehow radically different.
+
+## {.tabset}
 
 ### Raw
 
 ```{r idid_viz_bivar, echo=FALSE}
-lims <- ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35)) 
+graph_bivar <- function(reg) {
+  idid_viz_bivar(reg, "l_gdpPercap") +
+    geom_point(aes(color = continent)) +
+    lims(x = c(-3, 4.2), y = c(-42, 35)) +
+    labs(color = NULL) +
+    scale_color_manual(values = c("#497C89", "#cf816b"))
+}
 
-bivar_raw <- idid_viz_bivar(reg_raw, "l_gdpPercap") + lims
-bivar_continent_fe <- idid_viz_bivar(reg_continent_fe, "l_gdpPercap") + lims
-bivar_country_year_fe <- idid_viz_bivar(reg_continent_year_fe, "l_gdpPercap") + lims
-bivar_country_fe <- idid_viz_bivar(reg_country_fe, "l_gdpPercap") + lims
-bivar_year_fe <- idid_viz_bivar(reg_year_fe, "l_gdpPercap") + lims
-bivar_twfe <- idid_viz_bivar(reg_twfe, "l_gdpPercap") + lims
+bivar_raw <- graph_bivar(reg_raw)
+bivar_continent_fe <- graph_bivar(reg_continent_fe)
+bivar_country_year_fe <- graph_bivar(reg_continent_year_fe)
+bivar_country_fe <- graph_bivar(reg_country_fe)
+bivar_year_fe <- graph_bivar(reg_year_fe) 
+bivar_twfe <- graph_bivar(reg_twfe)
 ```
 
 ```{r bivar_raw, fig.asp=0.8, echo=FALSE}
@@ -112,20 +127,24 @@ bivar_twfe
 ### Code
 
 ```{r bivar_code, eval=FALSE}
-purrr::map(
-  regs, 
-  \(x) idid_viz_bivar(x, var_interest = "l_gdpPercap") + 
-    ggplot2::lims(x = c(-3, 4.2), y = c(-42, 35))
-)
+graph_bivar <- function(reg) {
+  idid_viz_bivar(reg, "l_gdpPercap") +
+    geom_point(aes(color = continent)) +
+    lims(x = c(-3, 4.2), y = c(-42, 35)) +
+    labs(color = NULL) +
+    scale_color_manual(values = c("#497C89", "#cf816b"))
+}
+
+purrr::map(regs, graph_bivar)
 ```
 
-## {-}
+## Weight graphs 
 
-These graphs hopefully help understanding what the fixed effects are doing and what variation they are removing
+We then explore how different sets of controls/FEs affect the distribution of the weights. The heatmap visualization allows to analyze the contribution of each observation separately and to understand how the individuals weights vary across specifications.
 
-In this particular case, regardless the set of fixed effects, the relationship is positive, despite the quantity estimated being somehow radically different.
+With country or two-ways FEs for instance, many observations, in the for the middle of the period have low weight and therefore contribute little to identification. This is much less the case with year FEs, although later years contribute more. **The choice of fixed effects not only affect the estimand but also the weight of observations** and therefore the set of observations contributing to identification. In some cases, variation in weights across specifications may be large for some cluster of observations. For instance, a particular specification may focus all the weights on a given set of observations and/or create clusters of low-weight observations.
 
-## Weight graphs {.tabset}
+## {.tabset}
 
 ### Raw
 
@@ -191,9 +210,13 @@ graph_weights <- function(reg) {
 purrr::map(regs, graph_weights)
 ```
 
-## {-}
+## Contribution graphs 
 
-## Contribution graphs {.tabset}
+Contribution graphs confirm the previous analyses. They represent observations that one could drop without changing the point estimate and standard error by more than a given proportion, *se* 5%. With country FEs for instance, not only many observations do not contribute to estimation but observations that do contribute are disproportionately located at the beginning and end of the period. This might affects the external validity of the analysis. 
+
+Beyond these external validity concerns, contribution graphs underline that the effective sample size varies a lot across specifications. As discussed [in the research  paper](https://vincentbagilet.github.io/causal_exaggeration/), specification choices may affect statistical power and exaggeration.
+
+## {.tabset}
 
 ### Raw
 
@@ -223,7 +246,7 @@ graph_contrib(reg_continent_fe)
 
 ### Country FEs
 
-```{r contrib_country_fe, fig.asp=1.5, echo=FALSE}
+```{r contrib_country_fe, fig.asp=1.5, echo=FALSE, message=FALSE}
 graph_contrib(reg_country_fe)
 ```
 
@@ -257,48 +280,151 @@ graph_contrib <- function(reg) {
 purrr::map(regs, graph_contrib)
 ```
 
+## Contribution sets
 
+The previous visual analysis is confirmed by computing the effective sample size; it varies strongly with the specification.
 
-## Maps
-
-```{r map, message=FALSE}
-library(rnaturalearth)
-library(rnaturalearthdata)
-library(sf)
-
-world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
-  dplyr::mutate(iso_alpha = adm0_a3) |> 
-  dplyr::filter(iso_a3 != "ATA")
-
-idid_viz_weights_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
-  coord_sf(crs = st_crs("ESRI:54030"))
-
-idid_viz_contrib_map(reg_year_fe, "l_gdpPercap", world_sf, "iso_alpha") +
-  coord_sf(crs = st_crs("ESRI:54030"))
-```
-
-## Effective sample
-
-```{r effective_sample}
-#| message: false
-
-purrr::map(
-  regs, 
-  \(x) idid_contrib_stats(x, var_interest = "l_gdpPercap") 
-) |> 
-  purrr::list_rbind() |> 
+```{r idid_contrib_stats, message=FALSE}
+purrr::map(regs, idid_contrib_stats, var_interest = "l_gdpPercap") |> 
+  list_rbind() |> 
   mutate(reg = names(regs), .before = 1) |> 
-  arrange(desc(n_effective)) |> 
+  arrange(n_effective) |> 
   knitr::kable()
 ```
 
+## Histograms
 
+A substantial share of the variation across specifications seem to come from time. We can explore this further by focusing on this variable and building histograms instead of heatmaps. As noted above, for country FEs, most of the contributing observations are located in early and late periods. In addition, there is a notable pattern with year FEs for Africa: later years contribute more than earlier years. 
 
+## {.tabset}
 
+### Raw
 
+```{r hist_contrib, echo=FALSE}
+hist_contrib <- function(reg) {
+  reg |> 
+    idid_viz_contrib("l_gdpPercap", var_x = year) +
+    facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(
+      caption = paste("Model:", deparse(reg$call[[2]])),
+      x = NULL, 
+      y = NULL
+    )
+}
+```
 
+```{r hist_contrib_raw, fig.asp=1.5, echo=FALSE}
+hist_contrib(reg_raw)
+```
 
+### Continent FEs
 
+```{r hist_contrib_continent_fe, fig.asp=1.5, echo=FALSE}
+hist_contrib(reg_continent_fe)
+```
+
+### Country FEs
+
+```{r hist_contrib_country_fe, fig.asp=1.5, echo=FALSE, message=FALSE}
+hist_contrib(reg_country_fe)
+```
+
+### Year FEs
+
+```{r hist_contrib_year_fe, fig.asp=1.5, echo=FALSE}
+hist_contrib(reg_year_fe)
+```
+
+### TWFE
+
+```{r hist_contrib_twfe, fig.asp=1.5, echo=FALSE}
+hist_contrib(reg_twfe)
+```
+
+### Code
+
+```{r hist_code_contrib, echo=TRUE, eval=FALSE}
+hist_contrib <- function(reg) {
+  reg |> 
+    idid_viz_contrib("l_gdpPercap", var_x = year) +
+    facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
+    theme(strip.text.y = element_text(angle = 0)) +
+    labs(
+      caption = paste("Model:", deparse(reg$call[[2]])),
+      x = NULL, 
+      y = NULL
+    )
+}
+
+purrr::map(regs, hist_contrib)
+```
+
+## Maps
+
+Since there is also variation across specifications in terms of how much each country contributes to identification, we can use `idid_viz_map` to explore this further. In the country FE specification, the set of countries that contribute to identification is limited and not representative of the overall sample.
+
+## {.tabset}
+
+### Raw
+
+```{r map_contrib, echo=FALSE}
+world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
+  mutate(iso_alpha = adm0_a3)
+
+map_contrib <- function(reg) {
+  idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
+    coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) +
+    theme(panel.grid.major = element_line(colour = "gray90")) 
+}
+```
+
+```{r map_contrib_raw, fig.asp=1.5, echo=FALSE}
+map_contrib(reg_raw)
+```
+
+### Continent FEs
+
+```{r map_contrib_continent_fe, fig.asp=1.5, echo=FALSE}
+map_contrib(reg_continent_fe)
+```
+
+### Country FEs
+
+```{r map_contrib_country_fe, fig.asp=1.5, echo=FALSE, message=FALSE}
+map_contrib(reg_country_fe)
+```
+
+### Year FEs
+
+```{r map_contrib_year_fe, fig.asp=1.5, echo=FALSE}
+map_contrib(reg_year_fe)
+```
+
+### TWFE
+
+```{r map_contrib_twfe, fig.asp=1.5, echo=FALSE}
+map_contrib(reg_twfe)
+```
+
+### Code
+
+```{r code_map_contrib, echo=TRUE, eval=FALSE, fig.asp=1}
+world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
+  mutate(iso_alpha = adm0_a3)
+
+map_contrib <- function(reg) {
+  idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
+    coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) +
+    theme(panel.grid.major = element_line(colour = "gray90")) 
+}
+
+purrr::map(regs, map_contrib)
+```
+
+## Conclusion
+
+Overall, this analysis showed issues of representativity and effective sample size in the country FEs specification. It invites to consider the results from this specification carefully.
 
 
 
