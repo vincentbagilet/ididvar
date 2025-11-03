@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Specification and variation • ididvar</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="../favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="../favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="../apple-touch-icon.png">
+<link rel="icon" sizes="any" href="../favicon.ico">
+<link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Lato-0.4.10/font.css" rel="stylesheet">
@@ -32,7 +37,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/background.html">Background on the weights</a></li>
@@ -57,8 +62,7 @@
 
 <div class="row">
   <main id="main" class="col-md-9"><div class="page-header">
-
-      <h1>Specification and variation</h1>
+      <img src="../logo.png" class="logo" alt=""><h1>Specification and variation</h1>
             
       
 
@@ -73,29 +77,33 @@ weights and their distribution across observations. In particular, it
 discusses how the package can provide insights on how different levels
 of fixed effects affect the weights and the observations contributing to
 identification.</p>
-<p>For this example, we use the <code>gapminder</code> data set built on
-<a href="https://www.gapminder.org/" class="external-link">gapminder.org</a> and made
+<p>For this example, let’s use the <code>gapminder</code> data set built
+on <a href="https://www.gapminder.org/" class="external-link">gapminder.org</a> and made
 available by the <a href="https://jennybc.github.io/gapminder/index.html" class="external-link"><code>gapminder</code>
-package</a>. It contains data on life expectency, GDP per capita and
+package</a>. It contains data on life expectancy, GDP per-capita and
 population, for all countries in the world, every 5 years between 1952
-and 2007. As such, it constitutes a panel.</p>
+and 2007. It is therefore a panel.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentbagilet.github.io/ididvar/">ididvar</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jennybc/gapminder" class="external-link">gapminder</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://lrberge.github.io/fixest/" class="external-link">fixest</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span></code></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://purrr.tidyverse.org/" class="external-link">purrr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://yihui.org/knitr/" class="external-link">knitr</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rnaturalearth/" class="external-link">rnaturalearth</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rnaturalearthdata/" class="external-link">rnaturalearthdata</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span></code></pre></div>
 <p>In this example, we are interested in studying the relationship
 between life expectancy and (log-)GDP per capita. We will consider
 several sets of fixed effects and study their impact on the variation
 used for identification.</p>
 <div class="section level2">
-<h2 id="exploration">Exploration<a class="anchor" aria-label="anchor" href="#exploration"></a>
+<h2 id="specifications">Specifications<a class="anchor" aria-label="anchor" href="#specifications"></a>
 </h2>
-<p>Let’s consider 3 regression models: with country fixed effects, year
-fixed effects and both. We do not include any additional controls for
-simplicity.</p>
+<p>Let’s consider 5 regression models: with country, continent, year,
+continent-year, and country-year fixed effects. We do not include any
+additional controls for simplicity.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gapminder_ext</span> <span class="op">&lt;-</span> <span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>l_gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -129,22 +137,32 @@ relationship between <code>lifeExp</code> and <code>l_gdpPercap</code>,
 <em>ie</em> comparing observations at different points in time, within a
 given country. In <code>reg_year_fe</code>, it represents the within
 year and therefore across countries.</p>
-<p>As always in applied econometrics, one the first steps in the
-analysis consists exploring the raw data and the relationship between
-the variables of interest. We can then plot the partialled out versions
-of the relationships to get a sense of the variation partialled out by
-the various sets of fixed effects.</p>
+<p>The goal of this document is to compare across specification the sets
+of observations that contribute to identification.</p>
+</div>
+<div class="section level2">
+<h2 id="bivariate-graphs">Bivariate graphs<a class="anchor" aria-label="anchor" href="#bivariate-graphs"></a>
+</h2>
+<p>As always in applied econometrics, one the first steps of analysis
+consists in exploring the raw data and the relationship between the
+variables of interest.</p>
+<p>We can thus plot the partialled out versions of the relationships to
+get a sense of the variation partialled out by the various sets of fixed
+effects. These graphs hopefully help understanding what the fixed
+effects how the fixed effects are affecting the relationship of interest
+and what variation they are removing. In this particular case,
+regardless the set of fixed effects, the relationship is positive,
+despite the quantity estimated being somehow radically different.</p>
 </div>
 <div class="section level2 tabset">
-<h2 class="tabset" id="bivariate-graphs">Bivariate graphs<a class="anchor" aria-label="anchor" href="#bivariate-graphs"></a>
-</h2>
+<h2 class="tabset" id="section"></h2>
 
 
 
 
 
 
-<ul class="nav nav-tabs" id="bivariate-graphs" role="tablist">
+<ul class="nav nav-tabs" id="section" role="tablist">
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#raw" id="raw-tab" type="button" role="tab" aria-controls="raw" aria-selected="true" class="active nav-link">Raw</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#continent-fes" id="continent-fes-tab" type="button" role="tab" aria-controls="continent-fes" aria-selected="false" class="nav-link">Continent FEs</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#country-fes" id="country-fes-tab" type="button" role="tab" aria-controls="country-fes" aria-selected="false" class="nav-link">Country FEs</button></li>
@@ -176,32 +194,46 @@ the various sets of fixed effects.</p>
 <div class="tab-pane" id="code" role="tabpanel" aria-labelledby="code-tab">
 
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span></span>
-<span>  <span class="va">regs</span>, </span>
-<span>  \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="../reference/idid_viz_bivar.html">idid_viz_bivar</a></span><span class="op">(</span><span class="va">x</span>, var_interest <span class="op">=</span> <span class="st">"l_gdpPercap"</span><span class="op">)</span> <span class="op">+</span> </span>
-<span>    <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">lims</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">4.2</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">42</span>, <span class="fl">35</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">graph_bivar</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/idid_viz_bivar.html">idid_viz_bivar</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">continent</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/lims.html" class="external-link">lims</a></span><span class="op">(</span>x <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">3</span>, <span class="fl">4.2</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="op">-</span><span class="fl">42</span>, <span class="fl">35</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>color <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#497C89"</span>, <span class="st">"#cf816b"</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">regs</span>, <span class="va">graph_bivar</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 </div>
-<div class="section level2 unnumbered">
-<h2 class="unnumbered" id="section"></h2>
-<p>These graphs hopefully help understanding what the fixed effects are
-doing and what variation they are removing</p>
-<p>In this particular case, regardless the set of fixed effects, the
-relationship is positive, despite the quantity estimated being somehow
-radically different.</p>
+<div class="section level2">
+<h2 id="weight-graphs">Weight graphs<a class="anchor" aria-label="anchor" href="#weight-graphs"></a>
+</h2>
+<p>We then explore how different sets of controls/FEs affect the
+distribution of the weights. The heatmap visualization allows to analyze
+the contribution of each observation separately and to understand how
+the individuals weights vary across specifications.</p>
+<p>With country or two-ways FEs for instance, many observations, in the
+for the middle of the period have low weight and therefore contribute
+little to identification. This is much less the case with year FEs,
+although later years contribute more. <strong>The choice of fixed
+effects not only affect the estimand but also the weight of
+observations</strong> and therefore the set of observations contributing
+to identification. In some cases, variation in weights across
+specifications may be large for some cluster of observations. For
+instance, a particular specification may focus all the weights on a
+given set of observations and/or create clusters of low-weight
+observations.</p>
 </div>
 <div class="section level2 tabset">
-<h2 class="tabset" id="weight-graphs">Weight graphs<a class="anchor" aria-label="anchor" href="#weight-graphs"></a>
-</h2>
+<h2 class="tabset" id="section-1"></h2>
 
 
 
 
 
 
-<ul class="nav nav-tabs" id="weight-graphs" role="tablist">
+<ul class="nav nav-tabs" id="section-1" role="tablist">
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#raw-1" id="raw-1-tab" type="button" role="tab" aria-controls="raw-1" aria-selected="true" class="active nav-link">Raw</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#continent-fes-1" id="continent-fes-1-tab" type="button" role="tab" aria-controls="continent-fes-1" aria-selected="false" class="nav-link">Continent FEs</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#country-fes-1" id="country-fes-1-tab" type="button" role="tab" aria-controls="country-fes-1" aria-selected="false" class="nav-link">Country FEs</button></li>
@@ -250,19 +282,31 @@ radically different.</p>
 </div>
 </div>
 </div>
-<div class="section level2 unnumbered">
-<h2 class="unnumbered" id="section-1"></h2>
+<div class="section level2">
+<h2 id="contribution-graphs">Contribution graphs<a class="anchor" aria-label="anchor" href="#contribution-graphs"></a>
+</h2>
+<p>Contribution graphs confirm the previous analyses. They represent
+observations that one could drop without changing the point estimate and
+standard error by more than a given proportion, <em>se</em> 5%. With
+country FEs for instance, not only many observations do not contribute
+to estimation but observations that do contribute are disproportionately
+located at the beginning and end of the period. This might affects the
+external validity of the analysis.</p>
+<p>Beyond these external validity concerns, contribution graphs
+underline that the effective sample size varies a lot across
+specifications. As discussed <a href="https://vincentbagilet.github.io/causal_exaggeration/" class="external-link">in the
+research paper</a>, specification choices may affect statistical power
+and exaggeration.</p>
 </div>
 <div class="section level2 tabset">
-<h2 class="tabset" id="contribution-graphs">Contribution graphs<a class="anchor" aria-label="anchor" href="#contribution-graphs"></a>
-</h2>
+<h2 class="tabset" id="section-2"></h2>
 
 
 
 
 
 
-<ul class="nav nav-tabs" id="contribution-graphs" role="tablist">
+<ul class="nav nav-tabs" id="section-2" role="tablist">
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#raw-2" id="raw-2-tab" type="button" role="tab" aria-controls="raw-2" aria-selected="true" class="active nav-link">Raw</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#continent-fes-2" id="continent-fes-2-tab" type="button" role="tab" aria-controls="continent-fes-2" aria-selected="false" class="nav-link">Continent FEs</button></li>
 <li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#country-fes-2" id="country-fes-2-tab" type="button" role="tab" aria-controls="country-fes-2" aria-selected="false" class="nav-link">Country FEs</button></li>
@@ -283,14 +327,6 @@ radically different.</p>
 </div>
 <div class="tab-pane" id="country-fes-2" role="tabpanel" aria-labelledby="country-fes-2-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; NOTE: 2 fixed-effect singletons were removed (2 observations).</span></span>
-<span><span class="co">#&gt; NOTE: 4 fixed-effect singletons were removed (4 observations).</span></span>
-<span><span class="co">#&gt; NOTE: 3 fixed-effect singletons were removed (3 observations).</span></span>
-<span><span class="co">#&gt; NOTE: 9 fixed-effect singletons were removed (9 observations).</span></span>
-<span><span class="co">#&gt; NOTE: 13 fixed-effect singletons were removed (13 observations).</span></span>
-<span><span class="co">#&gt; NOTE: 11 fixed-effect singletons were removed (11 observations).</span></span>
-<span><span class="co">#&gt; NOTE: 11 fixed-effect singletons were removed (11 observations).</span></span></code></pre>
 <p><img src="specification_files/figure-html/contrib_country_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="year-fes-2" role="tabpanel" aria-labelledby="year-fes-2-tab">
@@ -305,7 +341,7 @@ radically different.</p>
 </div>
 <div class="tab-pane" id="code-2" role="tabpanel" aria-labelledby="code-2-tab">
 
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">graph_contrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">reg</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="st">"l_gdpPercap"</span>, var_x <span class="op">=</span> <span class="va">year</span>, var_y <span class="op">=</span> <span class="va">country</span><span class="op">)</span> <span class="op">+</span></span>
@@ -323,37 +359,15 @@ radically different.</p>
 </div>
 </div>
 <div class="section level2">
-<h2 id="maps">Maps<a class="anchor" aria-label="anchor" href="#maps"></a>
+<h2 id="contribution-sets">Contribution sets<a class="anchor" aria-label="anchor" href="#contribution-sets"></a>
 </h2>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rnaturalearth/" class="external-link">rnaturalearth</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/rnaturalearthdata/" class="external-link">rnaturalearthdata</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/sf/" class="external-link">sf</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">world_sf</span> <span class="op">&lt;-</span> <span class="fu">rnaturalearth</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html" class="external-link">ne_countries</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="st">"medium"</span>, returnclass <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>iso_alpha <span class="op">=</span> <span class="va">adm0_a3</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">iso_a3</span> <span class="op">!=</span> <span class="st">"ATA"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="fu"><a href="../reference/idid_viz_weights_map.html">idid_viz_weights_map</a></span><span class="op">(</span><span class="va">reg_year_fe</span>, <span class="st">"l_gdpPercap"</span>, <span class="va">world_sf</span>, <span class="st">"iso_alpha"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="st">"ESRI:54030"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="specification_files/figure-html/map-1.png" width="2187.5"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span></span>
-<span><span class="fu"><a href="../reference/idid_viz_contrib_map.html">idid_viz_contrib_map</a></span><span class="op">(</span><span class="va">reg_year_fe</span>, <span class="st">"l_gdpPercap"</span>, <span class="va">world_sf</span>, <span class="st">"iso_alpha"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html" class="external-link">st_crs</a></span><span class="op">(</span><span class="st">"ESRI:54030"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="specification_files/figure-html/map-2.png" width="2187.5"></p>
-</div>
-<div class="section level2">
-<h2 id="effective-sample">Effective sample<a class="anchor" aria-label="anchor" href="#effective-sample"></a>
-</h2>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span></span>
-<span>  <span class="va">regs</span>, </span>
-<span>  \<span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="fu"><a href="../reference/idid_contrib_stats.html">idid_contrib_stats</a></span><span class="op">(</span><span class="va">x</span>, var_interest <span class="op">=</span> <span class="st">"l_gdpPercap"</span><span class="op">)</span> </span>
-<span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html" class="external-link">list_rbind</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<p>The previous visual analysis is confirmed by computing the effective
+sample size; it varies strongly with the specification.</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">regs</span>, <span class="va">idid_contrib_stats</span>, var_interest <span class="op">=</span> <span class="st">"l_gdpPercap"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html" class="external-link">list_rbind</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>reg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">regs</span><span class="op">)</span>, .before <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/desc.html" class="external-link">desc</a></span><span class="op">(</span><span class="va">n_effective</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html" class="external-link">arrange</a></span><span class="op">(</span><span class="va">n_effective</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu">knitr</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/knitr/man/kable.html" class="external-link">kable</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <table style="width:100%;" class="table">
 <colgroup>
@@ -372,18 +386,18 @@ radically different.</p>
 </tr></thead>
 <tbody>
 <tr class="odd">
-<td align="left">reg_raw</td>
+<td align="left">reg_country_fe</td>
 <td align="right">984</td>
 <td align="right">984</td>
-<td align="right">837</td>
-<td align="right">0.8506098</td>
+<td align="right">246</td>
+<td align="right">0.2500000</td>
 </tr>
 <tr class="even">
-<td align="left">reg_twfe</td>
+<td align="left">reg_continent_year_fe</td>
 <td align="right">984</td>
 <td align="right">984</td>
-<td align="right">788</td>
-<td align="right">0.8008130</td>
+<td align="right">542</td>
+<td align="right">0.5508130</td>
 </tr>
 <tr class="odd">
 <td align="left">reg_continent_fe</td>
@@ -400,21 +414,164 @@ radically different.</p>
 <td align="right">0.7002033</td>
 </tr>
 <tr class="odd">
-<td align="left">reg_continent_year_fe</td>
+<td align="left">reg_twfe</td>
 <td align="right">984</td>
 <td align="right">984</td>
-<td align="right">542</td>
-<td align="right">0.5508130</td>
+<td align="right">788</td>
+<td align="right">0.8008130</td>
 </tr>
 <tr class="even">
-<td align="left">reg_country_fe</td>
+<td align="left">reg_raw</td>
 <td align="right">984</td>
 <td align="right">984</td>
-<td align="right">246</td>
-<td align="right">0.2500000</td>
+<td align="right">837</td>
+<td align="right">0.8506098</td>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="section level2">
+<h2 id="histograms">Histograms<a class="anchor" aria-label="anchor" href="#histograms"></a>
+</h2>
+<p>A substantial share of the variation across specifications seem to
+come from time. We can explore this further by focusing on this variable
+and building histograms instead of heatmaps. As noted above, for country
+FEs, most of the contributing observations are located in early and late
+periods. In addition, there is a notable pattern with year FEs for
+Africa: later years contribute more than earlier years.</p>
+</div>
+<div class="section level2 tabset">
+<h2 class="tabset" id="section-3"></h2>
+
+
+
+
+
+
+<ul class="nav nav-tabs" id="section-3" role="tablist">
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#raw-3" id="raw-3-tab" type="button" role="tab" aria-controls="raw-3" aria-selected="true" class="active nav-link">Raw</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#continent-fes-3" id="continent-fes-3-tab" type="button" role="tab" aria-controls="continent-fes-3" aria-selected="false" class="nav-link">Continent FEs</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#country-fes-3" id="country-fes-3-tab" type="button" role="tab" aria-controls="country-fes-3" aria-selected="false" class="nav-link">Country FEs</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#year-fes-3" id="year-fes-3-tab" type="button" role="tab" aria-controls="year-fes-3" aria-selected="false" class="nav-link">Year FEs</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#twfe-3" id="twfe-3-tab" type="button" role="tab" aria-controls="twfe-3" aria-selected="false" class="nav-link">TWFE</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#code-3" id="code-3-tab" type="button" role="tab" aria-controls="code-3" aria-selected="false" class="nav-link">Code</button></li>
+</ul>
+<div class="tab-content">
+<div class="active  tab-pane" id="raw-3" role="tabpanel" aria-labelledby="raw-3-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/hist_contrib_raw-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="continent-fes-3" role="tabpanel" aria-labelledby="continent-fes-3-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/hist_contrib_continent_fe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="country-fes-3" role="tabpanel" aria-labelledby="country-fes-3-tab">
+
+<p><img src="specification_files/figure-html/hist_contrib_country_fe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="year-fes-3" role="tabpanel" aria-labelledby="year-fes-3-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/hist_contrib_year_fe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="twfe-3" role="tabpanel" aria-labelledby="twfe-3-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/hist_contrib_twfe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="code-3" role="tabpanel" aria-labelledby="code-3-tab">
+
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">hist_contrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="va">reg</span> <span class="op">|&gt;</span> </span>
+<span>    <span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="st">"l_gdpPercap"</span>, var_x <span class="op">=</span> <span class="va">year</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">~</span> <span class="va">.</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, space <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>strip.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
+<span>      caption <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/paste.html" class="external-link">paste</a></span><span class="op">(</span><span class="st">"Model:"</span>, <span class="fu"><a href="https://rdrr.io/r/base/deparse.html" class="external-link">deparse</a></span><span class="op">(</span><span class="va">reg</span><span class="op">$</span><span class="va">call</span><span class="op">[[</span><span class="fl">2</span><span class="op">]</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>      x <span class="op">=</span> <span class="cn">NULL</span>, </span>
+<span>      y <span class="op">=</span> <span class="cn">NULL</span></span>
+<span>    <span class="op">)</span></span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">regs</span>, <span class="va">hist_contrib</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="maps">Maps<a class="anchor" aria-label="anchor" href="#maps"></a>
+</h2>
+<p>Since there is also variation across specifications in terms of how
+much each country contributes to identification, we can use
+<code>idid_viz_map</code> to explore this further. In the country FE
+specification, the set of countries that contribute to identification is
+limited and not representative of the overall sample.</p>
+</div>
+<div class="section level2 tabset">
+<h2 class="tabset" id="section-4"></h2>
+
+
+
+
+
+
+<ul class="nav nav-tabs" id="section-4" role="tablist">
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#raw-4" id="raw-4-tab" type="button" role="tab" aria-controls="raw-4" aria-selected="true" class="active nav-link">Raw</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#continent-fes-4" id="continent-fes-4-tab" type="button" role="tab" aria-controls="continent-fes-4" aria-selected="false" class="nav-link">Continent FEs</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#country-fes-4" id="country-fes-4-tab" type="button" role="tab" aria-controls="country-fes-4" aria-selected="false" class="nav-link">Country FEs</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#year-fes-4" id="year-fes-4-tab" type="button" role="tab" aria-controls="year-fes-4" aria-selected="false" class="nav-link">Year FEs</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#twfe-4" id="twfe-4-tab" type="button" role="tab" aria-controls="twfe-4" aria-selected="false" class="nav-link">TWFE</button></li>
+<li role="presentation" class="nav-item"><button data-bs-toggle="tab" data-bs-target="#code-4" id="code-4-tab" type="button" role="tab" aria-controls="code-4" aria-selected="false" class="nav-link">Code</button></li>
+</ul>
+<div class="tab-content">
+<div class="active  tab-pane" id="raw-4" role="tabpanel" aria-labelledby="raw-4-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/map_contrib_raw-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="continent-fes-4" role="tabpanel" aria-labelledby="continent-fes-4-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/map_contrib_continent_fe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="country-fes-4" role="tabpanel" aria-labelledby="country-fes-4-tab">
+
+<p><img src="specification_files/figure-html/map_contrib_country_fe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="year-fes-4" role="tabpanel" aria-labelledby="year-fes-4-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/map_contrib_year_fe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="twfe-4" role="tabpanel" aria-labelledby="twfe-4-tab">
+
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
+<p><img src="specification_files/figure-html/map_contrib_twfe-1.png" width="2187.5"></p>
+</div>
+<div class="tab-pane" id="code-4" role="tabpanel" aria-labelledby="code-4-tab">
+
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">world_sf</span> <span class="op">&lt;-</span> <span class="fu">rnaturalearth</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html" class="external-link">ne_countries</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="st">"medium"</span>, returnclass <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>iso_alpha <span class="op">=</span> <span class="va">adm0_a3</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">map_contrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
+<span>  <span class="fu"><a href="../reference/idid_viz_contrib_map.html">idid_viz_contrib_map</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span>, <span class="va">world_sf</span>, <span class="st">"iso_alpha"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html" class="external-link">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="st">"+proj=ortho +lon_0=30 +lat_0=28"</span>, expand <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span> <span class="op">+</span></span>
+<span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span><span class="op">)</span> </span>
+<span><span class="op">}</span></span>
+<span></span>
+<span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">regs</span>, <span class="va">map_contrib</span><span class="op">)</span></span></code></pre></div>
+</div>
+</div>
+</div>
+<div class="section level2">
+<h2 id="conclusion">Conclusion<a class="anchor" aria-label="anchor" href="#conclusion"></a>
+</h2>
+<p>Overall, this analysis showed issues of representativity and
+effective sample size in the country FEs specification. It invites to
+consider the results from this specification carefully.</p>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>

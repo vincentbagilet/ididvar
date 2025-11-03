@@ -6,6 +6,11 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Identifying the Identifying Variation in a Regression • ididvar</title>
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Lato-0.4.10/font.css" rel="stylesheet">
@@ -14,6 +19,7 @@
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Identifying the Identifying Variation in a Regression">
 <meta name="description" content="Provides a set of tools to identify where the identifying variation in a regression comes from.">
 <meta property="og:description" content="Provides a set of tools to identify where the identifying variation in a regression comes from.">
+<meta property="og:image" content="https://vincentbagilet.github.io/ididvar/logo.png">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -55,19 +61,23 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="ididvar">ididvar<a class="anchor" aria-label="anchor" href="#ididvar"></a>
-</h1></div>
+<div class="page-header">
+<img src="logo.png" class="logo" alt=""><h1 id="ididvar-">ididvar 
+<a class="anchor" aria-label="anchor" href="#ididvar-"></a>
+</h1>
+</div>
 <!-- badges: start -->
 <!-- badges: end -->
 <p>This package provides tools to easily <strong>identify the identifying variation in a regression</strong>, specifically in <strong>applied economics</strong> analyses.</p>
 <p>This package is built as part of a <a href="https://vincentbagilet.github.io/causal_exaggeration/" class="external-link">research project</a>. As such, the <a href="https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf" class="external-link">associated paper</a> provides a detailed scientific description of its content and of its underpinnings.</p>
+<p><strong>This package is under active development and some functions may not work perfectly, yet.</strong></p>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
 <p>You can install the development version of <code>ididvar</code> from <a href="https://github.com/vincentbagilet/ididvar" class="external-link">GitHub</a> with:</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># install.packages("devtools")</span></span>
-<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"vincentbagilet/ididvar"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"vincentbagilet/ididvar"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
@@ -98,22 +108,14 @@
 <p>It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span>, var_y <span class="op">=</span> <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
-<span><span class="co">#&gt; ?vcov).</span></span>
-<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
-<span><span class="co">#&gt; ?vcov).</span></span>
-<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
-<span><span class="co">#&gt; ?vcov).</span></span>
-<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
-<span><span class="co">#&gt; ?vcov).</span></span>
-<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
-<span><span class="co">#&gt; ?vcov).</span></span>
-<span><span class="co">#&gt; Warning: The VCOV matrix is not positive semi-definite and was 'fixed' (see</span></span>
-<span><span class="co">#&gt; ?vcov).</span></span></code></pre></div>
+<span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_contrib-1.png" width="70%" style="display: block; margin: auto;"></p>
-<p>The package provides a larger <a href="docs/reference/index.html">set of functions</a>. The <a href="articles/ididvar.html">Get started vignette</a> introduces them in a concise manner, while also describing a typical workflow for analysis.</p>
-<p><a href="https://vincentbagilet.github.io/causal_exaggeration/ididvar.html" class="external-link">Online appendices</a> of the <a href="https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf" class="external-link">associated paper</a> complements this vignette by providing an example of a practical implementation of an analysis using the <code>ididvar</code> package.</p>
+<p>The package provides a large <a href="reference/index.html">set of functions</a>. The <a href="articles/ididvar.html">Get started vignette</a> introduces them in a concise manner, while also describing a typical workflow for analysis. <a href="https://vincentbagilet.github.io/causal_exaggeration/ididvar.html" class="external-link">Online appendices</a> of the <a href="https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf" class="external-link">associated paper</a> complements this vignette by providing an example of a practical implementation of an analysis using the <code>ididvar</code> package.</p>
+</div>
+<div class="section level2">
+<h2 id="feedback-and-contributions">Feedback and contributions<a class="anchor" aria-label="anchor" href="#feedback-and-contributions"></a>
+</h2>
+<p>Feedback and contributions are more than welcome. If you find a bug or if the package does not work on your specific case, do not hesitate to <a href="https://github.com/vincentbagilet/ididvar/issues/new" class="external-link">create a new issue on Github</a> or send me an email at <a href="vincent.bagilet@ens-lyon.fr">vincent.bagilet@ens-lyon.fr</a>.</p>
 </div>
 </div>
   </main><aside class="col-md-3"><div class="license">
