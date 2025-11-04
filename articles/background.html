@@ -179,52 +179,14 @@ represent the squared-distance to the center of the distribution of the
 variable of interest, after partialling out the controls. The following
 example, describing the relationship between x and y partialled out and
 the weights illustrates this:</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jennybc/gapminder" class="external-link">gapminder</a></span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">gapminder_sample</span> <span class="op">&lt;-</span> <span class="va">gapminder</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>l_gdpPercap <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">gdpPercap</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">continent</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Africa"</span>, <span class="st">"Europe"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate-joins.html" class="external-link">left_join</a></span><span class="op">(</span><span class="va">country_codes</span>, by <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/join_by.html" class="external-link">join_by</a></span><span class="op">(</span><span class="va">country</span><span class="op">)</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">reg_ex</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span><span class="va">gapminder_sample</span>, <span class="va">lifeExp</span> <span class="op">~</span> <span class="va">l_gdpPercap</span> <span class="op">|</span> <span class="va">country</span>, cluster <span class="op">=</span> <span class="st">"country"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">data_partial</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/eval.html" class="external-link">eval</a></span><span class="op">(</span><span class="va">reg_ex</span><span class="op">$</span><span class="va">call</span><span class="op">$</span><span class="va">data</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span></span>
-<span>    lifeExp_per <span class="op">=</span> <span class="fu"><a href="../reference/idid_partial_out.html">idid_partial_out</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"lifeExp"</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span>,</span>
-<span>    l_gdpPercap_per <span class="op">=</span> <span class="fu"><a href="../reference/idid_partial_out.html">idid_partial_out</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span>,</span>
-<span>    weight <span class="op">=</span> <span class="fu"><a href="../reference/idid_weights.html">idid_weights</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span>,</span>
-<span>    weight_log <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log10</a></span><span class="op">(</span><span class="va">weight</span> <span class="op">*</span> <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">weight</span><span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span></span>
-<span></span>
-<span><span class="va">data_partial</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">l_gdpPercap_per</span>, y <span class="op">=</span> <span class="va">lifeExp_per</span>, color <span class="op">=</span> <span class="va">weight_log</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_smooth.html" class="external-link">geom_smooth</a></span><span class="op">(</span></span>
-<span>    method <span class="op">=</span> <span class="st">"lm"</span>,</span>
-<span>    formula <span class="op">=</span> <span class="st">'y ~ x'</span>,</span>
-<span>    color <span class="op">=</span> <span class="va">idid_colors_table</span><span class="op">[[</span><span class="st">"base"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>    fill <span class="op">=</span> <span class="va">idid_colors_table</span><span class="op">[[</span><span class="st">"base"</span><span class="op">]</span><span class="op">]</span>,</span>
-<span>    alpha <span class="op">=</span> <span class="fl">0.1</span></span>
-<span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/theme_idid.html">theme_idid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="../reference/scale_fill_idid.html">scale_color_idid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span></span>
-<span>    title <span class="op">=</span> <span class="st">"Relationship between life expectancy and log GDP per capita"</span>,</span>
-<span>    subtitle <span class="op">=</span> <span class="st">"After partialling out country fixed effects"</span>,</span>
-<span>    x <span class="op">=</span> <span class="st">"Log GDP per capita (residualized)"</span>,</span>
-<span>    y <span class="op">=</span> <span class="st">"Life expectancy (residualized)"</span>,</span>
-<span>    color <span class="op">=</span> <span class="st">"Weight, compared to 1/n, the average weight"</span>,</span>
-<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="background_files/figure-html/bivar_partial-1.png" width="2187.5"></p>
 <p>While this pattern clearly appears in the partialled out regression,
 it is much less visible when plotting the raw relationship, hence the
 importance of analysing those weights and plotting the partialled out
 regression:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_partial</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdpPercap</span>, y <span class="op">=</span> <span class="va">lifeExp</span>, color <span class="op">=</span> <span class="va">weight_log</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdpPercap</span>, y <span class="op">=</span> <span class="va">lifeExp</span>, color <span class="op">=</span> <span class="va">idid_weight_log</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_rug.html" class="external-link">geom_rug</a></span><span class="op">(</span>linewidth <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="../reference/theme_idid.html">theme_idid</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
