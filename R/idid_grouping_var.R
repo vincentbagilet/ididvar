@@ -34,7 +34,7 @@ idid_grouping_var <- function(reg,
                               grouping_vars,
                               ...) {
   df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-  df[["weight"]] = idid_weights(reg, var_interest, ...)
+  df[["idid_weight"]] = idid_weights(reg, var_interest, ...)
 
   between_var <- NULL
   for (grouping_var in grouping_vars) {
@@ -42,7 +42,7 @@ idid_grouping_var <- function(reg,
     #compute between var
     weight_in_group <-
       stats::aggregate(
-        df$weight,
+        df$idid_weight,
         by = list(grouping_var = df[[grouping_var]]),
         FUN = sum,
         na.rm = TRUE

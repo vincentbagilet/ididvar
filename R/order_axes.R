@@ -11,7 +11,7 @@
 #' `df` but ordered along the `order` axis and according to the value of `by`
 #'
 #' @keywords internal
-order_axes <- function(df, name_var_x, name_var_y, order, by = "weight") {
+order_axes <- function(df, name_var_x, name_var_y, order, by = "idid_weight") {
   if (order %in% c("y", "xy") & name_var_y != "") {
     df[[name_var_y]] <-
       with(df, reorder(df[[name_var_y]], df[[by]], \(x) sum(x, na.rm = TRUE)))

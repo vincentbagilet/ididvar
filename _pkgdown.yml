@@ -23,6 +23,7 @@ reference:
   - idid_weights
   - idid_contrib_threshold
   - idid_contrib_stats
+  - idid_drop_reg
   - idid_drop_change
   - idid_grouping_var
 

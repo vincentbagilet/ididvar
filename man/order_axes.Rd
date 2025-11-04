@@ -4,7 +4,7 @@
 \alias{order_axes}
 \title{Ordering axes}
 \usage{
-order_axes(df, name_var_x, name_var_y, order, by = "weight")
+order_axes(df, name_var_x, name_var_y, order, by = "idid_weight")
 }
 \arguments{
 \item{df}{A dataframe to order}

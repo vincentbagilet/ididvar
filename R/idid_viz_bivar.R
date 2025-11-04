@@ -29,8 +29,6 @@ idid_viz_bivar <- function(reg, var_interest) {
 
   df[["y_par"]] <- ididvar::idid_partial_out(reg, name_var_y, var_interest)
   df[["x_par"]] <- ididvar::idid_partial_out(reg, var_interest)
-  # df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
-  # df[["weight_log"]] <- log10(df$weight * nrow(df))
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = .data$x_par, y = .data$y_par)) +

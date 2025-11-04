@@ -60,7 +60,7 @@ In low weight groups, there is only a little amount of variation in the dependen
 
 By definition, in the partialled out regression, these weights represent the squared-distance to the center of the distribution of the variable of interest, after partialling out the controls. The following example, describing the relationship between x and y partialled out and the weights illustrates this:
 
-```{r bivar_partial, code_folding=TRUE, fig.asp=0.8}
+```{r bivar_partial, code_folding=TRUE, fig.asp=0.8, echo=FALSE}
 library(gapminder)
 
 gapminder_sample <- gapminder |> 
@@ -74,12 +74,12 @@ data_partial <- eval(reg_ex$call$data) |>
   mutate(
     lifeExp_per = idid_partial_out(reg_ex, "lifeExp", "l_gdpPercap"),
     l_gdpPercap_per = idid_partial_out(reg_ex, "l_gdpPercap"),
-    weight = idid_weights(reg_ex, "l_gdpPercap"),
-    weight_log = log10(weight * length(weight))
+    idid_weight = idid_weights(reg_ex, "l_gdpPercap"),
+    idid_weight_log = log10(idid_weight * length(idid_weight))
   )
 
 data_partial |>
-  ggplot(aes(x = l_gdpPercap_per, y = lifeExp_per, color = weight_log)) +
+  ggplot(aes(x = l_gdpPercap_per, y = lifeExp_per, color = idid_weight_log)) +
   geom_point(size = 1.5) +
   geom_smooth(
     method = "lm",
@@ -104,7 +104,7 @@ While this pattern clearly appears in the partialled out regression, it is much 
 
 ```{r bivar_raw, code_folding=TRUE, fig.asp=0.8}
 data_partial |>
-  ggplot(aes(x = gdpPercap, y = lifeExp, color = weight_log)) +
+  ggplot(aes(x = gdpPercap, y = lifeExp, color = idid_weight_log)) +
   geom_point(size = 1.5) +
   geom_rug(linewidth = 0.2) +
   theme_idid() +

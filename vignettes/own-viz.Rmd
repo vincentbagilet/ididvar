@@ -107,11 +107,11 @@ data_partial_manual <-
     l_gdpPercap_per = residuals(
       feols(gapminder_sample, l_gdpPercap ~ 1 | country, cluster = "country")
     ),
-    weight = (l_gdpPercap_per - mean(l_gdpPercap_per))^2
+    idid_weight = (l_gdpPercap_per - mean(l_gdpPercap_per))^2
   ) |> 
   mutate(
-    weight = weight/sum(weight),
-    logweight = log10(weight * length(weight))
+    idid_weight = idid_weight/sum(idid_weight),
+    idid_weight_log = log10(idid_weight * length(idid_weight))
   )
 ```
 
@@ -123,8 +123,8 @@ We first start by plotting the cumulative distribution of weights. We can add a 
 ```{r agg_weights, echo=TRUE, message=FALSE}
 gapminder_weights <- gapminder_sample |> 
   mutate(
-    weight = idid_weights(reg, "l_gdpPercap"),
-    contrib = weight > idid_contrib_threshold(reg, "l_gdpPercap"),
+    idid_weight = idid_weights(reg, "l_gdpPercap"),
+    contrib = idid_weight > idid_contrib_threshold(reg, "l_gdpPercap"),
     contrib_name = ifelse(contrib, 
                           "In the effective sample",
                           "Outside the effective sample")
@@ -135,12 +135,12 @@ gapminder_weights <- gapminder_sample |>
 
 ```{r cum_weights, fig.asp=1}
 gapminder_weights |> 
-  arrange(weight) |> 
+  arrange(idid_weight) |> 
   mutate(
     obs_id = row_number(),
-    cum_weight = cumsum(weight)
+    cum_idid_weight = cumsum(idid_weight)
   ) |> 
-  ggplot(aes(x = obs_id, y = cum_weight)) + 
+  ggplot(aes(x = obs_id, y = cum_idid_weight)) + 
   geom_line(linewidth = 1.2, color = idid_colors_table[["base"]]) +
   geom_area(fill = idid_colors_table[["base"]], alpha = 0.2) +
   theme_idid(aspect.ratio = 1) +
@@ -165,7 +165,7 @@ Let's assume that we want to compare weights across countries. We compute our we
 country_weights <- gapminder_weights |> 
   group_by(country, iso_alpha, continent) |> 
   summarise(
-    weight = sum(weight, na.rm = TRUE), 
+    idid_weight = sum(idid_weight, na.rm = TRUE), 
     contrib = sum(contrib, na.rm = TRUE),
     .groups = "drop"
   )
@@ -177,8 +177,8 @@ We then make bar plots. For readibility and to produce a better graph, we order 
 
 ```{r weight_bar_plot, echo=TRUE, fig.asp=1.5}
 country_weights |> 
-  mutate(country = forcats::fct_reorder(country, weight)) |> 
-  ggplot(aes(x = weight, y = country)) + 
+  mutate(country = forcats::fct_reorder(country, idid_weight)) |> 
+  ggplot(aes(x = idid_weight, y = country)) + 
   geom_col(aes(fill = continent)) +
   scale_fill_manual(values = c("#497C89", "#cf816b")) +
   # facet_wrap(~ continent, scales = "free_y", space = "free_y") + 
@@ -195,7 +195,7 @@ country_weights |>
 
 ```{r idid_weight_bar_plot, echo=TRUE, fig.asp=1.5}
 idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y") + 
-  geom_col(aes(x = weight, y = country, fill = continent)) +
+  geom_col(aes(x = idid_weight, y = country, fill = continent)) +
   scale_fill_manual(values = c("#497C89", "#cf816b")) +
   labs(y = NULL, fill = NULL)
 ```
@@ -237,7 +237,7 @@ Let's assume that we now want to compare observations across years and decades. 
 country_decade_weights <- gapminder_weights |> 
   group_by(country, decade, continent) |> 
   summarise(
-    weight = sum(weight, na.rm = TRUE), 
+    idid_weight = sum(idid_weight, na.rm = TRUE), 
     contrib = sum(contrib, na.rm = TRUE),
     .groups = "drop"
   ) 
@@ -249,8 +249,8 @@ We can then make the graphs we want.
 
 ```{r heatmap_no_scale, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
-  mutate(country = forcats::fct_reorder(country, weight, sum)) |>
-  ggplot(aes(x = decade, y = country, fill = weight)) + 
+  mutate(country = forcats::fct_reorder(country, idid_weight, sum)) |>
+  ggplot(aes(x = decade, y = country, fill = idid_weight)) + 
   geom_tile() +
   theme_idid() +
   scale_fill_gradientn(
@@ -275,9 +275,9 @@ I therefore introduced a specific scale that puts various observations in bins. 
 
 ```{r heatmap_with_scale, echo=TRUE, fig.asp=1.6}
 country_decade_weights |> 
-  mutate(weight_log = log10(weight * length(weight))) |> 
+  mutate(idid_weight_log = log10(idid_weight * length(idid_weight))) |> 
   # mutate(country = forcats::fct_reorder(country, weight, sum)) |>
-  ggplot(aes(x = decade, y = country, fill = weight_log)) + 
+  ggplot(aes(x = decade, y = country, fill = idid_weight_log)) + 
   geom_tile() +
   theme_idid() +
   scale_fill_idid() +
@@ -360,11 +360,11 @@ proj_globe <-
 ```{r map_weights, fig.asp=1}
 data_sf <- world_sf |> 
   full_join(country_weights, by = join_by(iso_alpha)) |> 
-  mutate(weight_log = log10(weight * nrow(country_weights))) 
+  mutate(idid_weight_log = log10(idid_weight * nrow(country_weights))) 
 
 data_sf |> 
   ggplot() +
-  geom_sf(aes(fill = weight_log), color = "white", linewidth = 0.1) +
+  geom_sf(aes(fill = idid_weight_log), color = "white", linewidth = 0.1) +
   proj_globe +
   theme_idid() +
   scale_fill_idid() +

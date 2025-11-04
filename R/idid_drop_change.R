@@ -4,8 +4,7 @@
 #' Computes a variation of the point estimate and standard errors of the
 #' coefficient of interest when dropping low weight observations.
 #'
-#' @inheritParams idid_weights
-#' @param prop_drop Proportion of observations to drop
+#' @inheritParams idid_drop_reg
 #'
 #' @returns
 #' A dataframe with one row and 3 columns:
@@ -26,26 +25,7 @@ idid_drop_change <- function(reg,
                              var_interest,
                              prop_drop,
                              ...) {
-  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-  # fml <- reg$call$formula
-
-  df[["idid_weights"]] <- ididvar::idid_weights(reg, var_interest, ...)
-
-  #keep high weights
-  df_sliced <- df[order(df$idid_weights, decreasing = TRUE),] |>
-    utils::head(n = nrow(df)*(1 - prop_drop))
-
-  #compute new estimate
-  reg_sliced <- stats::update(reg, data = df_sliced, use_calling_env = FALSE) |>
-    #handle warning linked to use_calling_env (necessary with fixest)
-    withCallingHandlers(
-      warning = function(w) {
-        if (grepl("use_calling_env",
-                  conditionMessage(w))) {
-          invokeRestart("muffleWarning")
-        }
-      }
-    )
+  reg_sliced <- ididvar::idid_drop_reg(reg, var_interest, prop_drop, ...)
 
   #retrieve point estimates and se
   if (inherits(reg, c("lm", "plm"))) {

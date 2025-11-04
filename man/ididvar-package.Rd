@@ -6,6 +6,8 @@
 \alias{ididvar-package}
 \title{ididvar: Identifying the Identifying Variation in a Regression}
 \description{
+\if{html}{\figure{logo.png}{options: style='float: right' alt='logo' width='120'}}
+
 Provides a set of tools to identify where the identifying variation in a regression comes from.
 }
 \seealso{

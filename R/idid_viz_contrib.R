@@ -59,17 +59,17 @@ idid_viz_contrib <- function(reg,
   }
 
   df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-  df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  df[["contrib"]] <- (df[["weight"]] > contrib_threshold)
+  df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
+  df[["contrib"]] <- (df[["idid_weight"]] > contrib_threshold)
   df[["contrib_name"]] <-
     ifelse(df[["contrib"]],
            "In the effective sample",
            "Outside the effective sample")
   df <- order_axes(df,
-                             deparse(substitute(var_x)),
-                             deparse(substitute(var_y)),
-                             order,
-                             by = "contrib")
+                   deparse(substitute(var_x)),
+                   deparse(substitute(var_y)),
+                   order,
+                   by = "contrib")
 
   #build graph
   if (missing(var_y)) {

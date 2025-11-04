@@ -43,10 +43,10 @@ idid_weights <- function(reg, var_interest, ...) {
 
   x_per <- ididvar::idid_partial_out(reg, var_to_partial = var_interest, ...)
 
-  weight <- (x_per - mean(x_per, na.rm = TRUE))^2
-  weight <- weight/sum(weight, na.rm = TRUE)
+  idid_weight <- (x_per - mean(x_per, na.rm = TRUE))^2
+  idid_weight <- idid_weight/sum(idid_weight, na.rm = TRUE)
 
-  return(weight)
+  return(idid_weight)
 }
 
 

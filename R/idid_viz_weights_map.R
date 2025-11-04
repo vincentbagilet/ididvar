@@ -38,20 +38,20 @@ idid_viz_weights_map <- function(reg,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
   df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-  df[["weight"]] <- ididvar::idid_weights(reg, var_interest)
+  df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest)
 
   #define what to aggregate by, depending on whether use facet or not
   if (missing(facet)) {
     list_join <- list(dim_1 = df[[join_by]])
-    vect_names <- c(join_by, "weight")
+    vect_names <- c(join_by, "idid_weight")
   } else {
     list_join <- list(dim_1 = df[[join_by]], dim_2 = df[[facet]])
-    vect_names <- c(join_by, facet, "weight")
+    vect_names <- c(join_by, facet, "idid_weight")
   }
 
   #compute shape level weights
   aggr_df <- stats::aggregate(
-    df$weight,
+    df$idid_weight,
     by = list_join,
     FUN = sum,
     na.rm = TRUE
@@ -60,13 +60,13 @@ idid_viz_weights_map <- function(reg,
 
   #merge with shapefile
   merged <- base::merge(shape_file, aggr_df, by = join_by, all = TRUE)
-  merged[["weight_log"]] <- log10(merged$weight * nrow(aggr_df))
+  merged[["idid_weight_log"]] <- log10(merged$idid_weight * nrow(aggr_df))
 
   #make graph
   graph <- merged |>
     ggplot2::ggplot() +
     ggplot2::geom_sf(
-      ggplot2::aes(fill = .data$weight_log),
+      ggplot2::aes(fill = .data$idid_weight_log),
       color = "white",
       linewidth = 0.1
     ) +

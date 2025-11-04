@@ -58,25 +58,25 @@ idid_viz_weights <- function(reg,
                              keep_labels = TRUE,
                              ...) {
   df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-  df[["weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
+  df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
   df <- order_axes(df,
-                             deparse(substitute(var_x)),
-                             deparse(substitute(var_y)),
-                             order,
-                             by = "weight")
+                   deparse(substitute(var_x)),
+                   deparse(substitute(var_y)),
+                   order,
+                   by = "idid_weight")
 
   #GRAPHS
   if (missing(var_y)) {
 
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = .data$weight)) +
+      ggplot2::ggplot(ggplot2::aes(x = {{ var_x }}, weight = .data$idid_weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(y = "Weight")
 
   } else if (missing(var_x)) {
 
     graph <- df |>
-      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = .data$weight)) +
+      ggplot2::ggplot(ggplot2::aes(y = {{ var_y }}, weight = .data$idid_weight)) +
       ggplot2::geom_bar(fill = colors[length(colors)]) +
       ggplot2::labs(x = "Weight")
 
@@ -84,13 +84,13 @@ idid_viz_weights <- function(reg,
 
     n_cat_x <- unique(df[[deparse(substitute(var_x))]]) |> length()
     n_cat_y <- unique(df[[deparse(substitute(var_y))]]) |> length()
-    df[["weight_scaled"]] <- df[["weight"]] * n_cat_x * n_cat_y
+    df[["idid_weight_scaled"]] <- df[["idid_weight"]] * n_cat_x * n_cat_y
 
     graph <- df |>
       ggplot2::ggplot(ggplot2::aes(
         x = {{ var_x }},
         y = {{ var_y }},
-        z = .data$weight_scaled
+        z = .data$idid_weight_scaled
       )) +
       ggplot2::geom_tile(stat = StatLogWeight) +
       ididvar::scale_fill_idid(colors = colors) +

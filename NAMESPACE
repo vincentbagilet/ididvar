@@ -3,6 +3,7 @@
 export(idid_contrib_stats)
 export(idid_contrib_threshold)
 export(idid_drop_change)
+export(idid_drop_reg)
 export(idid_grouping_var)
 export(idid_partial_out)
 export(idid_viz_bivar)
