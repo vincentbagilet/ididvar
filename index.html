@@ -62,8 +62,7 @@
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header">
-<img src="logo.png" class="logo" alt=""><h1 id="ididvar-">ididvar 
-<a class="anchor" aria-label="anchor" href="#ididvar-"></a>
+<img src="logo.png" class="logo" alt=""><h1 id="ididvar">ididvar<a class="anchor" aria-label="anchor" href="#ididvar"></a>
 </h1>
 </div>
 <!-- badges: start -->
@@ -82,8 +81,8 @@
 <div class="section level2">
 <h2 id="usage">Usage<a class="anchor" aria-label="anchor" href="#usage"></a>
 </h2>
-<p>Most of the functions of the package take as input the output of a regression and the name of the variable of interest. <code>ididvar</code> supports a breadth of estimation packages (<code>lm</code>, <code>plm</code>, <code>fixest</code> for instance).</p>
-<p>First, the package provides a straightforward function to compute identifying variation weights.</p>
+<p>Most of the functions of the package take as input the output of a regression and the name of the variable of interest. <code>ididvar</code> supports a breadth of estimation functions (<code>lm</code>, <code><a href="https://rdrr.io/pkg/plm/man/plm.html" class="external-link">plm::plm</a></code>, <code><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">fixest::feols</a></code>, <code>AER::ivreg</code> for instance).</p>
+<p>First, the package provides a straightforward function to compute identifying variation weights: <code>idid_weights</code>.</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://vincentbagilet.github.io/ididvar/">ididvar</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
@@ -96,16 +95,15 @@
 <span>  <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span>
 <span><span class="co">#&gt; [1] 1.417497e-05 5.163932e-05 5.908480e-05 1.918702e-06 7.089139e-08</span></span>
 <span><span class="co">#&gt; [6] 7.372159e-09</span></span></code></pre></div>
-<p>The package also allows for an effortless exploration of these weights through visualizations.</p>
+<p>The package also allows for an effortless exploration of these weights through visualizations (<code>idid_viz_weights</code>, <code>idid_viz_weights_map</code>, <code>idid_viz_cumul</code>).</p>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span>, <span class="va">year</span>, <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> </span></code></pre></div>
 <p><img src="reference/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;"></p>
-<p>In this particular (somehow silly) regression, most of the identifying variation comes from a few cities: Houston, Dallas, Austin and San Antonio.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_cumul.html">idid_viz_cumul</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="reference/figures/README-plot_cumul-1.png" width="80%" style="display: block; margin: auto;"></p>
-<p>It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained).</p>
+<p>It also provide functions to identify observations that actually contribute to identification, in the sense that dropping the other observations does not significantly affect the estimate obtained (<code>idid_viz_contrib</code>, <code>idid_viz_contrib_map</code>, <code>idid_viz_drop_change</code>).</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg_ex_fixest</span>, <span class="st">"median"</span>, var_y <span class="op">=</span> <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>

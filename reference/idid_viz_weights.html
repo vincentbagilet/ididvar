@@ -128,6 +128,8 @@ individual weights in that group, removing missing values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">idid_viz_weights</span><span class="op">(</span><span class="va">reg_ex_one_dim</span>, <span class="st">"pce"</span>, var_x <span class="op">=</span> <span class="va">year</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Vectorized input to `element_text()` is not officially supported.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span>
 <span class="r-plt img"><img src="idid_viz_weights-1.png" alt="" width="2188" height="1352"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with two dimensions</span></span></span>
@@ -136,6 +138,8 @@ individual weights in that group, removing missing values.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">idid_viz_weights</span><span class="op">(</span><span class="va">reg_ex_two_dim</span>, <span class="st">"median"</span>, <span class="va">year</span>, <span class="va">city</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span></span>
 <span class="r-in"><span>  <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Vectorized input to `element_text()` is not officially supported.</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1434 rows containing non-finite outside the scale range</span>
 <span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_log_weight()`).</span>
 <span class="r-plt img"><img src="idid_viz_weights-2.png" alt="" width="2188" height="1352"></span>
