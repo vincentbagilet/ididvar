@@ -26,20 +26,28 @@ idid_drop_change <- function(reg,
                              prop_drop,
                              ...) {
   reg_sliced <- ididvar::idid_drop_reg(reg, var_interest, prop_drop, ...)
+  var_interest_robust <- var_interest
 
   #retrieve point estimates and se
-  if (inherits(reg, c("lm", "plm"))) {
+  if (inherits(reg, "fixest")) {
+    coef_table <- reg$coeftable
+    # print(coef_table)
+    coef_table_sliced <- reg_sliced$coeftable
+
+    if (!is.null(reg$iv)) {
+      #in IVs feols renames the instrumented variable by adding "fit_" in front
+      # thus, need to account for that
+      var_interest_robust <- paste("fit", var_interest, sep = "_")
+    }
+  } else {
     coef_table <- summary(reg)$coefficients
     coef_table_sliced <- summary(reg_sliced)$coefficients
-  } else if (inherits(reg, "fixest")) {
-    coef_table <- reg$coeftable
-    coef_table_sliced <- reg_sliced$coeftable
   }
 
-  est_full <- coef_table[[var_interest, "Estimate"]]
-  est_sliced <- coef_table_sliced[[var_interest, "Estimate"]]
-  se_full <- coef_table[[var_interest, "Std. Error"]]
-  se_sliced <- coef_table_sliced[[var_interest, "Std. Error"]]
+  est_full <- coef_table[[var_interest_robust, "Estimate"]]
+  est_sliced <- coef_table_sliced[[var_interest_robust, "Estimate"]]
+  se_full <- coef_table[[var_interest_robust, "Std. Error"]]
+  se_sliced <- coef_table_sliced[[var_interest_robust, "Std. Error"]]
 
   out <- data.frame(
     prop_drop = prop_drop,

@@ -22,7 +22,7 @@
 #'   theme_idid()
 theme_idid <- function(...) {
   ggplot2::theme_minimal(
-    base_family = c("Helvetica")
+    base_family = c("Helvetica", "Arial")
   ) %+replace%
     ggplot2::theme(
       plot.margin = ggplot2::unit(c(0.5, 0.5, 0.5, 0.5), "cm"),

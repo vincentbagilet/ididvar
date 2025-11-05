@@ -37,9 +37,9 @@ devtools::install_github("vincentbagilet/ididvar")
 
 ## Usage
 
-Most of the functions of the package take as input the output of a regression and the name of the variable of interest. `ididvar` supports a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
+Most of the functions of the package take as input the output of a regression and the name of the variable of interest. `ididvar` supports a breadth of estimation functions (`lm`, `plm::plm`, `fixest::feols`, `AER::ivreg` for instance).
 
-First, the package provides a straightforward function to compute identifying variation weights. 
+First, the package provides a straightforward function to compute identifying variation weights: `idid_weights`.
 
 ```{r compute_weights, message=FALSE}
 library(ididvar)
@@ -53,20 +53,18 @@ idid_weights(reg_ex_fixest, "median") |>
   head()
 ```
 
-The package also allows for an effortless exploration of these weights through visualizations.
+The package also allows for an effortless exploration of these weights through visualizations (`idid_viz_weights`, `idid_viz_weights_map`, `idid_viz_cumul`).
 
 ```{r plot_weights, message=FALSE, warning=FALSE, fig.asp=1.5, fig.dpi=400}
 idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
 ```
 
-In this particular (somehow silly) regression, most of the identifying variation comes from a few cities: Houston, Dallas, Austin and San Antonio.
-
 ```{r plot_cumul, message=FALSE,  warning=FALSE, fig.asp=1.3, fig.dpi=400, out.width='80%'}
 idid_viz_cumul(reg_ex_fixest, "median")
 ```
 
-It also provide functions to identify observations that actually contribute to identification (in the sense that dropping the other observations does not significantly affect the estimate obtained). 
+It also provide functions to identify observations that actually contribute to identification, in the sense that dropping the other observations does not significantly affect the estimate obtained (`idid_viz_contrib`, `idid_viz_contrib_map`, `idid_viz_drop_change`). 
 
 ```{r plot_contrib, message=FALSE,  warning=FALSE, fig.asp=1.5, fig.dpi=400}
 idid_viz_contrib(reg_ex_fixest, "median", var_y = city, order = "y") +

@@ -3,7 +3,7 @@ reg_ex <- ggplot2::economics |>
     year = lubridate::year(date),
     year_fe = year |> as.factor()
   ) |>
-  lm(formula = unemploy ~ pce + uempmed + psavert + pop + year_fe)
+  feols(fml = unemploy ~ pce + uempmed + psavert + pop + year_fe)
 
 idid_viz_weights(reg_ex, "pce", var_x = year) +
   ggplot2::labs(x = NULL)

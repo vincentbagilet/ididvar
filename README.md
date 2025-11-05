@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# ididvar <a href="https://vincentbagilet.github.io/ididvar/"><img src="man/figures/logo.png" align="right" height="119" alt="ididvar website" /></a>
+# ididvar
 
 <!-- badges: start -->
 
@@ -35,10 +35,11 @@ devtools::install_github("vincentbagilet/ididvar")
 
 Most of the functions of the package take as input the output of a
 regression and the name of the variable of interest. `ididvar` supports
-a breadth of estimation packages (`lm`, `plm`, `fixest` for instance).
+a breadth of estimation functions (`lm`, `plm::plm`, `fixest::feols`,
+`AER::ivreg` for instance).
 
 First, the package provides a straightforward function to compute
-identifying variation weights.
+identifying variation weights: `idid_weights`.
 
 ``` r
 library(ididvar)
@@ -55,7 +56,8 @@ idid_weights(reg_ex_fixest, "median") |>
 ```
 
 The package also allows for an effortless exploration of these weights
-through visualizations.
+through visualizations (`idid_viz_weights`, `idid_viz_weights_map`,
+`idid_viz_cumul`).
 
 ``` r
 idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
@@ -64,10 +66,6 @@ idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
 
 <img src="man/figures/README-plot_weights-1.png" width="70%" style="display: block; margin: auto;" />
 
-In this particular (somehow silly) regression, most of the identifying
-variation comes from a few cities: Houston, Dallas, Austin and San
-Antonio.
-
 ``` r
 idid_viz_cumul(reg_ex_fixest, "median")
 ```
@@ -75,8 +73,9 @@ idid_viz_cumul(reg_ex_fixest, "median")
 <img src="man/figures/README-plot_cumul-1.png" width="80%" style="display: block; margin: auto;" />
 
 It also provide functions to identify observations that actually
-contribute to identification (in the sense that dropping the other
-observations does not significantly affect the estimate obtained).
+contribute to identification, in the sense that dropping the other
+observations does not significantly affect the estimate obtained
+(`idid_viz_contrib`, `idid_viz_contrib_map`, `idid_viz_drop_change`).
 
 ``` r
 idid_viz_contrib(reg_ex_fixest, "median", var_y = city, order = "y") +
