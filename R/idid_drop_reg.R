@@ -33,7 +33,8 @@ idid_drop_reg <- function(reg,
 
   #compute new estimate
   reg_sliced <- stats::update(reg, data = df_sliced, use_calling_env = FALSE) |>
-    #handle warning linked to use_calling_env (necessary with fixest)
+    #handle warning linked to the use of use_calling_env
+    #this parameter is necessary for fixest
     withCallingHandlers(
       warning = function(w) {
         if (grepl("use_calling_env",

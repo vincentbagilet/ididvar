@@ -48,7 +48,7 @@ idid_partial_out <- function(reg,
                              var_interest = var_to_partial,
                              ...) {
   #define partial out formula if x or y
-  if (var_to_partial == reg$call[[2]][[2]]) { #reg$call[[2]][[2]] = y in the reg
+  if (var_to_partial == all.vars(reg$call[[2]])[[1]]) { #if is y in the reg
     formula_partial <-
       stats::as.formula(
         paste(". ~ . -", var_interest)
