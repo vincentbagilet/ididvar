@@ -73,18 +73,21 @@ outcome and the variable of interest, after partialling out controls.</p>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sales</span><span class="op">)</span> <span class="op">~</span> <span class="va">median</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">idid_viz_bivar</span><span class="op">(</span><span class="va">reg_few_ctrl</span>, <span class="st">"median"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Using formula(x) is deprecated when x is a character vector of length &gt; 1.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider formula(paste(x, collapse = " ")) instead.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model.frame.default(formula = log ~ 1, data = ggplot2::txhousing,     na.action = stats::na.exclude, drop.unused.levels = TRUE):</span> invalid type (special) for variable 'log'</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 617 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_smooth()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 617 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
+<span class="r-plt img"><img src="idid_viz_bivar-1.png" alt="" width="2188" height="1352"></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="va">reg_more_ctrl</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/txhousing.html" class="external-link">txhousing</a></span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span>formula <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sales</span><span class="op">)</span> <span class="op">~</span> <span class="va">median</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">+</span> <span class="va">city</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span><span class="op">)</span></span></span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">idid_viz_bivar</span><span class="op">(</span><span class="va">reg_more_ctrl</span>, <span class="st">"median"</span><span class="op">)</span></span></span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Using formula(x) is deprecated when x is a character vector of length &gt; 1.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Consider formula(paste(x, collapse = " ")) instead.</span>
-<span class="r-err co"><span class="r-pr">#&gt;</span> <span class="error">Error in model.frame.default(formula = log ~ listings + city + as.factor(date),     data = ggplot2::txhousing, na.action = stats::na.exclude,     drop.unused.levels = TRUE):</span> invalid type (special) for variable 'log'</span>
-<span class="r-in"><span></span></span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1434 rows containing non-finite outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`stat_smooth()`).</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Removed 1434 rows containing missing values or values outside the scale range</span>
+<span class="r-wrn co"><span class="r-pr">#&gt;</span> (`geom_point()`).</span>
+<span class="r-plt img"><img src="idid_viz_bivar-2.png" alt="" width="2188" height="1352"></span>
 </code></pre></div>
     </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>

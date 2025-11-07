@@ -37,7 +37,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/background.html">Background on the weights</a></li>
@@ -173,18 +173,6 @@ despite the quantity estimated being somehow radically different.</p>
 <div class="tab-content">
 <div class="active  tab-pane" id="raw" role="tabpanel" aria-labelledby="raw-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span>
-<span><span class="co">#&gt; Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span>
-<span><span class="co">#&gt; Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span>
-<span><span class="co">#&gt; Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span>
-<span><span class="co">#&gt; Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span>
-<span><span class="co">#&gt; Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/bivar_raw-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="continent-fes" role="tabpanel" aria-labelledby="continent-fes-tab">
@@ -205,7 +193,7 @@ despite the quantity estimated being somehow radically different.</p>
 </div>
 <div class="tab-pane" id="code" role="tabpanel" aria-labelledby="code-tab">
 
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">graph_bivar</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="fu"><a href="../reference/idid_viz_bivar.html">idid_viz_bivar</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>color <span class="op">=</span> <span class="va">continent</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
@@ -256,37 +244,27 @@ observations.</p>
 <div class="tab-content">
 <div class="active  tab-pane" id="raw-1" role="tabpanel" aria-labelledby="raw-1-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/weights_raw-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="continent-fes-1" role="tabpanel" aria-labelledby="continent-fes-1-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/weights_continent_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="country-fes-1" role="tabpanel" aria-labelledby="country-fes-1-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/weights_country_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="year-fes-1" role="tabpanel" aria-labelledby="year-fes-1-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/weights_year_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="twfe-1" role="tabpanel" aria-labelledby="twfe-1-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/weights_twfe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="code-1" role="tabpanel" aria-labelledby="code-1-tab">
 
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">graph_weights</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">reg</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="st">"l_gdpPercap"</span>, var_x <span class="op">=</span> <span class="va">year</span>, var_y <span class="op">=</span> <span class="va">country</span><span class="op">)</span> <span class="op">+</span></span>
@@ -339,41 +317,31 @@ and exaggeration.</p>
 <div class="tab-content">
 <div class="active  tab-pane" id="raw-2" role="tabpanel" aria-labelledby="raw-2-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/contrib_raw-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="continent-fes-2" role="tabpanel" aria-labelledby="continent-fes-2-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/contrib_continent_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="country-fes-2" role="tabpanel" aria-labelledby="country-fes-2-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/contrib_country_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="year-fes-2" role="tabpanel" aria-labelledby="year-fes-2-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/contrib_year_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="twfe-2" role="tabpanel" aria-labelledby="twfe-2-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/contrib_twfe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="code-2" role="tabpanel" aria-labelledby="code-2-tab">
 
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">graph_contrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">reg</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="st">"l_gdpPercap"</span>, var_x <span class="op">=</span> <span class="va">year</span>, var_y <span class="op">=</span> <span class="va">country</span><span class="op">)</span> <span class="op">+</span></span>
@@ -395,7 +363,7 @@ and exaggeration.</p>
 </h2>
 <p>The previous visual analysis is confirmed by computing the effective
 sample size; it varies strongly with the specification.</p>
-<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">purrr</span><span class="fu">::</span><span class="fu"><a href="https://purrr.tidyverse.org/reference/map.html" class="external-link">map</a></span><span class="op">(</span><span class="va">regs</span>, <span class="va">idid_contrib_stats</span>, var_interest <span class="op">=</span> <span class="st">"l_gdpPercap"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://purrr.tidyverse.org/reference/list_c.html" class="external-link">list_rbind</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>reg <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">regs</span><span class="op">)</span>, .before <span class="op">=</span> <span class="fl">1</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
@@ -491,41 +459,31 @@ Africa: later years contribute more than earlier years.</p>
 <div class="tab-content">
 <div class="active  tab-pane" id="raw-3" role="tabpanel" aria-labelledby="raw-3-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/hist_contrib_raw-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="continent-fes-3" role="tabpanel" aria-labelledby="continent-fes-3-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/hist_contrib_continent_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="country-fes-3" role="tabpanel" aria-labelledby="country-fes-3-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/hist_contrib_country_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="year-fes-3" role="tabpanel" aria-labelledby="year-fes-3-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/hist_contrib_year_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="twfe-3" role="tabpanel" aria-labelledby="twfe-3-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/hist_contrib_twfe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="code-3" role="tabpanel" aria-labelledby="code-3-tab">
 
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">hist_contrib</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">reg</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  <span class="va">reg</span> <span class="op">|&gt;</span> </span>
 <span>    <span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="st">"l_gdpPercap"</span>, var_x <span class="op">=</span> <span class="va">year</span><span class="op">)</span> <span class="op">+</span></span>
@@ -570,41 +528,31 @@ limited and not representative of the overall sample.</p>
 <div class="tab-content">
 <div class="active  tab-pane" id="raw-4" role="tabpanel" aria-labelledby="raw-4-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/map_contrib_raw-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="continent-fes-4" role="tabpanel" aria-labelledby="continent-fes-4-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/map_contrib_continent_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="country-fes-4" role="tabpanel" aria-labelledby="country-fes-4-tab">
 
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="specification_files/figure-html/map_contrib_country_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="year-fes-4" role="tabpanel" aria-labelledby="year-fes-4-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/map_contrib_year_fe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="twfe-4" role="tabpanel" aria-labelledby="twfe-4-tab">
 
-<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
+<pre><code><span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre>
 <p><img src="specification_files/figure-html/map_contrib_twfe-1.png" width="2187.5"></p>
 </div>
 <div class="tab-pane" id="code-4" role="tabpanel" aria-labelledby="code-4-tab">
 
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">world_sf</span> <span class="op">&lt;-</span> <span class="fu">rnaturalearth</span><span class="fu">::</span><span class="fu"><a href="https://docs.ropensci.org/rnaturalearth/reference/ne_countries.html" class="external-link">ne_countries</a></span><span class="op">(</span>scale <span class="op">=</span> <span class="st">"medium"</span>, returnclass <span class="op">=</span> <span class="st">"sf"</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html" class="external-link">mutate</a></span><span class="op">(</span>iso_alpha <span class="op">=</span> <span class="va">adm0_a3</span><span class="op">)</span></span>
 <span></span>

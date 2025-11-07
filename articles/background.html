@@ -37,7 +37,7 @@
       <ul class="navbar-nav me-auto">
 <li class="nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
-<li class="active nav-item dropdown">
+<li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
 <li><a class="dropdown-item" href="../articles/background.html">Background on the weights</a></li>
@@ -179,14 +179,12 @@ represent the squared-distance to the center of the distribution of the
 variable of interest, after partialling out the controls. The following
 example, describing the relationship between x and y partialled out and
 the weights illustrates this:</p>
-<pre><code><span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre>
 <p><img src="background_files/figure-html/bivar_partial-1.png" width="2187.5"></p>
 <p>While this pattern clearly appears in the partialled out regression,
 it is much less visible when plotting the raw relationship, hence the
 importance of analysing those weights and plotting the partialled out
 regression:</p>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">data_partial</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">gdpPercap</span>, y <span class="op">=</span> <span class="va">lifeExp</span>, color <span class="op">=</span> <span class="va">idid_weight_log</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">1.5</span><span class="op">)</span> <span class="op">+</span></span>
@@ -200,9 +198,7 @@ regression:</p>
 <span>    x <span class="op">=</span> <span class="st">"GDP per capita"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Life expectancy"</span>,</span>
 <span>    color <span class="op">=</span> <span class="st">"Weight, compared to 1/n, the average weight"</span>,</span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="background_files/figure-html/bivar_raw-1.png" width="2187.5"></p>
 <!-- # Are these weights actually weights? -->
 <!-- # Equivalence between leverage and multiple regression weights -->

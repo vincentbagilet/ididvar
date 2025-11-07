@@ -35,7 +35,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="active nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../articles/ididvar.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -140,9 +140,7 @@ individual and groups (using <code>idid_viz_contrib</code> and
 to understand what we are estimating and to visualize what is driving
 our</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_bivar.html">idid_viz_bivar</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_bivar.html">idid_viz_bivar</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_bivar-1.png" width="2187.5"></p>
 </div>
 <div class="section level2">
@@ -160,9 +158,7 @@ optional as most functions will recompute the weights.</p>
 <p>We can plot the distribution of weights using the
 <code>idid_viz_cumul</code> function.</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_cumul.html">idid_viz_cumul</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_cumul.html">idid_viz_cumul</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_cumul-1.png" width="2187.5"></p>
 <p>That allows us to analyse the extend to which the weights are evenly
 distributed. A very unequal distribution should hint that some
@@ -178,9 +174,7 @@ the data by individuals, only providing <code>var_x</code> or
 <code>var_y</code> to the <code>idid_viz_weights</code>.<a class="footnote-ref" tabindex="0" data-bs-toggle="popover" data-bs-content="&lt;p&gt;The &lt;code&gt;order&lt;/code&gt; parameter allows to sort
 individuals by weight, along the specified axis (here y)&lt;/p&gt;"><sup>1</sup></a></p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, var_y <span class="op">=</span> <span class="va">state</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, var_y <span class="op">=</span> <span class="va">state</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_weights-1.png" width="2187.5"></p>
 <p>If the data is an individual-time panel, one may want to plot each
 observation using a heatmap. That can be done with, by providing these
@@ -196,9 +190,7 @@ allows to do easily do that by only providing a shape file in a
 <span>  <span class="fu">tigris</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tigris/man/shift_geometry.html" class="external-link">shift_geometry</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> </span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/rename.html" class="external-link">rename</a></span><span class="op">(</span>state <span class="op">=</span> <span class="va">NAME</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="../reference/idid_viz_weights_map.html">idid_viz_weights_map</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, <span class="va">states_sf</span>, <span class="st">"state"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span><span class="fu"><a href="../reference/idid_viz_weights_map.html">idid_viz_weights_map</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, <span class="va">states_sf</span>, <span class="st">"state"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_weights_map-1.png" width="2187.5"></p>
 </div>
 <div class="section level2">
@@ -249,9 +241,7 @@ weights distribution across groups.</p>
 <span>    x <span class="op">=</span> <span class="st">"Income quartiles"</span>, </span>
 <span>    title <span class="op">=</span> <span class="st">"Distribution of Identifying Variation Weights By Income"</span>,</span>
 <span>    subtitle <span class="op">=</span> <span class="st">"High income states contribute more to the estimation"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span>  <span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_weights_group-1.png" width="2187.5"></p>
 <p>Such an analysis can also be implemented for two variables at the
 same time, thus building heatmaps. This is done with the same method as
@@ -259,9 +249,7 @@ the one used for individual observations discussed above.</p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_weights.html">idid_viz_weights</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, <span class="va">income_quartiles</span>, <span class="va">pop_quartiles</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/coord_fixed.html" class="external-link">coord_fixed</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Income quartiles"</span>, y <span class="op">=</span> <span class="st">"Population quartiles"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="st">"Income quartiles"</span>, y <span class="op">=</span> <span class="st">"Population quartiles"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/heatmap-1.png" width="2187.5"></p>
 <p>Through all these explorations, one can get a sense of the
 distribution of weights, through space or groups.</p>
@@ -283,9 +271,7 @@ of interest as a function of the proportion of observations dropped.</p>
 <span>  <span class="st">"Income"</span>, </span>
 <span>  threshold_change <span class="op">=</span> <span class="fl">0.05</span>, <span class="co">#position of the dotted line</span></span>
 <span>  search_end <span class="op">=</span> <span class="fl">0.4</span></span>
-<span><span class="op">)</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span><span class="op">)</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_drop_change-1.png" width="2187.5"></p>
 <p>This function loops over the <code>idid_drop_change</code> function
 which, for a given proportion of observations dropped, computes a
@@ -329,15 +315,11 @@ functions. They work in a similar ways as <code>idid_viz_weights</code>
 and <code>idid_viz_weights_map</code>.</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, <span class="va">income_quartiles</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_contrib-1.png" width="2187.5"></p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_contrib_map.html">idid_viz_contrib_map</a></span><span class="op">(</span><span class="va">reg_ex</span>, <span class="st">"Income"</span>, <span class="va">states_sf</span>, <span class="st">"state"</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Searching for the contribution threshold</span></span>
-<span><span class="co">#&gt; Warning: Vectorized input to `element_text()` is not officially supported.</span></span>
-<span><span class="co">#&gt; <span style="color: #00BBBB;">ℹ</span> Results may be unexpected or may change in future versions of ggplot2.</span></span></code></pre></div>
+<span><span class="co">#&gt; Searching for the contribution threshold</span></span></code></pre></div>
 <p><img src="ididvar_files/figure-html/idid_viz_contrib-2.png" width="2187.5"></p>
 <p><a href="https://vincentbagilet.github.io/causal_exaggeration/ididvar.html" class="external-link">Online
 appendices</a> of the <a href="https://vincentbagilet.github.io/causal_exaggeration/causal_exaggeration_paper.pdf" class="external-link">associated
