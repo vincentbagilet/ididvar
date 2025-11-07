@@ -15,7 +15,12 @@ reg_iv <- data_ex |>
   feols(fml = unemploy ~ psavert + pop | year_fe | pce ~ uempmed)
 
 reg_ivreg <-
-  AER::ivreg(data = data_ex, formula = unemploy ~ pce + psavert + pop + year_fe | uempmed + psavert + pop + year_fe)
+  AER::ivreg(
+    data = data_ex,
+    formula = unemploy ~ pce + psavert + pop + year_fe | uempmed + psavert + pop + year_fe
+  )
+
+AER::ivreg(data = data_ex, formula = unemploy ~ pce + psavert + pop + year_fe)
 
 reg_ex <- data_ex |>
   lm(formula = unemploy ~ pce + uempmed + psavert + pop + year_fe)
