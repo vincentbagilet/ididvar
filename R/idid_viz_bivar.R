@@ -22,10 +22,9 @@
 #'   lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 #'
 #' idid_viz_bivar(reg_more_ctrl, "median")
-#'
 idid_viz_bivar <- function(reg, var_interest) {
   df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-  name_var_y <- reg$call[[2]][[2]]
+  name_var_y <- all.vars(reg$call[[2]])[[1]]
 
   df[["y_par"]] <- ididvar::idid_partial_out(reg, name_var_y, var_interest)
   df[["x_par"]] <- ididvar::idid_partial_out(reg, var_interest)

@@ -26,6 +26,7 @@ reference:
   - idid_drop_reg
   - idid_drop_change
   - idid_grouping_var
+  - idid_to_cf
 
 - title: Visualization
   contents:

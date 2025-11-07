@@ -19,10 +19,7 @@
 #' continuous, one may want to provide the argument \code{family = "gaussian"}
 #' to \code{idid_weights}.
 #'
-#' @param reg A regression object.
-#' @param var_interest A string. The name of the main variable of interest.
-#' @param ... Additional elements to pass to the regression function when
-#' partialling out controls.
+#' @inheritParams idid_partial_out
 #'
 #' @returns
 #' A numeric vector representing the identifying variation weights.
@@ -36,12 +33,18 @@
 #' idid_weights(reg_ex_lm, "median") |>
 #'  head()
 #'
-idid_weights <- function(reg, var_interest, ...) {
-  if (var_interest == reg$call[[2]][[2]]) { #reg$call[[2]][[2]] is y in the reg
+idid_weights <- function(reg, var_interest, partial_iv = TRUE, ...) {
+  if (var_interest == all.vars(reg$call[[2]])[[1]]) { #reg$call[[2]][[2]] is y in the reg
     stop("var_interest should be an explanatory variable")
   }
 
-  x_per <- ididvar::idid_partial_out(reg, var_to_partial = var_interest, ...)
+  x_per <-
+    ididvar::idid_partial_out(
+      reg,
+      var_to_partial = var_interest,
+      partial_iv = partial_iv,
+      ...
+    )
 
   idid_weight <- (x_per - mean(x_per, na.rm = TRUE))^2
   idid_weight <- idid_weight/sum(idid_weight, na.rm = TRUE)

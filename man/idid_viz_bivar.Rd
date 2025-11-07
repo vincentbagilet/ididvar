@@ -29,5 +29,4 @@ reg_more_ctrl <- ggplot2::txhousing |>
   lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 
 idid_viz_bivar(reg_more_ctrl, "median")
-
 }
