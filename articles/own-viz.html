@@ -163,7 +163,7 @@ of interest.</p>
 <span>    x <span class="op">=</span> <span class="st">"Log GDP per capita (residualized)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Life expectancy (residualized)"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/xy_rel-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/xy_rel-1.png" class="r-plt" width="2187.5"></p>
 <p>Such a mapping might be less legible when the sample size is large.
 In such instances, transparency, a bin or hex map or a bin-scatter can
 be useful tools to represent large numbers of observations.</p>
@@ -173,7 +173,7 @@ be useful tools to represent large numbers of observations.</p>
 </h3>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_bivar.html">idid_viz_bivar</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/idid_viz_bivar-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/idid_viz_bivar-1.png" class="r-plt" width="2187.5"></p>
 <p>To compute <code>data_partial</code> completely manually, one can do
 the following:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
@@ -227,14 +227,14 @@ can add a <code>weight</code> variable to our dataset, along with a
 <span>    x <span class="op">=</span> <span class="st">"Observation index\n(smallest to largest weight)"</span>,</span>
 <span>    y <span class="op">=</span> <span class="st">"Cummulative sum of weights"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/cum_weights-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/cum_weights-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-cumul-equivalent">ididvar cumul equivalent<a class="anchor" aria-label="anchor" href="#ididvar-cumul-equivalent"></a>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_cumul.html">idid_viz_cumul</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/idid_viz_cumul-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/idid_viz_cumul-1.png" class="r-plt" width="2187.5"></p>
 </div>
 </div>
 <div class="section level2">
@@ -269,7 +269,7 @@ graph, we order the states by weight.</p>
 <span>    y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    fill <span class="op">=</span> <span class="cn">NULL</span></span>
 <span>  <span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/weight_bar_plot-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/weight_bar_plot-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-weight">ididvar weight<a class="anchor" aria-label="anchor" href="#ididvar-weight"></a>
@@ -279,7 +279,7 @@ graph, we order the states by weight.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_bar.html" class="external-link">geom_col</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x <span class="op">=</span> <span class="va">idid_weight</span>, y <span class="op">=</span> <span class="va">country</span>, fill <span class="op">=</span> <span class="va">continent</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_fill_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"#497C89"</span>, <span class="st">"#cf816b"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span>, fill <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/idid_weight_bar_plot-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/idid_weight_bar_plot-1.png" class="r-plt" width="2187.5"></p>
 <p>Note that, in <code>idid_viz</code> functions, additional geoms can
 be added on top of existing ones, to add some coloring scheme for
 instance.</p>
@@ -303,7 +303,7 @@ contributing observations.</p>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    fill <span class="op">=</span> <span class="cn">NULL</span></span>
 <span>  <span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/contrib_bar_plot-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/contrib_bar_plot-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-contribution">ididvar contribution<a class="anchor" aria-label="anchor" href="#ididvar-contribution"></a>
@@ -311,7 +311,6 @@ contributing observations.</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span>, var_y <span class="op">=</span> <span class="va">decade</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span>
-<span><span class="co">#&gt; Searching for the contribution threshold</span></span>
 <span><span class="co">#&gt; NOTE: 2 fixed-effect singletons were removed (2 observations).</span></span>
 <span><span class="co">#&gt; NOTE: 4 fixed-effect singletons were removed (4 observations).</span></span>
 <span><span class="co">#&gt; NOTE: 3 fixed-effect singletons were removed (3 observations).</span></span>
@@ -319,7 +318,7 @@ contributing observations.</p>
 <span><span class="co">#&gt; NOTE: 13 fixed-effect singletons were removed (13 observations).</span></span>
 <span><span class="co">#&gt; NOTE: 11 fixed-effect singletons were removed (11 observations).</span></span>
 <span><span class="co">#&gt; NOTE: 11 fixed-effect singletons were removed (11 observations).</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/idid_contrib_bar_plot-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/idid_contrib_bar_plot-1.png" class="r-plt" width="2187.5"></p>
 </div>
 </div>
 <div class="section level2">
@@ -358,7 +357,7 @@ at the level we are interested in:</p>
 <span>    x <span class="op">=</span> <span class="st">"Weight"</span>,</span>
 <span>    y <span class="op">=</span> <span class="cn">NULL</span></span>
 <span>  <span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/heatmap_no_scale-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/heatmap_no_scale-1.png" class="r-plt" width="2187.5"></p>
 <p>The graph above was made plotting the raw weights. However, one value
 is much larger than the others. It hides all the variation in weight
 magnitude.</p>
@@ -394,7 +393,7 @@ other.</p>
 <span>    x <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    y <span class="op">=</span> <span class="cn">NULL</span></span>
 <span>  <span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/heatmap_with_scale-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/heatmap_with_scale-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-weight-equivalent">ididvar weight equivalent<a class="anchor" aria-label="anchor" href="#ididvar-weight-equivalent"></a>
@@ -404,7 +403,7 @@ other.</p>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">~</span> <span class="va">.</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, space <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>strip.text.y <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_text</a></span><span class="op">(</span>angle <span class="op">=</span> <span class="fl">0</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/idid_weight_heatmap-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/idid_weight_heatmap-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="contributing-observations">Contributing observations<a class="anchor" aria-label="anchor" href="#contributing-observations"></a>
@@ -429,7 +428,7 @@ other.</p>
 <span>    y <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"Number of contributing observations"</span></span>
 <span>  <span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/heatmap_contrib-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/heatmap_contrib-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-contribution-heatmap">ididvar contribution heatmap<a class="anchor" aria-label="anchor" href="#ididvar-contribution-heatmap"></a>
@@ -438,7 +437,7 @@ other.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_contrib.html">idid_viz_contrib</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span>, <span class="va">decade</span>, <span class="va">country</span>, order <span class="op">=</span> <span class="st">"y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html" class="external-link">facet_grid</a></span><span class="op">(</span><span class="va">continent</span> <span class="op">~</span> <span class="va">.</span>, scales <span class="op">=</span> <span class="st">"free_y"</span>, space <span class="op">=</span> <span class="st">"free_y"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">labs</a></span><span class="op">(</span>x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/idid_contrib_heatmap-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/idid_contrib_heatmap-1.png" class="r-plt" width="2187.5"></p>
 </div>
 </div>
 <div class="section level2">
@@ -476,7 +475,7 @@ other.</p>
 <span>    axis.text.y <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/map_weights-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/map_weights-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-weights-map">ididvar weights map<a class="anchor" aria-label="anchor" href="#ididvar-weights-map"></a>
@@ -485,7 +484,7 @@ other.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_weights_map.html">idid_viz_weights_map</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span>, <span class="va">world_sf</span>, <span class="st">"iso_alpha"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">proj_globe</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"gray90"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/ididvar_map_weight-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/ididvar_map_weight-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="contrib-map">Contrib map<a class="anchor" aria-label="anchor" href="#contrib-map"></a>
@@ -510,7 +509,7 @@ other.</p>
 <span>    axis.text.y <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    axis.text.x <span class="op">=</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_blank</a></span><span class="op">(</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="own-viz_files/figure-html/map_contrib-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/map_contrib-1.png" class="r-plt" width="2187.5"></p>
 </div>
 <div class="section level3">
 <h3 id="ididvar-contrib-map">ididvar contrib map<a class="anchor" aria-label="anchor" href="#ididvar-contrib-map"></a>
@@ -519,7 +518,7 @@ other.</p>
 <code class="sourceCode R"><span><span class="fu"><a href="../reference/idid_viz_contrib_map.html">idid_viz_contrib_map</a></span><span class="op">(</span><span class="va">reg</span>, <span class="st">"l_gdpPercap"</span>, <span class="va">world_sf</span>, <span class="st">"iso_alpha"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="va">proj_globe</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html" class="external-link">theme</a></span><span class="op">(</span>panel.grid.major <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html" class="external-link">element_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"gray93"</span><span class="op">)</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="own-viz_files/figure-html/ididvar_map_contrib-1.png" width="2187.5"></p>
+<p><img src="own-viz_files/figure-html/ididvar_map_contrib-1.png" class="r-plt" width="2187.5"></p>
 </div>
 </div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
@@ -533,7 +532,7 @@ other.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
