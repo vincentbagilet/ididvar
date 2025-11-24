@@ -58,19 +58,19 @@ idid_partial_out <- function(reg,
   #transform IV to CF function
   if (partial_iv) {
     if (inherits(reg, "ivreg") | (inherits(reg, "fixest") & !is.null(reg$iv))) {
-      reg_fct <- idid_to_cf(reg)
-      message("IV regression transformed to its control functio equivalent")
+      reg_fct <- ididvar::idid_to_cf(reg)
     }
   }
 
-  #define partial out formula if x or y
-  if (var_to_partial == all.vars(reg_fct$call[[2]])[[1]]) { #if is y in the reg
+  # partial out formula for y
+  if (var_to_partial == all.vars(reg_fct$call[[2]])[[1]]) {
     formula_partial <-
       stats::as.formula(
         paste(". ~ . -", var_interest)
         # env = environment(stats::formula(reg_fct))
       )
   } else {
+  # partial out formula for x
     formula_partial <-
       stats::as.formula(
         paste(var_to_partial, "~ . -", var_to_partial, "-", var_interest)
@@ -97,11 +97,17 @@ idid_partial_out <- function(reg,
     ) |>
     stats::residuals(na.rm = FALSE)
 
-  #add NAs back for plm (because na.action not fully supported by plm)
+  #add NAs back for plm and felm
+  #(because na.action not fully supported by plm and felm
   if (inherits(reg, "plm")) {
     df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
     miss_val <- rep(NA, nrow(df))
     miss_val[as.numeric(rownames(reg$model))] <- partialled_out
+    partialled_out <- miss_val
+  } else if (inherits(reg, "felm")) {
+    df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
+    miss_val <- rep(NA, nrow(df))
+    miss_val[which(!(1:nrow(df) %in% reg$na.action))] <- partialled_out
     partialled_out <- miss_val
   }
 

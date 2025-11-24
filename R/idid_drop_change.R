@@ -31,7 +31,6 @@ idid_drop_change <- function(reg,
   #retrieve point estimates and se
   if (inherits(reg, "fixest")) {
     coef_table <- reg$coeftable
-    # print(coef_table)
     coef_table_sliced <- reg_sliced$coeftable
 
     if (!is.null(reg$iv)) {

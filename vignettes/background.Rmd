@@ -31,7 +31,10 @@ where $x$ is the variable of interest and $C$ the vector of controls and fixed e
 
 In the package, they are computed using the same estimation procedure as the one used in the main regression, just replacing the outcome variable with the dependent variable of interest. The following example illustrates how the `idid_partial_out` function works on an example model describing the relationship between median price and number of housing sales in Texas: 
 
-```{r idid_partial_out, meassage=FALSE}
+```{r idid_partial_out}
+#| message: false
+#| warning: false
+
 library(ididvar)
 library(ggplot2)
 library(dplyr)
@@ -102,7 +105,7 @@ data_partial |>
 
 While this pattern clearly appears in the partialled out regression, it is much less visible when plotting the raw relationship, hence the importance of analysing those weights and plotting the partialled out regression:
 
-```{r bivar_raw, code_folding=TRUE, fig.asp=0.8}
+```{r bivar_raw, code_folding=TRUE, fig.asp=0.8, echo=FALSE}
 data_partial |>
   ggplot(aes(x = gdpPercap, y = lifeExp, color = idid_weight_log)) +
   geom_point(size = 1.5) +

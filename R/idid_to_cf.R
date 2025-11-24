@@ -58,7 +58,6 @@ idid_to_cf <- function(reg, ...) {
 #' @exportS3Method
 idid_to_cf.fixest <- function(reg, ...) {
   dat <- eval(reg$call$data, envir = environment(stats::formula(reg)))
-
   endo_vars <- reg$iv_endo_names
 
   #compute residuals from first stage

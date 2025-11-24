@@ -49,7 +49,7 @@ idid_viz_contrib <- function(reg,
 
   #error handling
   if (missing(contrib_threshold)) {
-    message("Searching for the contribution threshold")
+    # message("Searching for the contribution threshold")
     contrib_threshold <- ididvar::idid_contrib_threshold(
       reg,
       var_interest,

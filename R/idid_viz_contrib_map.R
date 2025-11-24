@@ -34,7 +34,7 @@ idid_viz_contrib_map <- function(reg,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
   if (missing(contrib_threshold)) {
-    message("Searching for the contribution threshold")
+    # message("Searching for the contribution threshold")
     contrib_threshold <- ididvar::idid_contrib_threshold(
       reg,
       var_interest,

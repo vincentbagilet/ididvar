@@ -4,7 +4,7 @@
 #' Makes a bivariate graph to visualize the data and relationship between the
 #' outcome and the variable of interest, after having partialLed out controls.
 #'
-#' @inheritParams idid_weights
+#' @inheritParams idid_partial_out
 #'
 #' @returns
 #' A ggplot2 scatter plot and regression line of the relationship between the
@@ -22,12 +22,18 @@
 #'   lm(formula = log(sales) ~ median + listings + city + as.factor(date))
 #'
 #' idid_viz_bivar(reg_more_ctrl, "median")
-idid_viz_bivar <- function(reg, var_interest) {
+idid_viz_bivar <- function(reg,
+                           var_interest,
+                           partial_iv = TRUE,
+                           ...) {
+
   df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
   name_var_y <- all.vars(reg$call[[2]])[[1]]
 
-  df[["y_par"]] <- ididvar::idid_partial_out(reg, name_var_y, var_interest)
-  df[["x_par"]] <- ididvar::idid_partial_out(reg, var_interest)
+  df[["y_par"]] <-
+    ididvar::idid_partial_out(reg, name_var_y, var_interest, partial_iv = partial_iv, ...)
+  df[["x_par"]] <-
+    ididvar::idid_partial_out(reg, var_interest, partial_iv = partial_iv, ...)
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = .data$x_par, y = .data$y_par)) +
