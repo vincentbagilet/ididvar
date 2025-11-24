@@ -26,16 +26,18 @@ idid_drop_change <- function(reg,
                              prop_drop,
                              ...) {
   reg_sliced <- ididvar::idid_drop_reg(reg, var_interest, prop_drop, ...)
+  #some regression function "change" the name of the variable of interest
+  #for instance for a boolean var "treated", in the coef table the name will be
+  #treatedTRUE. Take that into account with var_interest_robust
   var_interest_robust <- var_interest
 
-  #retrieve point estimates and se
+  #retrieve the coeff table
   if (inherits(reg, "fixest")) {
     coef_table <- reg$coeftable
     coef_table_sliced <- reg_sliced$coeftable
 
     if (!is.null(reg$iv)) {
       #in IVs feols renames the instrumented variable by adding "fit_" in front
-      # thus, need to account for that
       var_interest_robust <- paste("fit", var_interest, sep = "_")
     }
   } else {
@@ -43,6 +45,11 @@ idid_drop_change <- function(reg,
     coef_table_sliced <- summary(reg_sliced)$coefficients
   }
 
+  #when the variable of interest is a boolean, "TRUE" is added behind its name
+  var_interest_robust <-
+    grep(paste0(var_interest_robust, "(TRUE)*"), rownames(coef_table), value = TRUE)
+
+  #retrieve pt estimate and se
   est_full <- coef_table[[var_interest_robust, "Estimate"]]
   est_sliced <- coef_table_sliced[[var_interest_robust, "Estimate"]]
   se_full <- coef_table[[var_interest_robust, "Std. Error"]]
