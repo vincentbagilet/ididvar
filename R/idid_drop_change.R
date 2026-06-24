@@ -47,7 +47,7 @@ idid_drop_change <- function(reg,
 
   #when the variable of interest is a boolean, "TRUE" is added behind its name
   var_interest_robust <-
-    grep(paste0(var_interest_robust, "(TRUE)*"), rownames(coef_table), value = TRUE)
+    grep(paste0("^", var_interest_robust, "(TRUE)?$"), rownames(coef_table), value = TRUE)
 
   #retrieve pt estimate and se
   est_full <- coef_table[[var_interest_robust, "Estimate"]]
