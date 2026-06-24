@@ -15,7 +15,7 @@ Imports:
     rlang
 Suggests: 
     dplyr,
-    fixest (>= 0.13.2),
+    fixest (>= 0.14.1),
     forcats,
     gapminder,
     knitr,

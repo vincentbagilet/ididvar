@@ -36,7 +36,7 @@ idid_drop_change <- function(reg,
     coef_table <- reg$coeftable
     coef_table_sliced <- reg_sliced$coeftable
 
-    if (!is.null(reg$iv)) {
+    if (!is.null(reg$is_iv)) {
       #in IVs feols renames the instrumented variable by adding "fit_" in front
       var_interest_robust <- paste("fit", var_interest, sep = "_")
     }
