@@ -40,6 +40,7 @@ straightforward:
 Let’s assume we have already ran the regression of interest.
 
 ``` r
+
 library(ididvar)
 library(dplyr)
 library(ggplot2)
@@ -64,6 +65,7 @@ and `Income`) after partialling out to understand what we are estimating
 and to visualize what is driving our
 
 ``` r
+
 idid_viz_bivar(reg_ex, "Income")
 ```
 
@@ -75,6 +77,7 @@ We can **add the weights to the data**. This step is optional as most
 functions will recompute the weights.
 
 ``` r
+
 data_ex_weights <- data_ex |> 
   mutate(idid_weight = idid_weights(reg_ex, "Income"))
 ```
@@ -85,6 +88,7 @@ We can plot the distribution of weights using the `idid_viz_cumul`
 function.
 
 ``` r
+
 idid_viz_cumul(reg_ex, "Income")
 ```
 
@@ -102,9 +106,10 @@ on the number of dimensions specified). Depending on the shape of the
 data, there might be some obvious way to analyse it: if, as in the
 present example, the data is a cross-section, one may want to plot the
 data by individuals, only providing `var_x` or `var_y` to the
-`idid_viz_weights`.[¹](#fn1)
+`idid_viz_weights`.[^1]
 
 ``` r
+
 idid_viz_weights(reg_ex, "Income", var_y = state, order = "y")
 ```
 
@@ -121,6 +126,7 @@ do that by only providing a shape file in a `sf` format along with the
 join variable name.
 
 ``` r
+
 states_sf <- tigris::states(
     cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
   tigris::shift_geometry() |> 
@@ -143,6 +149,7 @@ group variance in weights, suggesting a large heterogeneity in weights
 across groups.
 
 ``` r
+
 idid_grouping_var(
   reg_ex, "Income", 
   grouping_vars = c("income_quartiles", "pop_quartiles", "murder_quartiles")
@@ -162,6 +169,7 @@ Now that dimensions along which it makes sense to group the weights by
 have been identify, one can plot the weights distribution across groups.
 
 ``` r
+
 idid_viz_weights(reg_ex, "Income", income_quartiles) +
   labs(
     x = "Income quartiles", 
@@ -177,6 +185,7 @@ time, thus building heatmaps. This is done with the same method as the
 one used for individual observations discussed above.
 
 ``` r
+
 idid_viz_weights(reg_ex, "Income", income_quartiles, pop_quartiles) +
   coord_fixed() +
   labs(x = "Income quartiles", y = "Population quartiles")
@@ -200,6 +209,7 @@ point estimate and s.e. of interest as a function of the proportion of
 observations dropped.
 
 ``` r
+
 idid_viz_drop_change(
   reg_ex, 
   "Income", 
@@ -221,6 +231,7 @@ the standard error of the estimate of interest by more than a given
 proportion, *se* 5%:
 
 ``` r
+
 idid_contrib_threshold(reg_ex, "Income", threshold_change = 0.05)
 #> [1] 0.0004276697
 ```
@@ -235,6 +246,7 @@ We first use the `idid_contrib_stats` function to compute the size of
 this effective sample (as well as of the initial and nominal one):
 
 ``` r
+
 idid_contrib_stats(reg_ex, "Income") |> 
   knitr::kable()
 ```
@@ -248,12 +260,14 @@ and `idid_viz_contrib_map` functions. They work in a similar ways as
 `idid_viz_weights` and `idid_viz_weights_map`.
 
 ``` r
+
 idid_viz_contrib(reg_ex, "Income", income_quartiles)
 ```
 
 ![](ididvar_files/figure-html/idid_viz_contrib-1.png)
 
 ``` r
+
 idid_viz_contrib_map(reg_ex, "Income", states_sf, "state")
 ```
 
@@ -270,7 +284,5 @@ The [“Own visualizations”
 vignette](https://vincentbagilet.github.io/ididvar/articles/own-viz.md)
 provides a discussion and code to customize these graphs.
 
-------------------------------------------------------------------------
-
-1.  The `order` parameter allows to sort individuals by weight, along
+[^1]: The `order` parameter allows to sort individuals by weight, along
     the specified axis (here y)

@@ -36,6 +36,7 @@ a `decade` variable and ISO codes from the
 dataset that we are going to use later.
 
 ``` r
+
 library(ididvar)
 library(tigris)
 library(dplyr)
@@ -69,6 +70,7 @@ of interest.
 ### Partialed out relationship
 
 ``` r
+
 data_partial <- 
   tibble(
     lifeExp_per = idid_partial_out(reg, "lifeExp", "l_gdpPercap"),
@@ -102,6 +104,7 @@ useful tools to represent large numbers of observations.
 ### ididvar equivalent
 
 ``` r
+
 idid_viz_bivar(reg, "l_gdpPercap")
 ```
 
@@ -110,6 +113,7 @@ idid_viz_bivar(reg, "l_gdpPercap")
 To compute `data_partial` completely manually, one can do the following:
 
 ``` r
+
 data_partial_manual <- 
   tibble(
     lifeExp_per = residuals(
@@ -133,6 +137,7 @@ can add a `weight` variable to our dataset, along with a `contrib`
 dummy.
 
 ``` r
+
 gapminder_weights <- gapminder_sample |> 
   mutate(
     idid_weight = idid_weights(reg, "l_gdpPercap"),
@@ -146,6 +151,7 @@ gapminder_weights <- gapminder_sample |>
 ### Own cumulative graph
 
 ``` r
+
 gapminder_weights |> 
   arrange(idid_weight) |> 
   mutate(
@@ -168,6 +174,7 @@ gapminder_weights |>
 ### ididvar cumul equivalent
 
 ``` r
+
 idid_viz_cumul(reg, "l_gdpPercap")
 ```
 
@@ -179,6 +186,7 @@ Let’s assume that we want to compare weights across countries. We
 compute our weight and mean contribution at that level.
 
 ``` r
+
 country_weights <- gapminder_weights |> 
   group_by(country, iso_alpha, continent) |> 
   summarise(
@@ -194,6 +202,7 @@ we order the states by weight.
 ### Own weight graph
 
 ``` r
+
 country_weights |> 
   mutate(country = forcats::fct_reorder(country, idid_weight)) |> 
   ggplot(aes(x = idid_weight, y = country)) + 
@@ -214,6 +223,7 @@ country_weights |>
 ### ididvar weight
 
 ``` r
+
 idid_viz_weights(reg, "l_gdpPercap", var_y = country, order = "y") + 
   geom_col(aes(x = idid_weight, y = country, fill = continent)) +
   scale_fill_manual(values = c("#497C89", "#cf816b")) +
@@ -231,6 +241,7 @@ We can also plot graphs to represent and characterize the set of
 contributing observations.
 
 ``` r
+
 gapminder_weights |> 
   count(decade, contrib_name) |> 
   ggplot(aes(x = decade, y = n, fill = forcats::fct_rev(contrib_name))) + 
@@ -251,6 +262,7 @@ gapminder_weights |>
 ### ididvar contribution
 
 ``` r
+
 idid_viz_contrib(reg, "l_gdpPercap", var_y = decade) +
   labs(y = NULL)
 #> NOTE: 2 fixed-effect singletons were removed (2 observations).
@@ -271,6 +283,7 @@ decades. To do that, we build heatmaps and thus first aggregate data at
 the level we are interested in:
 
 ``` r
+
 country_decade_weights <- gapminder_weights |> 
   group_by(country, decade, continent) |> 
   summarise(
@@ -285,6 +298,7 @@ We can then make the graphs we want.
 ### Weights with no scale
 
 ``` r
+
 country_decade_weights |> 
   mutate(country = forcats::fct_reorder(country, idid_weight, sum)) |>
   ggplot(aes(x = decade, y = country, fill = idid_weight)) + 
@@ -317,6 +331,7 @@ in bins. In addition, by scaling weights with respect to an average
 weight, this scale allows to make graphs comparable to each other.
 
 ``` r
+
 country_decade_weights |> 
   mutate(idid_weight_log = log10(idid_weight * length(idid_weight))) |> 
   # mutate(country = forcats::fct_reorder(country, weight, sum)) |>
@@ -347,6 +362,7 @@ country_decade_weights |>
 ### ididvar weight equivalent
 
 ``` r
+
 idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   theme(strip.text.y = element_text(angle = 0)) +
@@ -360,6 +376,7 @@ idid_viz_weights(reg, "l_gdpPercap", var_y = country, var_x = decade) +
 We can also make heatmaps of contributing observations:
 
 ``` r
+
 country_decade_weights |> 
   mutate(country = forcats::fct_reorder(country, contrib, sum)) |>
   ggplot(aes(x = decade, y = country, fill = contrib)) + 
@@ -385,6 +402,7 @@ country_decade_weights |>
 ### ididvar contribution heatmap
 
 ``` r
+
 idid_viz_contrib(reg, "l_gdpPercap", decade, country, order = "y") +
   facet_grid(continent ~ ., scales = "free_y", space = "free_y") +
   labs(x = NULL, y = NULL)
@@ -398,6 +416,7 @@ Finally, we can make maps. To to that, we need a shape file (a `sf`
 object) that we merge to the data.
 
 ``` r
+
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
   mutate(iso_alpha = adm0_a3)
 
@@ -409,6 +428,7 @@ proj_globe <-
 ### Weights map
 
 ``` r
+
 data_sf <- world_sf |> 
   full_join(country_weights, by = join_by(iso_alpha)) |> 
   mutate(idid_weight_log = log10(idid_weight * nrow(country_weights))) 
@@ -435,6 +455,7 @@ data_sf |>
 ### ididvar weights map
 
 ``` r
+
 idid_viz_weights_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
   proj_globe +
   theme(panel.grid.major = element_line(colour = "gray90")) 
@@ -445,6 +466,7 @@ idid_viz_weights_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
 ### Contrib map
 
 ``` r
+
 data_sf |> 
   ggplot() +
   geom_sf(aes(fill = contrib), color = "white", linewidth = 0.1) +
@@ -471,6 +493,7 @@ data_sf |>
 ### ididvar contrib map
 
 ``` r
+
 idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
   proj_globe +
   theme(panel.grid.major = element_line(colour = "gray93")) 

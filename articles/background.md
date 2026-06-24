@@ -34,12 +34,14 @@ as control functions. This produces observation-specific weights
 describing the extent to which each observation contributes to the
 estimation of the treatment effect.
 
-The weight of each observation $i \in \{ 1,...,N\}$ is:
+The weight of each observation $`i \in \{1, ..., N\}`$ is:
 
-$$w_{i} = \frac{\left( x_{i} - {\mathbb{E}}\left\lbrack x_{i}|C_{i} \right\rbrack \right)^{2}}{\sum\limits_{j}w_{j}}$$
-where $x$ is the variable of interest and $C$ the vector of controls and
-fixed effects. These weights are therefore the normalized squared
-residuals of the regression of $x$ on the full set of controls.
+``` math
+w_i = \dfrac{\left( x_i - \mathbb{E}[x_i | C_i] \right)^2 }{\sum_j w_j}
+```
+where $`x`$ is the variable of interest and $`C`$ the vector of controls
+and fixed effects. These weights are therefore the normalized squared
+residuals of the regression of $`x`$ on the full set of controls.
 
 In the package, they are computed using the same estimation procedure as
 the one used in the main regression, just replacing the outcome variable
@@ -49,6 +51,7 @@ model describing the relationship between median price and number of
 housing sales in Texas:
 
 ``` r
+
 library(ididvar)
 library(ggplot2)
 library(dplyr)
@@ -80,11 +83,11 @@ conditional treatment status.
 In low weight groups, there is only a little amount of variation in the
 dependent variable to estimate an effect. Considering an extreme case
 gives a clear intuition: when using group level fixed effects, if there
-is no variation in $x$ for that group, this group does not contribute to
-the estimation of the parameter for $x$ at all. For instance, in the
-previous example, if all prices are the same in a given city, it will
-not be possible to estimate how variations in prices are related with
-variation in sales in that city.
+is no variation in $`x`$ for that group, this group does not contribute
+to the estimation of the parameter for $`x`$ at all. For instance, in
+the previous example, if all prices are the same in a given city, it
+will not be possible to estimate how variations in prices are related
+with variation in sales in that city.
 
 ## What do they represent, really?
 

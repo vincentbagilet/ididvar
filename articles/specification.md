@@ -14,6 +14,7 @@ all countries in the world, every 5 years between 1952 and 2007. It is
 therefore a panel.
 
 ``` r
+
 library(ididvar)
 library(gapminder)
 library(fixest)
@@ -38,6 +39,7 @@ continent-year, and country-year fixed effects. We do not include any
 additional controls for simplicity.
 
 ``` r
+
 gapminder_ext <- gapminder |> 
   dplyr::mutate(l_gdpPercap = log(gdpPercap)) |> 
   dplyr::filter(continent %in% c("Africa", "Europe")) |>
@@ -109,6 +111,7 @@ despite the quantity estimated being somehow radically different.
 ![](specification_files/figure-html/bivar_twfe-1.png)
 
 ``` r
+
 graph_bivar <- function(reg) {
   idid_viz_bivar(reg, "l_gdpPercap") +
     geom_point(aes(color = continent)) +
@@ -158,6 +161,7 @@ low-weight observations.
 ![](specification_files/figure-html/weights_twfe-1.png)
 
 ``` r
+
 graph_weights <- function(reg) {
   reg |> 
     idid_viz_weights("l_gdpPercap", var_x = year, var_y = country) +
@@ -210,6 +214,7 @@ specification choices may affect statistical power and exaggeration.
 ![](specification_files/figure-html/contrib_twfe-1.png)
 
 ``` r
+
 graph_contrib <- function(reg) {
   reg |> 
     idid_viz_contrib("l_gdpPercap", var_x = year, var_y = country) +
@@ -231,6 +236,7 @@ The previous visual analysis is confirmed by computing the effective
 sample size; it varies strongly with the specification.
 
 ``` r
+
 purrr::map(regs, idid_contrib_stats, var_interest = "l_gdpPercap") |> 
   list_rbind() |> 
   mutate(reg = names(regs), .before = 1) |> 
@@ -276,6 +282,7 @@ Africa: later years contribute more than earlier years.
 ![](specification_files/figure-html/hist_contrib_twfe-1.png)
 
 ``` r
+
 hist_contrib <- function(reg) {
   reg |> 
     idid_viz_contrib("l_gdpPercap", var_x = year) +
@@ -319,6 +326,7 @@ representative of the overall sample.
 ![](specification_files/figure-html/map_contrib_twfe-1.png)
 
 ``` r
+
 world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |> 
   mutate(iso_alpha = adm0_a3)
 

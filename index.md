@@ -20,6 +20,7 @@ You can install the development version of `ididvar` from
 [GitHub](https://github.com/vincentbagilet/ididvar) with:
 
 ``` r
+
 # install.packages("devtools")
 devtools::install_github("vincentbagilet/ididvar")
 ```
@@ -37,6 +38,7 @@ First, the package provides a straightforward function to compute
 identifying variation weights: `idid_weights`.
 
 ``` r
+
 library(ididvar)
 library(ggplot2)
 
@@ -55,6 +57,7 @@ through visualizations (`idid_viz_weights`, `idid_viz_weights_map`,
 `idid_viz_cumul`).
 
 ``` r
+
 idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL) 
 ```
@@ -62,6 +65,7 @@ idid_viz_weights(reg_ex_fixest, "median", year, city, order = "y") +
 ![](reference/figures/README-plot_weights-1.png)
 
 ``` r
+
 idid_viz_cumul(reg_ex_fixest, "median")
 ```
 
@@ -73,6 +77,7 @@ observations does not significantly affect the estimate obtained
 (`idid_viz_contrib`, `idid_viz_contrib_map`, `idid_viz_drop_change`).
 
 ``` r
+
 idid_viz_contrib(reg_ex_fixest, "median", var_y = city, order = "y") +
   ggplot2::labs(y = NULL)
 ```

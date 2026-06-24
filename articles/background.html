@@ -12,8 +12,8 @@
 <link rel="icon" sizes="any" href="../favicon.ico">
 <link rel="manifest" href="../site.webmanifest">
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Lato-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/Lato-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="Background on the weights">
@@ -105,7 +105,7 @@ estimation of the treatment effect.</p>
 <p>The weight of each observation
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>i</mi><mo>∈</mo><mo stretchy="false" form="prefix">{</mo><mn>1</mn><mo>,</mo><mi>.</mi><mi>.</mi><mi>.</mi><mo>,</mo><mi>N</mi><mo stretchy="false" form="postfix">}</mo></mrow><annotation encoding="application/x-tex">i \in \{1, ..., N\}</annotation></semantics></math>
 is:</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><mfrac displaystyle="true"><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mi>𝔼</mi><mrow><mo stretchy="true" form="prefix">[</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>C</mi><mi>i</mi></msub><mo stretchy="true" form="postfix">]</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>w</mi><mi>j</mi></msub></mrow></mfrac></mrow><annotation encoding="application/x-tex">w_i = \dfrac{\left( x_i - \mathbb{E}[x_i | C_i] \right)^2 }{\sum_j w_j}</annotation></semantics></math>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>w</mi><mi>i</mi></msub><mo>=</mo><mstyle displaystyle="true"><mfrac><msup><mrow><mo stretchy="true" form="prefix">(</mo><msub><mi>x</mi><mi>i</mi></msub><mo>−</mo><mi>𝔼</mi><mo stretchy="false" form="prefix">[</mo><msub><mi>x</mi><mi>i</mi></msub><mo stretchy="false" form="prefix">|</mo><msub><mi>C</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">]</mo><mo stretchy="true" form="postfix">)</mo></mrow><mn>2</mn></msup><mrow><munder><mo>∑</mo><mi>j</mi></munder><msub><mi>w</mi><mi>j</mi></msub></mrow></mfrac></mstyle></mrow><annotation encoding="application/x-tex">w_i = \dfrac{\left( x_i - \mathbb{E}[x_i | C_i] \right)^2 }{\sum_j w_j}</annotation></semantics></math>
 where
 <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>x</mi><annotation encoding="application/x-tex">x</annotation></semantics></math>
 is the variable of interest and
@@ -168,12 +168,12 @@ represent the squared-distance to the center of the distribution of the
 variable of interest, after partialling out the controls. The following
 example, describing the relationship between x and y partialled out and
 the weights illustrates this:</p>
-<p><img src="background_files/figure-html/bivar_partial-1.png" class="r-plt" width="2187.5"></p>
+<p><img src="background_files/figure-html/bivar_partial-1.png" class="r-plt" alt="" width="2187.5"></p>
 <p>While this pattern clearly appears in the partialled out regression,
 it is much less visible when plotting the raw relationship, hence the
 importance of analysing those weights and plotting the partialled out
 regression:</p>
-<p><img src="background_files/figure-html/bivar_raw-1.png" class="r-plt" width="2187.5"></p>
+<p><img src="background_files/figure-html/bivar_raw-1.png" class="r-plt" alt="" width="2187.5"></p>
 <!-- # Are these weights actually weights? -->
 <!-- # Equivalence between leverage and multiple regression weights -->
 <!-- ## Do they actually represent the variation used for identification ? -->
