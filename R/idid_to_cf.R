@@ -57,12 +57,12 @@ idid_to_cf <- function(reg, ...) {
 #' @export
 #' @exportS3Method
 idid_to_cf.fixest <- function(reg, ...) {
-  dat <- eval(reg$call$data, envir = environment(stats::formula(reg)))
+  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
   endo_vars <- reg$iv_endo_names
 
   #compute residuals from first stage
   for (endo_var in endo_vars) {
-    dat[[paste0(endo_var, "_first")]] <-
+    df[[paste0(endo_var, "_first")]] <-
       reg$iv_first_stage[[endo_var]] |> stats::residuals()
   }
 
@@ -79,7 +79,7 @@ idid_to_cf.fixest <- function(reg, ...) {
     stats::update(
       reg,
       formula_second_stage,
-      data = dat,
+      data = df,
       na.action = stats::na.exclude,
       use_calling_env = FALSE,
       ...
@@ -104,7 +104,7 @@ idid_to_cf.fixest <- function(reg, ...) {
 #' @export
 #' @exportS3Method
 idid_to_cf.ivreg <- function(reg, ...) {
-  dat <- eval(reg$call$data, envir = environment(stats::formula(reg)))
+  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
 
   rhs_vars <- all.vars(reg$terms$regressors)[-1]
   lhs_var <- all.vars(reg$terms$regressors)[1]
@@ -119,7 +119,7 @@ idid_to_cf.ivreg <- function(reg, ...) {
         paste(setdiff(instru, endo_vars), collapse = " + ")
       ))
 
-    dat[[paste0(endo_var, "_first")]] <-
+    df[[paste0(endo_var, "_first")]] <-
       stats::update(reg, formula_first_stage, ...) |>
       stats::residuals()
   }
@@ -134,9 +134,9 @@ idid_to_cf.ivreg <- function(reg, ...) {
 
   new_call <- reg$call
   new_call$formula <- formula_second_stage
-  new_call$data <- quote(dat)
+  new_call$data <- df
 
-  reg_cf <- eval(new_call, envir = environment())
+  reg_cf <- eval(new_call, envir = environment(stats::formula(reg)))
 
   return(reg_cf)
 }
