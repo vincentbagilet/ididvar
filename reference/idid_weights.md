@@ -6,7 +6,7 @@ identification.
 ## Usage
 
 ``` r
-idid_weights(reg, var_interest, partial_iv = TRUE, ...)
+idid_weights(reg, var_interest, partial_iv = TRUE, tol = 1e-07, ...)
 ```
 
 ## Arguments
@@ -17,7 +17,7 @@ idid_weights(reg, var_interest, partial_iv = TRUE, ...)
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - partial_iv:
 
@@ -28,6 +28,11 @@ idid_weights(reg, var_interest, partial_iv = TRUE, ...)
   with an instrumented part), the value of `partial_iv` has no impact on
   the outcome of the function.
 
+- tol:
+
+  A numeric. Passed to the `qr` function. The tolerance for detecting
+  linear dependencies in the columns of x_partialled.
+
 - ...:
 
   Additional elements to pass to the regression function when
@@ -35,16 +40,19 @@ idid_weights(reg, var_interest, partial_iv = TRUE, ...)
 
 ## Value
 
-A numeric vector representing the identifying variation weights.
+A numeric vector of the identifying variation weights for each
+observation.
 
 ## Details
 
 The weights correspond to the normalized leverage of each observation
-for the variable of interest after partialling out all controls.
+for the variables of interest after partialling out all controls.
 
-They are computed by re-running the regression provided but replacing
-the independent variable by the variable of interest (and removing it
-from the set of regressors).
+The partailled out version of the design matrix (ie, of the set of
+variables of interest) is computed by re-running the regression provided
+in `reg` but sequentially replacing the independent variable by each of
+the variables of interest (and removing them from the set of
+regressors).
 
 If the nature of the independent variable and of the variable of
 interest are different, one may want to change the estimation. For
@@ -61,6 +69,6 @@ reg_ex_lm <- ggplot2::txhousing |>
 
 idid_weights(reg_ex_lm, "median") |>
  head()
-#>            1            2            3            4            5            6 
-#> 8.693583e-05 9.188898e-06 1.504876e-05 1.274063e-05 3.686616e-06 1.076007e-05 
+#> [1] 8.693583e-05 9.188898e-06 1.504876e-05 1.274063e-05 3.686616e-06
+#> [6] 1.076007e-05
 ```

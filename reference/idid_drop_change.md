@@ -17,7 +17,7 @@ idid_drop_change(reg, var_interest, prop_drop, ...)
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - prop_drop:
 

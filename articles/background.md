@@ -105,3 +105,153 @@ importance of analysing those weights and plotting the partialled out
 regression:
 
 ![](background_files/figure-html/bivar_raw-1.png)
+
+## What the weights are
+
+`ididvar` computes, for each observation, its contribution to the
+estimate of a treatment coefficient.
+
+Standard influence measures are not suited to this. Leverage and Cook’s
+distance describe the influence of an observation on the entire
+parameter vector, mixing the treatment with the controls, whereas a
+causal analysis targets one coefficient. An observation can have high
+leverage and contribute almost nothing to the treatment effect, and the
+reverse \[@aronow_samii2016, App. B\].
+
+The metric implemented here is the leverage of the regression that
+actually produces the treatment coefficient. By the Frisch-Waugh-Lovell
+theorem, that coefficient is obtained by regressing the residualized
+outcome on the residualized treatment, both partialled out on the full
+control set. That regression has one regressor and no intercept, so the
+leverage of observation $`i`$ is
+
+``` math
+h_i = \frac{\tilde T_i^2}{\sum_j \tilde T_j^2}, \qquad \tilde T_i = T_i - \hat{\mathbb{E}}[T_i \mid C_i]
+```
+
+and sums to one across observations. The numerator is the multiple
+regression weight of @aronow_samii2016, so with a single parameter of
+interest the two coincide up to that normalization. With several
+parameters of interest the leverage generalizes to
+$`\tilde{\mathbf{t}}_i'(\tilde{\mathbf{T}}'\tilde{\mathbf{T}})^{-1}\tilde{\mathbf{t}}_i`$
+and the two objects separate.
+
+The control set $`C`$ is where the package departs from existing
+implementations. It includes the *causal* controls: the fixed effects,
+control functions and first-stage residuals through which an
+identification strategy operates. Reading causal strategies as forms of
+controlling makes the same weight computable across designs, so that
+weights from a fixed effects specification, an IV and an OLS with
+covariates are all on the same footing and can be compared.
+
+## Why they matter, in the simplest possible case
+
+The weights are usually introduced as a concern about heterogeneity:
+when treatment effects vary, the coefficient is a weighted average of
+unit-level effects rather than the average treatment effect
+\[@angrist1998; @angrist_krueger1999; @aronow_samii2016;
+@sloczynski2022\]. That framing invites the reading that the problem
+belongs to observational work, where selection into treatment is the
+culprit.
+
+It does not. Consider a randomized experiment with two strata of equal
+size. Treatment is assigned at random within each stratum, so there is
+no confounding conditional on the stratum, but at different rates: 50%
+in stratum A and 10% in stratum B. The treatment effect is 1 in A and 4
+in B. The stratum also shifts the baseline outcome, so the stratum must
+be controlled for.
+
+``` r
+
+library(dplyr)
+set.seed(1)
+
+N <- 10000
+
+data <- tibble(
+  group    = rep(c("A", "B"), each = N/2),
+  beta     = ifelse(group == "A", 1, 4),
+  baseline = ifelse(group == "A", 0, 3),
+  treated  = rbinom(N, 1, ifelse(group == "A", 0.5, 0.1)),
+  y_obs    = baseline + beta * treated + rnorm(N)
+)
+```
+
+The average treatment effect is the average of the unit-level effects:
+
+``` r
+
+mean(data$beta)
+#> [1] 2.5
+```
+
+The regression returns something else:
+
+``` r
+
+coef(lm(y_obs ~ treated + group, data = data))[["treated"]]
+#> [1] 1.792788
+```
+
+Nothing here can be attributed to identification. Assignment is random
+within stratum, the stratum is controlled for, and the model matches the
+data generating process exactly.
+
+## Where the discrepancy comes from
+
+With the stratum indicator as the only control, partialling out reduces
+to demeaning within stratum. Summing the squared residuals by stratum
+gives each stratum’s share of the identifying variation:
+
+``` r
+
+weights <- data |>
+  group_by(group) |>
+  summarise(
+    beta          = first(beta),
+    share_treated = mean(treated),
+    weight        = sum((treated - mean(treated))^2)
+  )
+
+weights
+#> # A tibble: 2 × 4
+#>   group  beta share_treated weight
+#>   <chr> <dbl>         <dbl>  <dbl>
+#> 1 A         1         0.487  1249.
+#> 2 B         4         0.102   456.
+```
+
+Stratum B holds half the sample and a quarter of the identifying
+variation: its imbalance leaves little variation in treatment once the
+stratum is partialled out. The coefficient is the average of the stratum
+effects weighted by these quantities,
+
+``` r
+
+sum(weights$beta * weights$weight) / sum(weights$weight)
+#> [1] 1.80276
+```
+
+which reproduces the regression coefficient up to sampling noise. The
+stratum carrying the larger effect is the one the design mutes.
+@aronow_samii2016 note this case for block-randomized designs \[fn. 15,
+p. 256\], and @sloczynski2022 develops it into diagnostics based on the
+treated share.
+
+## Two remarks
+
+The regression above is not confounded. Conditioning on the stratum
+eliminates confounding exactly, as intended. What changes is the
+estimand: the coefficient is a weighted average of stratum-specific
+effects rather than their simple average, with weights set by the design
+rather than chosen. Reporting it as an average treatment effect is what
+fails, not the identification strategy.
+
+Second, the concern above rests entirely on the effects differing across
+strata. Setting them equal switches it off: the estimand returns to the
+true effect whatever the weights. The weights themselves do not become
+equal, and the total identifying variation they represent is unchanged
+by the assumption. That total governs the precision of the estimator
+rather than its estimand, which is the reason `ididvar` reports the
+effective sample alongside the weights: normalizing to one preserves the
+composition of the identifying variation and discards its amount.

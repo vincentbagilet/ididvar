@@ -24,7 +24,7 @@ idid_contrib_stats(
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - contrib_threshold:
 

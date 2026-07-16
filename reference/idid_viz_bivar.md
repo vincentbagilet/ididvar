@@ -18,7 +18,7 @@ idid_viz_bivar(reg, var_interest, partial_iv = TRUE, ...)
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - partial_iv:
 
@@ -37,8 +37,8 @@ idid_viz_bivar(reg, var_interest, partial_iv = TRUE, ...)
 ## Value
 
 A ggplot2 scatter plot and regression line of the relationship between
-the outcome and the variable of interest, after partialling out
-controls.
+the outcome and the one of the variables of interest (the first one
+specified in the `var_interest` vector), after partialling out controls.
 
 ## Examples
 

@@ -28,7 +28,7 @@ idid_partial_out(
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - partial_iv:
 
@@ -75,7 +75,7 @@ idid_partial_out(reg_ex_lm, "log(sales)", "median") |>
 #> -0.050652563 -0.045605122  0.005417663 -0.160510848 -0.033033531  0.002041210 
 
 # example with a fixest regression
-reg_ex_fixest <- ggplot2::txhousing  |>
+reg_ex_fixest <- ggplot2::txhousing |>
   fixest::feols(fml = log(sales) ~ median + listings |  as.factor(date) + city)
 #> NOTE: 1,434 observations removed because of NA values (LHS: 568, RHS: 1,434).
 

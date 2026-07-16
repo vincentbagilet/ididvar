@@ -27,7 +27,7 @@ idid_viz_contrib_map(
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - shape_file:
 

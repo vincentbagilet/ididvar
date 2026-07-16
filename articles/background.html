@@ -178,6 +178,136 @@ regression:</p>
 <!-- # Equivalence between leverage and multiple regression weights -->
 <!-- ## Do they actually represent the variation used for identification ? -->
 </div>
+<div class="section level2">
+<h2 id="what-the-weights-are">What the weights are<a class="anchor" aria-label="anchor" href="#what-the-weights-are"></a>
+</h2>
+<p><code>ididvar</code> computes, for each observation, its contribution
+to the estimate of a treatment coefficient.</p>
+<p>Standard influence measures are not suited to this. Leverage and
+Cook’s distance describe the influence of an observation on the entire
+parameter vector, mixing the treatment with the controls, whereas a
+causal analysis targets one coefficient. An observation can have high
+leverage and contribute almost nothing to the treatment effect, and the
+reverse <span class="citation">[@aronow_samii2016, App. B]</span>.</p>
+<p>The metric implemented here is the leverage of the regression that
+actually produces the treatment coefficient. By the Frisch-Waugh-Lovell
+theorem, that coefficient is obtained by regressing the residualized
+outcome on the residualized treatment, both partialled out on the full
+control set. That regression has one regressor and no intercept, so the
+leverage of observation
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>i</mi><annotation encoding="application/x-tex">i</annotation></semantics></math>
+is</p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msub><mi>h</mi><mi>i</mi></msub><mo>=</mo><mfrac><msubsup><mover><mi>T</mi><mo accent="true">̃</mo></mover><mi>i</mi><mn>2</mn></msubsup><mrow><munder><mo>∑</mo><mi>j</mi></munder><msubsup><mover><mi>T</mi><mo accent="true">̃</mo></mover><mi>j</mi><mn>2</mn></msubsup></mrow></mfrac><mo>,</mo><mspace width="2.0em"></mspace><msub><mover><mi>T</mi><mo accent="true">̃</mo></mover><mi>i</mi></msub><mo>=</mo><msub><mi>T</mi><mi>i</mi></msub><mo>−</mo><mover><mi>𝔼</mi><mo accent="true">̂</mo></mover><mo stretchy="false" form="prefix">[</mo><msub><mi>T</mi><mi>i</mi></msub><mo>∣</mo><msub><mi>C</mi><mi>i</mi></msub><mo stretchy="false" form="postfix">]</mo></mrow><annotation encoding="application/x-tex">h_i = \frac{\tilde T_i^2}{\sum_j \tilde T_j^2}, \qquad \tilde T_i = T_i - \hat{\mathbb{E}}[T_i \mid C_i]</annotation></semantics></math></p>
+<p>and sums to one across observations. The numerator is the multiple
+regression weight of <span class="citation">@aronow_samii2016</span>, so
+with a single parameter of interest the two coincide up to that
+normalization. With several parameters of interest the leverage
+generalizes to
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><msubsup><mover><mi>𝐭</mi><mo accent="true">̃</mo></mover><mi>i</mi><mo>′</mo></msubsup><mo stretchy="false" form="prefix">(</mo><msup><mover><mi>𝐓</mi><mo accent="true">̃</mo></mover><mo>′</mo></msup><mover><mi>𝐓</mi><mo accent="true">̃</mo></mover><msup><mo stretchy="false" form="postfix">)</mo><mrow><mi>−</mi><mn>1</mn></mrow></msup><msub><mover><mi>𝐭</mi><mo accent="true">̃</mo></mover><mi>i</mi></msub></mrow><annotation encoding="application/x-tex">\tilde{\mathbf{t}}_i'(\tilde{\mathbf{T}}'\tilde{\mathbf{T}})^{-1}\tilde{\mathbf{t}}_i</annotation></semantics></math>
+and the two objects separate.</p>
+<p>The control set
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mi>C</mi><annotation encoding="application/x-tex">C</annotation></semantics></math>
+is where the package departs from existing implementations. It includes
+the <em>causal</em> controls: the fixed effects, control functions and
+first-stage residuals through which an identification strategy operates.
+Reading causal strategies as forms of controlling makes the same weight
+computable across designs, so that weights from a fixed effects
+specification, an IV and an OLS with covariates are all on the same
+footing and can be compared.</p>
+</div>
+<div class="section level2">
+<h2 id="why-they-matter-in-the-simplest-possible-case">Why they matter, in the simplest possible case<a class="anchor" aria-label="anchor" href="#why-they-matter-in-the-simplest-possible-case"></a>
+</h2>
+<p>The weights are usually introduced as a concern about heterogeneity:
+when treatment effects vary, the coefficient is a weighted average of
+unit-level effects rather than the average treatment effect <span class="citation">[@angrist1998; @angrist_krueger1999; @aronow_samii2016;
+@sloczynski2022]</span>. That framing invites the reading that the
+problem belongs to observational work, where selection into treatment is
+the culprit.</p>
+<p>It does not. Consider a randomized experiment with two strata of
+equal size. Treatment is assigned at random within each stratum, so
+there is no confounding conditional on the stratum, but at different
+rates: 50% in stratum A and 10% in stratum B. The treatment effect is 1
+in A and 4 in B. The stratum also shifts the baseline outcome, so the
+stratum must be controlled for.</p>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">N</span> <span class="op">&lt;-</span> <span class="fl">10000</span></span>
+<span></span>
+<span><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://tibble.tidyverse.org/reference/tibble.html" class="external-link">tibble</a></span><span class="op">(</span></span>
+<span>  group    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"A"</span>, <span class="st">"B"</span><span class="op">)</span>, each <span class="op">=</span> <span class="va">N</span><span class="op">/</span><span class="fl">2</span><span class="op">)</span>,</span>
+<span>  beta     <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">group</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">1</span>, <span class="fl">4</span><span class="op">)</span>,</span>
+<span>  baseline <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">group</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">0</span>, <span class="fl">3</span><span class="op">)</span>,</span>
+<span>  treated  <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/Binomial.html" class="external-link">rbinom</a></span><span class="op">(</span><span class="va">N</span>, <span class="fl">1</span>, <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html" class="external-link">ifelse</a></span><span class="op">(</span><span class="va">group</span> <span class="op">==</span> <span class="st">"A"</span>, <span class="fl">0.5</span>, <span class="fl">0.1</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>  y_obs    <span class="op">=</span> <span class="va">baseline</span> <span class="op">+</span> <span class="va">beta</span> <span class="op">*</span> <span class="va">treated</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/r/stats/Normal.html" class="external-link">rnorm</a></span><span class="op">(</span><span class="va">N</span><span class="op">)</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p>The average treatment effect is the average of the unit-level
+effects:</p>
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">data</span><span class="op">$</span><span class="va">beta</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 2.5</span></span></code></pre></div>
+<p>The regression returns something else:</p>
+<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/stats/coef.html" class="external-link">coef</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/lm.html" class="external-link">lm</a></span><span class="op">(</span><span class="va">y_obs</span> <span class="op">~</span> <span class="va">treated</span> <span class="op">+</span> <span class="va">group</span>, data <span class="op">=</span> <span class="va">data</span><span class="op">)</span><span class="op">)</span><span class="op">[[</span><span class="st">"treated"</span><span class="op">]</span><span class="op">]</span></span>
+<span><span class="co">#&gt; [1] 1.792788</span></span></code></pre></div>
+<p>Nothing here can be attributed to identification. Assignment is
+random within stratum, the stratum is controlled for, and the model
+matches the data generating process exactly.</p>
+</div>
+<div class="section level2">
+<h2 id="where-the-discrepancy-comes-from">Where the discrepancy comes from<a class="anchor" aria-label="anchor" href="#where-the-discrepancy-comes-from"></a>
+</h2>
+<p>With the stratum indicator as the only control, partialling out
+reduces to demeaning within stratum. Summing the squared residuals by
+stratum gives each stratum’s share of the identifying variation:</p>
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="va">data</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html" class="external-link">group_by</a></span><span class="op">(</span><span class="va">group</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html" class="external-link">summarise</a></span><span class="op">(</span></span>
+<span>    beta          <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/nth.html" class="external-link">first</a></span><span class="op">(</span><span class="va">beta</span><span class="op">)</span>,</span>
+<span>    share_treated <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">treated</span><span class="op">)</span>,</span>
+<span>    weight        <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="op">(</span><span class="va">treated</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html" class="external-link">mean</a></span><span class="op">(</span><span class="va">treated</span><span class="op">)</span><span class="op">)</span><span class="op">^</span><span class="fl">2</span><span class="op">)</span></span>
+<span>  <span class="op">)</span></span>
+<span></span>
+<span><span class="va">weights</span></span>
+<span><span class="co">#&gt; <span style="color: #949494;"># A tibble: 2 × 4</span></span></span>
+<span><span class="co">#&gt;   group  beta share_treated weight</span></span>
+<span><span class="co">#&gt;   <span style="color: #949494; font-style: italic;">&lt;chr&gt;</span> <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>         <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span>  <span style="color: #949494; font-style: italic;">&lt;dbl&gt;</span></span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">1</span> A         1         0.487  <span style="text-decoration: underline;">1</span>249.</span></span>
+<span><span class="co">#&gt; <span style="color: #BCBCBC;">2</span> B         4         0.102   456.</span></span></code></pre></div>
+<p>Stratum B holds half the sample and a quarter of the identifying
+variation: its imbalance leaves little variation in treatment once the
+stratum is partialled out. The coefficient is the average of the stratum
+effects weighted by these quantities,</p>
+<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">weights</span><span class="op">$</span><span class="va">beta</span> <span class="op">*</span> <span class="va">weights</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span> <span class="op">/</span> <span class="fu"><a href="https://rdrr.io/r/base/sum.html" class="external-link">sum</a></span><span class="op">(</span><span class="va">weights</span><span class="op">$</span><span class="va">weight</span><span class="op">)</span></span>
+<span><span class="co">#&gt; [1] 1.80276</span></span></code></pre></div>
+<p>which reproduces the regression coefficient up to sampling noise. The
+stratum carrying the larger effect is the one the design mutes. <span class="citation">@aronow_samii2016</span> note this case for
+block-randomized designs [fn. 15, p. 256], and <span class="citation">@sloczynski2022</span> develops it into diagnostics
+based on the treated share.</p>
+</div>
+<div class="section level2">
+<h2 id="two-remarks">Two remarks<a class="anchor" aria-label="anchor" href="#two-remarks"></a>
+</h2>
+<p>The regression above is not confounded. Conditioning on the stratum
+eliminates confounding exactly, as intended. What changes is the
+estimand: the coefficient is a weighted average of stratum-specific
+effects rather than their simple average, with weights set by the design
+rather than chosen. Reporting it as an average treatment effect is what
+fails, not the identification strategy.</p>
+<p>Second, the concern above rests entirely on the effects differing
+across strata. Setting them equal switches it off: the estimand returns
+to the true effect whatever the weights. The weights themselves do not
+become equal, and the total identifying variation they represent is
+unchanged by the assumption. That total governs the precision of the
+estimator rather than its estimand, which is the reason
+<code>ididvar</code> reports the effective sample alongside the weights:
+normalizing to one preserves the composition of the identifying
+variation and discards its amount.</p>
+</div>
   </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
     </nav></aside>
 </div>
@@ -189,7 +319,7 @@ regression:</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

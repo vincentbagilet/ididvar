@@ -58,7 +58,7 @@ outcome and the variable of interest, after having partialLed out controls.</p>
 
 
 <dt id="arg-var-interest">var_interest<a class="anchor" aria-label="anchor" href="#arg-var-interest"></a></dt>
-<dd><p>A string. The name of the main variable of interest.</p></dd>
+<dd><p>A vector string. The name of the variables of interest.</p></dd>
 
 
 <dt id="arg-partial-iv">partial_iv<a class="anchor" aria-label="anchor" href="#arg-partial-iv"></a></dt>
@@ -77,7 +77,9 @@ partialling out controls.</p></dd>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
     <p>A ggplot2 scatter plot and regression line of the relationship between the
-outcome and the variable of interest, after partialling out controls.</p>
+outcome and the one of the variables of interest
+(the first one specified in the <code>var_interest</code> vector),
+after partialling out controls.</p>
     </div>
 
     <div class="section level2">
@@ -112,7 +114,7 @@ outcome and the variable of interest, after partialling out controls.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

@@ -46,7 +46,7 @@ identification.</p>
 
     <div class="section level2">
     <h2 id="ref-usage">Usage<a class="anchor" aria-label="anchor" href="#ref-usage"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">idid_weights</span><span class="op">(</span><span class="va">reg</span>, <span class="va">var_interest</span>, partial_iv <span class="op">=</span> <span class="cn">TRUE</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span><span class="fu">idid_weights</span><span class="op">(</span><span class="va">reg</span>, <span class="va">var_interest</span>, partial_iv <span class="op">=</span> <span class="cn">TRUE</span>, tol <span class="op">=</span> <span class="fl">1e-07</span>, <span class="va">...</span><span class="op">)</span></span></code></pre></div>
     </div>
 
     <div class="section level2">
@@ -58,7 +58,7 @@ identification.</p>
 
 
 <dt id="arg-var-interest">var_interest<a class="anchor" aria-label="anchor" href="#arg-var-interest"></a></dt>
-<dd><p>A string. The name of the main variable of interest.</p></dd>
+<dd><p>A vector string. The name of the variables of interest.</p></dd>
 
 
 <dt id="arg-partial-iv">partial_iv<a class="anchor" aria-label="anchor" href="#arg-partial-iv"></a></dt>
@@ -69,6 +69,11 @@ with an instrumented part), the value of <code>partial_iv</code> has no impact o
 outcome of the function.</p></dd>
 
 
+<dt id="arg-tol">tol<a class="anchor" aria-label="anchor" href="#arg-tol"></a></dt>
+<dd><p>A numeric. Passed to the <code>qr</code> function. The tolerance for
+detecting linear dependencies in the columns of x_partialled.</p></dd>
+
+
 <dt id="arg--">...<a class="anchor" aria-label="anchor" href="#arg--"></a></dt>
 <dd><p>Additional elements to pass to the regression function when
 partialling out controls.</p></dd>
@@ -76,15 +81,16 @@ partialling out controls.</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A numeric vector representing the identifying variation weights.</p>
+    <p>A numeric vector of the identifying variation weights for each observation.</p>
     </div>
     <div class="section level2">
     <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
     <p>The weights correspond to the normalized leverage of each observation for
-the variable of interest after partialling out all controls.</p>
-<p>They are computed by re-running the regression provided but replacing the
-independent variable by the variable of interest (and removing it from the
-set of regressors).</p>
+the variables of interest after partialling out all controls.</p>
+<p>The partailled out version of the design matrix (ie, of the set of variables
+of interest) is computed by re-running the regression provided in <code>reg</code>
+but sequentially replacing the independent variable by each of the variables
+of interest (and removing them from the set of regressors).</p>
 <p>If the nature of the independent variable and of the variable of interest
 are different, one may want to change the estimation.
 For instance, if the independent variable is discrete and estimated via glm
@@ -100,8 +106,8 @@ to <code>idid_weights</code>.</p>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="fu">idid_weights</span><span class="op">(</span><span class="va">reg_ex_lm</span>, <span class="st">"median"</span><span class="op">)</span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span> <span class="fu"><a href="https://rdrr.io/r/utils/head.html" class="external-link">head</a></span><span class="op">(</span><span class="op">)</span></span></span>
-<span class="r-out co"><span class="r-pr">#&gt;</span>            1            2            3            4            5            6 </span>
-<span class="r-out co"><span class="r-pr">#&gt;</span> 8.693583e-05 9.188898e-06 1.504876e-05 1.274063e-05 3.686616e-06 1.076007e-05 </span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [1] 8.693583e-05 9.188898e-06 1.504876e-05 1.274063e-05 3.686616e-06</span>
+<span class="r-out co"><span class="r-pr">#&gt;</span> [6] 1.076007e-05</span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
@@ -114,7 +120,7 @@ to <code>idid_weights</code>.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

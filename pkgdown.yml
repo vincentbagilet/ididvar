@@ -1,12 +1,12 @@
 pandoc: 3.8.3
-pkgdown: 2.2.0
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   background: background.html
   ididvar: ididvar.html
   own-viz: own-viz.html
   specification: specification.html
-last_built: 2026-06-25T08:34Z
+last_built: 2026-07-16T16:57Z
 urls:
   reference: https://vincentbagilet.github.io/ididvar/reference
   article: https://vincentbagilet.github.io/ididvar/articles

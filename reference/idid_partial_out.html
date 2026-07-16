@@ -69,7 +69,7 @@ compute a partialled out version.</p></dd>
 
 
 <dt id="arg-var-interest">var_interest<a class="anchor" aria-label="anchor" href="#arg-var-interest"></a></dt>
-<dd><p>A string. The name of the main variable of interest.</p></dd>
+<dd><p>A vector string. The name of the variables of interest.</p></dd>
 
 
 <dt id="arg-partial-iv">partial_iv<a class="anchor" aria-label="anchor" href="#arg-partial-iv"></a></dt>
@@ -115,7 +115,7 @@ wants to partial out controls but not the variable of interest.</p>
 <span class="r-out co"><span class="r-pr">#&gt;</span> -0.050652563 -0.045605122  0.005417663 -0.160510848 -0.033033531  0.002041210 </span>
 <span class="r-in"><span></span></span>
 <span class="r-in"><span><span class="co"># example with a fixest regression</span></span></span>
-<span class="r-in"><span><span class="va">reg_ex_fixest</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/txhousing.html" class="external-link">txhousing</a></span>  <span class="op">|&gt;</span></span></span>
+<span class="r-in"><span><span class="va">reg_ex_fixest</span> <span class="op">&lt;-</span> <span class="fu">ggplot2</span><span class="fu">::</span><span class="va"><a href="https://ggplot2.tidyverse.org/reference/txhousing.html" class="external-link">txhousing</a></span> <span class="op">|&gt;</span></span></span>
 <span class="r-in"><span>  <span class="fu">fixest</span><span class="fu">::</span><span class="fu"><a href="https://lrberge.github.io/fixest/reference/feols.html" class="external-link">feols</a></span><span class="op">(</span>fml <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">sales</span><span class="op">)</span> <span class="op">~</span> <span class="va">median</span> <span class="op">+</span> <span class="va">listings</span> <span class="op">|</span>  <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">as.factor</a></span><span class="op">(</span><span class="va">date</span><span class="op">)</span> <span class="op">+</span> <span class="va">city</span><span class="op">)</span></span></span>
 <span class="r-msg co"><span class="r-pr">#&gt;</span> NOTE: 1,434 observations removed because of NA values (LHS: 568, RHS: 1,434).</span>
 <span class="r-in"><span></span></span>
@@ -140,7 +140,7 @@ wants to partial out controls but not the variable of interest.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer></div>

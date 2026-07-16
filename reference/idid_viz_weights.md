@@ -26,7 +26,7 @@ idid_viz_weights(
 
 - var_interest:
 
-  A string. The name of the main variable of interest.
+  A vector string. The name of the variables of interest.
 
 - var_x:
 
