@@ -15,7 +15,7 @@
 #' @param reg A regression object.
 #' @param var_to_partial A string. The name of the variable for which to
 #' compute a partialled out version.
-#' @param var_interest A string. The name of the main variable of interest.
+#' @param var_interest A vector string. The name of the variables of interest.
 #' @param ... Additional elements to pass to the regression function when
 #' partialling out controls.
 #' @param partial_iv A boolean. If TRUE, partials out the part of the
@@ -41,7 +41,7 @@
 #'  head()
 #'
 #' # example with a fixest regression
-#' reg_ex_fixest <- ggplot2::txhousing  |>
+#' reg_ex_fixest <- ggplot2::txhousing |>
 #'   fixest::feols(fml = log(sales) ~ median + listings |  as.factor(date) + city)
 #'
 #' idid_partial_out(reg_ex_fixest, "median") |>
@@ -57,7 +57,7 @@ idid_partial_out <- function(reg,
   reg_fct <- reg
   #transform IV to CF function
   if (partial_iv) {
-    if (inherits(reg, "ivreg") | (inherits(reg, "fixest") & !is.null(reg$iv))) {
+    if (inherits(reg, "ivreg") | (inherits(reg, "fixest") & !is.null(reg$is_iv))) {
       reg_fct <- ididvar::idid_to_cf(reg)
     }
   }
@@ -66,14 +66,15 @@ idid_partial_out <- function(reg,
   if (var_to_partial == all.vars(reg_fct$call[[2]])[[1]]) {
     formula_partial <-
       stats::as.formula(
-        paste(". ~ . -", var_interest)
+        paste(". ~ . -", paste(var_interest, collapse = "-"))
         # env = environment(stats::formula(reg_fct))
       )
   } else {
   # partial out formula for x
     formula_partial <-
       stats::as.formula(
-        paste(var_to_partial, "~ . -", var_to_partial, "-", var_interest)
+        paste(var_to_partial, "~ . -", var_to_partial,
+              "-", paste(var_interest, collapse = "-"))
         # env = environment(stats::formula(reg_fct))
       )
   }

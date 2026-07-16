@@ -9,7 +9,7 @@ idid_viz_bivar(reg, var_interest, partial_iv = TRUE, ...)
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{partial_iv}{A boolean. If TRUE, partials out the part of the
 endogenous variables that are not explained by the instruments. If the
@@ -22,7 +22,9 @@ partialling out controls.}
 }
 \value{
 A ggplot2 scatter plot and regression line of the relationship between the
-outcome and the variable of interest, after partialling out controls.
+outcome and the one of the variables of interest
+(the first one specified in the \code{var_interest} vector),
+after partialling out controls.
 }
 \description{
 Makes a bivariate graph to visualize the data and relationship between the

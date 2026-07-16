@@ -9,7 +9,7 @@ idid_viz_cumul(reg, var_interest, prop_weights = 0.2, color = "#300D49", ...)
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{prop_weights}{A numeric (between 0 and 1). A proportion of weights
 that to consider as contributing the most to identification.

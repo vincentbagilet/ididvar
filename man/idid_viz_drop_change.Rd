@@ -11,6 +11,7 @@ idid_viz_drop_change(
   search_step = 0.05,
   search_start = search_step,
   search_end = 1 - search_step,
+  facet = "both",
   color = "#300D49",
   ...
 )
@@ -18,7 +19,7 @@ idid_viz_drop_change(
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{threshold_change}{A double (between 0 and 1). The change threshold in
 estimate and s.e. when dropping observations.}
@@ -31,6 +32,10 @@ drop in the first step of the loop in \code{idid_contrib_threshold}.}
 
 \item{search_end}{A numeric (between 0 and 1). Proportion of observation to
 drop in the last step of the loop in \code{idid_contrib_threshold}.}
+
+\item{facet}{A character. When equal to "both", will display both the
+estimate and standard error graph. When equal to "estimate" only the former
+will be displayed and when equal to "se", only the latter.}
 
 \item{color}{A string. Color of the graph.}
 

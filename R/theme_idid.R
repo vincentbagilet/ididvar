@@ -68,7 +68,10 @@ theme_idid <- function(...) {
       legend.key.spacing.y = ggplot2::unit(0.01, "cm"),
       legend.key.height = ggplot2::unit(0.25, "cm"),
       legend.key.width = ggplot2::unit(1.3, "cm"),
-      legend.title = ggplot2::element_text(size = ggplot2::rel(1)),
+      legend.title = ggplot2::element_text(
+        margin = ggplot2::margin(t = 0.3, b = 0.1, unit = "cm"),
+        size = ggplot2::rel(1)
+      ),
       legend.title.position = "top",
       legend.text = ggplot2::element_text(size = ggplot2::rel(0.9)),
       strip.placement = "outside",

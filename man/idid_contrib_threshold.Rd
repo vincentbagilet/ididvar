@@ -15,7 +15,7 @@ idid_contrib_threshold(
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{threshold_change}{A double (between 0 and 1). The change threshold in
 estimate and s.e. when dropping observations.}

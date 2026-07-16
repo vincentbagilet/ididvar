@@ -8,7 +8,9 @@
 #'
 #' @returns
 #' A ggplot2 scatter plot and regression line of the relationship between the
-#' outcome and the variable of interest, after partialling out controls.
+#' outcome and the one of the variables of interest
+#' (the first one specified in the \code{var_interest} vector),
+#' after partialling out controls.
 #'
 #' @export
 #'
@@ -33,7 +35,7 @@ idid_viz_bivar <- function(reg,
   df[["y_par"]] <-
     ididvar::idid_partial_out(reg, name_var_y, var_interest, partial_iv = partial_iv, ...)
   df[["x_par"]] <-
-    ididvar::idid_partial_out(reg, var_interest, partial_iv = partial_iv, ...)
+    ididvar::idid_partial_out(reg, var_interest[[1]], var_interest, partial_iv = partial_iv, ...)
 
   df |>
     ggplot2::ggplot(ggplot2::aes(x = .data$x_par, y = .data$y_par)) +

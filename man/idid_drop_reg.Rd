@@ -9,7 +9,7 @@ idid_drop_reg(reg, var_interest, prop_drop, ...)
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{prop_drop}{Proportion of observations to drop}
 

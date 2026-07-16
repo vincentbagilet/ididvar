@@ -15,7 +15,7 @@ idid_contrib_stats(
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{contrib_threshold}{A numeric (optional). Weight below which
 observations are deemed to be non-contributing.

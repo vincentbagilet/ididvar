@@ -17,7 +17,7 @@ idid_viz_weights_map(
 \arguments{
 \item{reg}{A regression object.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{shape_file}{An \code{sf} object. The shape file to map the weights on.}
 

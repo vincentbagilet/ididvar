@@ -18,7 +18,7 @@ idid_partial_out(
 \item{var_to_partial}{A string. The name of the variable for which to
 compute a partialled out version.}
 
-\item{var_interest}{A string. The name of the main variable of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest.}
 
 \item{partial_iv}{A boolean. If TRUE, partials out the part of the
 endogenous variables that are not explained by the instruments. If the
@@ -56,7 +56,7 @@ idid_partial_out(reg_ex_lm, "log(sales)", "median") |>
  head()
 
 # example with a fixest regression
-reg_ex_fixest <- ggplot2::txhousing  |>
+reg_ex_fixest <- ggplot2::txhousing |>
   fixest::feols(fml = log(sales) ~ median + listings |  as.factor(date) + city)
 
 idid_partial_out(reg_ex_fixest, "median") |>
