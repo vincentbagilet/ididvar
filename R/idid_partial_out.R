@@ -63,7 +63,7 @@ idid_partial_out <- function(reg,
   }
 
   # partial out formula for y
-  if (var_to_partial == all.vars(reg_fct$call[[2]])[[1]]) {
+  if (var_to_partial %in% all.vars(reg_fct$call[[2]])[[1]]) {
     formula_partial <-
       stats::as.formula(
         paste(". ~ . -", paste(var_interest, collapse = "-"))

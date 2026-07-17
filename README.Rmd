@@ -31,8 +31,8 @@ This package is built as part of a [research project](https://vincentbagilet.git
 You can install the development version of `ididvar` from [GitHub](https://github.com/vincentbagilet/ididvar) with:
 
 ```{r instal, eval=FALSE}
-# install.packages("devtools")
-devtools::install_github("vincentbagilet/ididvar")
+# install.packages("pak")
+pak::pak("vincentbagilet/ididvar")
 ```
 
 ## Usage
