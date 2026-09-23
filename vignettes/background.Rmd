@@ -123,6 +123,7 @@ data_partial |>
 ```
 
 
+
 <!-- # Are these weights actually weights? -->
 
 <!-- # Equivalence between leverage and multiple regression weights -->
