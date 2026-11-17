@@ -64,6 +64,6 @@ idid_viz_cumul <- function(reg,
                         n_contrib,  " obs.) account for ",
                         (1 - prop_weights)*100, "% of the weights"),
       x = "Observation index\n(smallest to largest weight)",
-      y = "Cummulative sum of weights"
+      y = "Cumulative sum of weights"
     )
 }

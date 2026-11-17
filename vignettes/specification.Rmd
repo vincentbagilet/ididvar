@@ -375,7 +375,8 @@ world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
 map_contrib <- function(reg) {
   idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
     coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) +
-    theme(panel.grid.major = element_line(colour = "gray90")) 
+    theme(panel.grid.major = element_line(colour = "gray90")) +
+    labs(caption = paste("Model:", deparse(reg$call[[2]])))
 }
 ```
 
@@ -416,7 +417,8 @@ world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
 map_contrib <- function(reg) {
   idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
     coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) +
-    theme(panel.grid.major = element_line(colour = "gray90")) 
+    theme(panel.grid.major = element_line(colour = "gray90")) +
+    labs(caption = paste("Model:", deparse(reg$call[[2]])))
 }
 
 purrr::map(regs, map_contrib)
