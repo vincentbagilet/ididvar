@@ -25,6 +25,25 @@ test_that("the weights give back the coefficient: fixest", {
   expect_equal(fwl_estimate(reg, "x"), stats::coef(reg)[["x"]], tolerance = 1e-6)
 })
 
+test_that("the weights give back the coefficient: coefficient names", {
+  skip_if_not_installed("fixest")
+  df <- sim_panel()
+  df$treat <- as.numeric(df$id > 5)
+  df$post <- as.numeric(df$t > 3)
+  df$group <- factor(letters[df$id %% 3 + 1])
+
+  #interaction, factor level, logical, transformed variable
+  reg <- stats::lm(y ~ treat * post + group + I(x > 0) + log(y_pos), data = df)
+  expect_equal(fwl_estimate(reg, "treat:post"), stats::coef(reg)[["treat:post"]])
+  expect_equal(fwl_estimate(reg, "groupb"), stats::coef(reg)[["groupb"]])
+  expect_equal(fwl_estimate(reg, "I(x > 0)"), stats::coef(reg)[["I(x > 0)TRUE"]])
+  expect_equal(fwl_estimate(reg, "log(y_pos)"), stats::coef(reg)[["log(y_pos)"]])
+
+  #event study
+  reg <- fixest::feols(y ~ i(t, treat, ref = 3) | id + t, data = df, notes = FALSE)
+  expect_equal(fwl_estimate(reg, "t::5:treat"), stats::coef(reg)[["t::5:treat"]])
+})
+
 test_that("plm weights are on the right rows when the data is not sorted", {
   skip_if_not_installed("plm")
   skip_if_not_installed("fixest")

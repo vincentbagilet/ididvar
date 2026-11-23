@@ -1,24 +1,20 @@
 #' Share of the variance removed by partialling out
 #'
 #' @description
-#' Computes the share of the variance of the outcome and of the variables of
-#' interest that is removed by partialling out the controls.
+#' Computes the share of the variance of a variable that is removed by
+#' partialling out the controls.
 #'
 #' @details
-#' Each variable is partialled out with \code{idid_partial_out}: out of the
-#' fixed effects and controls, but not out of the variables of interest. The
-#' share removed is the R² of the regression of the variable on the controls,
-#' 1 - sum(w * x_par^2) / sum(w * (x - mean(x))^2), with w the regression
-#' weights, x_par the partialled out variable and mean(x) the weighted mean.
-#' For GLMs, the outcome is the working response (see \code{idid_to_cf}).
+#' The variable is partialled out with \code{idid_partial_out}. The share of
+#' the variance removed is the R² of the regression of the variable on the fixed
+#' effects and controls. For weighted regressions, observations are weighted by
+#' the regression weights.
 #'
 #' @inheritParams idid_partial_out
 #'
 #' @returns
-#' A dataframe with one row per variable (the outcome, then the variables of
-#' interest) and 2 columns:
-#' - `variable`: the name of the variable
-#' - `share_var_removed`: the share of its variance removed by partialling out
+#' A numeric. The share of the variance of `var_to_partial` removed by
+#' partialling out.
 #'
 #' @export
 #'
@@ -28,28 +24,26 @@
 #'
 #' idid_share_var(reg_ex, "median")
 idid_share_var <- function(reg,
-                           var_interest,
+                           var_to_partial,
+                           var_interest = var_to_partial,
                            partial_iv = TRUE,
                            ...) {
   reg_cf <- idid_to_cf(reg)
-  w <- reg_cf$weights
-  vars <- c(reg_cf$y_name, var_interest)
+  weights <- reg_cf$weights
 
-  share_var_removed <- sapply(vars, function(var) {
-    x_par <- idid_partial_out(reg_cf, var, var_interest, partial_iv = partial_iv)
-    x_par <- x_par[reg_cf$obs]
-    if (var == reg_cf$y_name) {
-      x <- reg_cf$y
-    } else {
-      x <- reg_cf$x[, idid_coef_names(reg_cf, var)]
-    }
-    1 - sum(w * x_par^2) / sum(w * (x - stats::weighted.mean(x, w))^2)
-  })
+  #y or one of the x
+  if (var_to_partial %in% c(reg_cf$y_name, all.vars(str2lang(reg_cf$y_name)))) {
+    var_initial <- reg_cf$y
+  } else {
+    var_initial <- reg_cf$x[, idid_coef_names(reg_cf, var_to_partial)]
+  }
+  var_initial <- var_initial - stats::weighted.mean(var_initial, weights)
 
-  out <- data.frame(
-    variable = vars,
-    share_var_removed = unname(share_var_removed)
-  )
+  partialled_out <-
+    idid_partial_out(reg_cf, var_to_partial, var_interest, partial_iv = partial_iv)
+  partialled_out <- partialled_out[reg_cf$obs]
 
-  return(out)
+  share_var <- 1 - sum(weights*partialled_out^2)/sum(weights*var_initial^2)
+
+  return(share_var)
 }

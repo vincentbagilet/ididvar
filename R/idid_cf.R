@@ -58,31 +58,6 @@ new_idid_cf <- function(reg,
   return(reg_cf)
 }
 
-#' Coefficient names of the variables of interest
-#'
-#' @description
-#' Matches each variable of interest with a coefficient of the control form.
-#'
-#' @param reg_cf An \code{idid_cf} object.
-#' @inheritParams idid_partial_out
-#'
-#' @returns
-#' A vector string of coefficient names.
-#'
-#' @keywords internal
-idid_coef_names <- function(reg_cf, var_interest) {
-  sapply(var_interest, function(var) {
-    #var itself, instrumented in fixest (fit_var) or logical (varTRUE)
-    coef_name <-
-      intersect(c(var, paste0("fit_", var), paste0(var, "TRUE")), colnames(reg_cf$x))
-    if (length(coef_name) != 1) {
-      stop(var, " is not a coefficient of the regression. Coefficients: ",
-           paste(names(reg_cf$coefficients), collapse = ", "))
-    }
-    coef_name
-  }, USE.NAMES = FALSE)
-}
-
 #' @export
 #' @noRd
 print.idid_cf <- function(x, ...) {

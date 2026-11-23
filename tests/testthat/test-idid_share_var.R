@@ -5,8 +5,8 @@ test_that("the share of variance removed is the R2 on the controls: lm", {
   r2_y <- summary(stats::lm(y ~ z, data = df, weights = w, subset = !is.na(x)))$r.squared
   r2_x <- summary(stats::lm(x ~ z, data = df, weights = w))$r.squared
 
-  expect_equal(idid_share_var(reg, "x")$share_var_removed, c(r2_y, r2_x))
-  expect_equal(idid_share_var(reg, "x")$variable, c("y", "x"))
+  expect_equal(idid_share_var(reg, "y", "x"), r2_y)
+  expect_equal(idid_share_var(reg, "x"), r2_x)
 })
 
 test_that("the share of variance removed is the R2 on the controls: fixest", {
@@ -18,5 +18,5 @@ test_that("the share of variance removed is the R2 on the controls: fixest", {
     fixest::feols(x ~ z | id, data = df, weights = ~w, notes = FALSE), "r2"
   )
 
-  expect_equal(idid_share_var(reg, "x")$share_var_removed[2], unname(r2_x))
+  expect_equal(idid_share_var(reg, "x"), unname(r2_x))
 })

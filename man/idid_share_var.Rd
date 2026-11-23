@@ -4,11 +4,20 @@
 \alias{idid_share_var}
 \title{Share of the variance removed by partialling out}
 \usage{
-idid_share_var(reg, var_interest, partial_iv = TRUE, ...)
+idid_share_var(
+  reg,
+  var_to_partial,
+  var_interest = var_to_partial,
+  partial_iv = TRUE,
+  ...
+)
 }
 \arguments{
 \item{reg}{A regression object (or its control form, returned by
 \code{idid_to_cf}).}
+
+\item{var_to_partial}{A string. The name of the variable for which to
+compute a partialled out version (the outcome or a regressor).}
 
 \item{var_interest}{A vector string. The name of the variables of interest
 (coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
@@ -22,24 +31,18 @@ outcome of the function.}
 \item{...}{Not used.}
 }
 \value{
-A dataframe with one row per variable (the outcome, then the variables of
-interest) and 2 columns:
-\itemize{
-\item \code{variable}: the name of the variable
-\item \code{share_var_removed}: the share of its variance removed by partialling out
-}
+A numeric. The share of the variance of \code{var_to_partial} removed by
+partialling out.
 }
 \description{
-Computes the share of the variance of the outcome and of the variables of
-interest that is removed by partialling out the controls.
+Computes the share of the variance of a variable that is removed by
+partialling out the controls.
 }
 \details{
-Each variable is partialled out with \code{idid_partial_out}: out of the
-fixed effects and controls, but not out of the variables of interest. The
-share removed is the R² of the regression of the variable on the controls,
-1 - sum(w * x_par^2) / sum(w * (x - mean(x))^2), with w the regression
-weights, x_par the partialled out variable and mean(x) the weighted mean.
-For GLMs, the outcome is the working response (see \code{idid_to_cf}).
+The variable is partialled out with \code{idid_partial_out}. The share of
+the variance removed is the R² of the regression of the variable on the fixed
+effects and controls. For weighted regressions, observations are weighted by
+the regression weights.
 }
 \examples{
 reg_ex <- ggplot2::txhousing |>

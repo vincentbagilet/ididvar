@@ -52,13 +52,10 @@ idid_weights <- function(reg,
             ": variable(s) of interest collinear with the controls.")
   }
 
-  #qr() shifts columns with no variation left to the end. We only keep the
-  #leading `rank` ones
-  q_identified <- qr.Q(qr_partialled)[, seq_len(qr_partialled$rank), drop = FALSE]
-
-  #leverage = squared length of each row
+  #leverage of each observation (hat() only keeps the leading `rank` columns of
+  #Q, as qr() shifts columns with no variation left to the end)
   idid_weights <- rep(NA, reg_cf$nobs_origin)
-  idid_weights[reg_cf$obs] <- rowSums(q_identified^2)
+  idid_weights[reg_cf$obs] <- stats::hat(qr_partialled)
   idid_weights <- idid_weights/sum(idid_weights, na.rm = TRUE)
 
   return(idid_weights)

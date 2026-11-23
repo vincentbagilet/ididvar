@@ -25,8 +25,8 @@
 
 ## New features
 
-* `idid_share_var()` returns the share of the variance of the outcome and of
-  the variables of interest removed by partialling out the controls.
+* `idid_share_var()` returns the share of the variance of a variable (the
+  outcome or a variable of interest) removed by partialling out the controls.
 
 ## Bug fixes
 
@@ -36,3 +36,5 @@
   estimated on unsorted data, interactions and weighted regressions work.
 * Models estimated inside a function now work. An error is raised if the data
   has been modified since estimation.
+* `idid_drop_change()` now works with an exogenous variable of interest in an
+  IV and with coefficient names containing parentheses or dots (eg `log(x)`).
