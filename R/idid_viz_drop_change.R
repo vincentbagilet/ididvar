@@ -8,13 +8,14 @@
 #' @inheritParams idid_drop_change
 #' @inheritParams idid_contrib_threshold
 #' @inheritParams idid_viz_cumul
-#' @param search_start A numeric (between 0 and 1). Proportion of observation to
-#' drop in the first step of the loop in \code{idid_contrib_threshold}.
-#' @param search_end A numeric (between 0 and 1). Proportion of observation to
-#' drop in the last step of the loop in \code{idid_contrib_threshold}.
+#' @param search_start A numeric (between 0 and 1). Proportion of observations
+#' dropped in the first point of the graph.
+#' @param search_end A numeric (between 0 and 1). Proportion of observations
+#' dropped in the last point of the graph.
 #' @param facet A character. When equal to "both", will display both the
 #' estimate and standard error graph. When equal to "estimate" only the former
 #' will be displayed and when equal to "se", only the latter.
+#' @param ... Passed to \code{idid_drop_change}, eg \code{vcov}.
 #'
 #' @returns
 #' A ggplot2 object.
@@ -39,7 +40,7 @@ idid_viz_drop_change <- function(reg,
                                  facet = "both",
                                  color = "#300D49",
                                  ...) {
-  drop_change_df <- seq(search_start, search_end, 0.05) |>
+  drop_change_df <- seq(search_start, search_end, search_step) |>
     lapply(
       ididvar::idid_drop_change,
       reg = reg,
@@ -48,12 +49,14 @@ idid_viz_drop_change <- function(reg,
     ) |>
     do.call(what = rbind)
 
-  drop_change_est <- drop_change_df[, c("prop_drop", "prop_change_est")]
-  names(drop_change_est) <- c("prop_drop", "prop_change")
+  drop_change_est <-
+    drop_change_df[, c("prop_drop", "var_interest", "prop_change_est")]
+  names(drop_change_est) <- c("prop_drop", "var_interest", "prop_change")
   drop_change_est[["measure"]] <- "Estimate"
 
-  drop_change_se <- drop_change_df[, c("prop_drop", "prop_change_se")]
-  names(drop_change_se) <- c("prop_drop", "prop_change")
+  drop_change_se <-
+    drop_change_df[, c("prop_drop", "var_interest", "prop_change_se")]
+  names(drop_change_se) <- c("prop_drop", "var_interest", "prop_change")
   drop_change_se[["measure"]] <- "Std. Error"
 
   if (facet == "estimate") {
@@ -65,7 +68,11 @@ idid_viz_drop_change <- function(reg,
   }
 
   data |>
-    ggplot2::ggplot(ggplot2::aes(x = .data$prop_drop, y = abs(.data$prop_change*100))) +
+    ggplot2::ggplot(ggplot2::aes(
+      x = .data$prop_drop,
+      y = abs(.data$prop_change*100),
+      group = .data$var_interest
+    )) +
     ggplot2::geom_line(linewidth = 1.4, color = color) +
     ggplot2::geom_hline(
       yintercept = threshold_change*100,

@@ -29,11 +29,11 @@ estimate and s.e. when dropping observations.}
 \item{search_step}{A double (between 0 and 1). The additional proportion of
 observations to drop in each iteration of the loop.}
 
-\item{search_start}{A numeric (between 0 and 1). Proportion of observation to
-drop in the first step of the loop in \code{idid_contrib_threshold}.}
+\item{search_start}{A numeric (between 0 and 1). Proportion of observations
+dropped in the first point of the graph.}
 
-\item{search_end}{A numeric (between 0 and 1). Proportion of observation to
-drop in the last step of the loop in \code{idid_contrib_threshold}.}
+\item{search_end}{A numeric (between 0 and 1). Proportion of observations
+dropped in the last point of the graph.}
 
 \item{facet}{A character. When equal to "both", will display both the
 estimate and standard error graph. When equal to "estimate" only the former
@@ -41,7 +41,7 @@ will be displayed and when equal to "se", only the latter.}
 
 \item{color}{A string. Color of the graph.}
 
-\item{...}{Not used.}
+\item{...}{Passed to \code{idid_drop_change}, eg \code{vcov}.}
 }
 \value{
 A ggplot2 object.

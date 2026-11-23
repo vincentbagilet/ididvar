@@ -14,6 +14,7 @@
 #' observations are deemed to be non-contributing.
 #' If not provided, will be determined by running
 #' \code{ididvar::idid_contrib_threshold}
+#' @param ... Passed to \code{idid_drop_change}, eg \code{vcov}.
 #'
 #' @returns
 #' A ggplot2 graph of observations contributing to estimation.
@@ -60,7 +61,7 @@ idid_viz_contrib <- function(reg,
 
   df <- idid_data(reg)
   df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  df[["contrib"]] <- (df[["idid_weight"]] > contrib_threshold)
+  df[["contrib"]] <- (df[["idid_weight"]] >= contrib_threshold)
   df[["contrib_name"]] <-
     ifelse(df[["contrib"]],
            "In the effective sample",

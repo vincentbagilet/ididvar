@@ -38,3 +38,22 @@
   has been modified since estimation.
 * `idid_drop_change()` now works with an exogenous variable of interest in an
   IV and with coefficient names containing parentheses or dots (eg `log(x)`).
+* Effective sample (`idid_drop_reg()`, `idid_drop_change()`,
+  `idid_contrib_threshold()` and the functions using them):
+  * the threshold corresponds to the last step that does not change the
+    estimate by more than `threshold_change`, not the first one that does.
+    Observations with a weight equal to the threshold now contribute.
+  * only observations of the estimation sample are dropped, and observations
+    with the same weight are all dropped or all kept.
+  * `idid_drop_change()` returns one row per variable of interest. The search
+    requires every one of them to pass.
+  * a regression that fails after dropping observations counts as a large
+    change instead of stopping the search.
+  * standard errors come from `vcov()`. For `fixest`, both use the variance of
+    the regression passed (eg clustering set in `summary()`) and no small
+    sample correction.
+  * `idid_drop_change()` gains a `vcov` argument, a function computing the
+    variance of both regressions (eg `sandwich::vcovHC`). It can be passed to
+    the other functions through `...`.
+  * `felm` and `glm` work, and `fixest` notes are not repeated.
+  * `idid_viz_drop_change()` uses `search_step`.

@@ -4,7 +4,7 @@
 \alias{idid_drop_change}
 \title{Variation in estimate when dropping low weight observations}
 \usage{
-idid_drop_change(reg, var_interest, prop_drop, ...)
+idid_drop_change(reg, var_interest, prop_drop, vcov = NULL, ...)
 }
 \arguments{
 \item{reg}{A regression object (or its control form, returned by
@@ -13,27 +13,44 @@ idid_drop_change(reg, var_interest, prop_drop, ...)
 \item{var_interest}{A vector string. The name of the variables of interest
 (coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
-\item{prop_drop}{Proportion of observations to drop}
+\item{prop_drop}{Proportion of observations of the estimation sample to drop}
+
+\item{vcov}{A function (optional). Computes the variance-covariance matrix
+of a regression, eg \code{sandwich::vcovHC}. Used for both the full sample
+and the dropped regressions. If NULL, the variance described in Details.}
 
 \item{...}{Not used.}
 }
 \value{
-A dataframe with one row and 3 columns:
+A dataframe with one row per variable of interest and 4 columns:
 \itemize{
 \item \code{prop_drop}: the proportion of data dropped
+\item \code{var_interest}: the name of the coefficient
 \item \code{prop_change_est}: the relative change between the full sample and
 droped estimates
 \item \code{prop_change_se}: the relative change between the full sample and
 droped s.e.
 }
+
+The changes are NA if the coefficient cannot be estimated without the
+dropped observations.
 }
 \description{
 Computes a variation of the point estimate and standard errors of the
 coefficient of interest when dropping low weight observations.
+}
+\details{
+Standard errors are retrieved with \code{vcov}. For \code{fixest} models,
+both standard errors use the variance of \code{reg} (eg clustering set in
+\code{summary}), without small sample correction, as this correction changes
+mechanically when dropping observations.
 }
 \examples{
 reg_ex <- ggplot2::economics |>
   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
 
 idid_drop_change(reg_ex, "pce", prop_drop = 0.1)
+
+#robust standard errors
+idid_drop_change(reg_ex, "pce", prop_drop = 0.1, vcov = sandwich::vcovHC)
 }

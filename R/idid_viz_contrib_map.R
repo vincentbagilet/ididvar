@@ -8,6 +8,7 @@
 #'
 #' @inheritParams idid_viz_weights_map
 #' @inheritParams idid_viz_contrib
+#' @param ... Passed to \code{idid_drop_change}, eg \code{vcov}.
 #'
 #' @returns
 #' A ggplot object.
@@ -45,7 +46,7 @@ idid_viz_contrib_map <- function(reg,
 
   df <- idid_data(reg)
   df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
-  df[["contrib"]] <- (df[["idid_weight"]] > contrib_threshold)
+  df[["contrib"]] <- (df[["idid_weight"]] >= contrib_threshold)
   df[["contrib"]] <- as.integer(df[["contrib"]])
 
   #compute shape level weights

@@ -40,7 +40,7 @@ I recommend to pass a vector of 3 distinct colors, with a lighter color in
 the middle, constituting a diverging scale. It allows a clear distinction
 between contributing and non contributing observations.}
 
-\item{...}{Not used.}
+\item{...}{Passed to \code{idid_drop_change}, eg \code{vcov}.}
 }
 \value{
 A ggplot object.

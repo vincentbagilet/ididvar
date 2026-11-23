@@ -124,7 +124,7 @@ We first start by plotting the cumulative distribution of weights. We can add a 
 gapminder_weights <- gapminder_sample |> 
   mutate(
     idid_weight = idid_weights(reg, "l_gdpPercap"),
-    contrib = idid_weight > idid_contrib_threshold(reg, "l_gdpPercap"),
+    contrib = idid_weight >= idid_contrib_threshold(reg, "l_gdpPercap"),
     contrib_name = ifelse(contrib, 
                           "In the effective sample",
                           "Outside the effective sample")

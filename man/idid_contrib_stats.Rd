@@ -27,15 +27,15 @@ If not provided, will be determined by running
 \item{threshold_change}{A double (between 0 and 1). The change threshold in
 estimate and s.e. when dropping observations.}
 
-\item{...}{Not used.}
+\item{...}{Passed to \code{idid_drop_change}, eg \code{vcov}.}
 }
 \value{
 A dataframe with 4 columns:
 \itemize{
-\item \code{n_total}: the total sample size, before dropping observations with
-missing values
+\item \code{n_initial}: the number of rows in the data, before dropping
+observations with missing values
 \item \code{n_nominal}: the nominal sample size, ie the number of observations in the
-regression
+regression (estimation sample)
 \item \code{n_effective}: the effective sample size, after removing non contributing
 observations
 \item \code{prop_effective}: the ratio of the effective to the nominal sample sizes

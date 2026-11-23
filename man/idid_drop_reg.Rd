@@ -13,7 +13,7 @@ idid_drop_reg(reg, var_interest, prop_drop, ...)
 \item{var_interest}{A vector string. The name of the variables of interest
 (coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
-\item{prop_drop}{Proportion of observations to drop}
+\item{prop_drop}{Proportion of observations of the estimation sample to drop}
 
 \item{...}{Not used.}
 }
@@ -24,7 +24,10 @@ A regression object
 Re-run the regression but dropping low weight observations.
 }
 \details{
-This function recomputes the weights
+This function recomputes the weights. Observations outside the estimation
+sample are dropped. Observations with the same weight are all kept or all
+dropped, so the proportion of observations dropped can be lower than
+\code{prop_drop}.
 }
 \examples{
 reg_ex <- ggplot2::economics |>

@@ -50,7 +50,7 @@ between contributing and non contributing observations.}
 \item{keep_labels}{A boolean (optional). If FALSE, removes y labels and ticks.
 This option is useful for panels with a large number of individuals.}
 
-\item{...}{Not used.}
+\item{...}{Passed to \code{idid_drop_change}, eg \code{vcov}.}
 }
 \value{
 A ggplot2 graph of observations contributing to estimation.

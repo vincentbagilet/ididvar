@@ -26,6 +26,7 @@ Suggests:
     rmarkdown,
     rnaturalearth,
     rnaturalearthdata,
+    sandwich,
     sf,
     testthat (>= 3.0.0),
     tigris
