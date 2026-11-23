@@ -12,11 +12,6 @@ A ggplot2 Stat that behaves like stat_summary_2d but automatically:
 StatLogWeight
 ```
 
-## Format
-
-An object of class `StatLogWeight` (inherits from `Stat`, `ggproto`,
-`gg`) of length 4.
-
 ## Details
 
 summarise the weights by var_x*vary_y groups (summing their values),

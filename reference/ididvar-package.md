@@ -12,3 +12,7 @@ Useful links:
 ## Author
 
 **Maintainer**: Vincent Bagilet <vincent.bagilet@ens-lyon.fr>
+
+Authors:
+
+- Vincent Bagilet <vincent.bagilet@ens-lyon.fr>
