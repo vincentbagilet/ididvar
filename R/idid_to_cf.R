@@ -1,150 +1,219 @@
-#' Transform an IV regression into its control function equivalent
+#' Transform a regression into its control form
 #'
 #' @description
-#' Takes an instrumental variables (IV) regression estimated
-#' with either \code{fixest::feols} or \code{AER::ivreg} and refits it
-#' as a *control function* (CF) specification.
+#' Rewrites a regression as an equivalent linear regression, its control form,
+#' without re-estimating it.
 #'
 #' @details
-#' The resulting model reproduces the second-stage regression where the
-#' residuals from each first-stage (for endogenous regressors) are added as
-#' additional controls. These residuals are appended to the data as
-#' `<var>_first` and added as regressors in the updated model.
+#' The control form has the same coefficients as \code{reg}. The other
+#' functions of the package work on it, to handle all models the same way:
+#' - linear models (`lm`, `feols`, `felm`): the regression itself.
+#' - IV (`ivreg`, `feols`): first stage residuals are added as controls
+#' (control function).
+#' - GLM (`glm`, `feglm`, `fepois`): the working response, with the IRLS
+#' weights (R estimates GLMs by iterating weighted linear regressions of this
+#' working response).
+#' - `plm`: the data as transformed by `plm` (eg demeaned for a within model).
 #'
-#' This function allows to explore the identifying variation of
-#' IV estimates using the other functions of the `ididvar` package.
+#' The regression can be refitted from its control form. This gives back its
+#' coefficients but not its standard errors:
+#' ```
+#' reg_cf <- idid_to_cf(reg)
+#' stats::lm.wfit(reg_cf$x, reg_cf$y, reg_cf$weights)$coefficients
 #'
-#' The function ensures that covariance options (e.g., clustering, weights)
-#' and other model arguments are preserved from the original regression where
-#' possible. If none are provided, the standard errors will be incorrect.
+#' # with fixed effects
+#' fixest::feols.fit(reg_cf$y, reg_cf$x,
+#'   fixef_df = as.data.frame(reg_cf$fixef_id), weights = reg_cf$weights)
+#' ```
 #'
-#' @param reg An IV regression object. Currently supported classes are
-#'   \code{fixest::fixest} and \code{AER::ivreg}.
-#' @param ... Additional arguments passed to \code{stats::update} when refitting
-#'   the model.
+#' @param reg A regression object. Currently supported classes are \code{lm},
+#' \code{glm}, \code{fixest}, \code{ivreg} (AER), \code{plm} and \code{felm}.
+#' @param ... Not used.
 #'
-#' @return A model object of the same class as `reg` (`fixest` or `ivreg`),
-#'   representing the equivalent control-function specification. The returned
-#'   model uses the same data, controls, and variance specification as the
-#'   original regression.
-#'
-#' @examples
-#' \dontrun{
-#' library(fixest)
-#' library(AER)
-#'
-#' # feols example
-#' data(trade)
-#' reg_feols <- feols(Euros ~ log(dist) | log(dist) ~ log(air) + log(dist), data = trade)
-#' reg_feols_cf <- idid_to_cf(reg_feols)
-#'
-#' # ivreg example
-#' data("CigarettesSW")
-#' reg_ivreg <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rtax) + log(rincome),
-#'                 data = CigarettesSW)
-#' reg_ivreg_cf <- idid_to_cf(reg_ivreg)
-#' }
-#'
-#' @seealso [fixest::feols], [AER::ivreg], [stats::update]
+#' @returns
+#' An \code{idid_cf} object, a list with:
+#' - `x`: the regressors
+#' - `y`: the outcome
+#' - `weights`: the regression weights (1 if none)
+#' - `fixef_id`: the fixed effects (NULL if none)
+#' - `obs`: the rows of the data used for estimation
+#' - `nobs_origin`: the number of rows of the data
+#' - `coefficients`, `y_name`, `cf_names` (the control function variables)
+#' and `model_class`
 #'
 #' @export
+#'
+#' @examples
+#' reg_ex <- ggplot2::txhousing |>
+#'   lm(formula = log(sales) ~ median + listings + city)
+#'
+#' reg_cf <- idid_to_cf(reg_ex)
+#' reg_cf
+#'
+#' stats::lm.wfit(reg_cf$x, reg_cf$y, reg_cf$weights)$coefficients |>
+#'   head()
+#'
+#' # IV
+#' reg_iv <- fixest::feols(mpg ~ wt | hp ~ qsec, data = mtcars)
+#' idid_to_cf(reg_iv)
 idid_to_cf <- function(reg, ...) {
   UseMethod("idid_to_cf")
 }
 
-#' @describeIn idid_to_cf Method for `fixest` (feols) objects
-#' @family idid_methods
+#' @describeIn idid_to_cf Method for `fixest` objects
 #' @export
-#' @exportS3Method
 idid_to_cf.fixest <- function(reg, ...) {
-  df <- idid_data(reg)
-  endo_vars <- reg$iv_endo_names
-
-  #compute residuals from first stage
-  for (endo_var in endo_vars) {
-    df[[paste0(endo_var, "_first")]] <-
-      reg$iv_first_stage[[endo_var]] |> stats::residuals()
+  if (reg$method_type == "feNmlm") {
+    stop("idid_to_cf does not support ", reg$method, " models")
+  }
+  if (isTRUE(any(reg$slope_flag != 0))) {
+    stop("idid_to_cf does not support varying slopes")
   }
 
-  formula_second_stage <-
-    stats::as.formula(paste(
-      ". ~ . + ",
-      paste(endo_vars, collapse = " + "),
-      " + ",
-      paste0(endo_vars, "_first", collapse = " + "),
-      " | . | 0"
-    ))
+  y <- stats::model.matrix(reg, type = "lhs")
+  weights <- reg$weights
+  cf_names <- NULL
 
-  reg_cf <-
-    stats::update(
-      reg,
-      formula_second_stage,
-      data = df,
-      na.action = stats::na.exclude,
-      use_calling_env = FALSE,
-      ...
-    ) |>
-    #handle warning when using feols for instance:
-    #feols does not have a 'na.action' argument and there is a weird warning
-    #for use_calling_env (likely a update.feols bug)
-    withCallingHandlers(
-      warning = function(w) {
-        if (grepl("use_calling_env and na.action are not valid",
-                  conditionMessage(w))) {
-          invokeRestart("muffleWarning")
-        }
-      }
-    )
+  if (isTRUE(reg$is_iv)) {
+    #add first stage residuals (control function)
+    endo <- stats::model.matrix(reg, type = "iv.endo")
+    first_resid <- sapply(reg$iv_first_stage, stats::residuals)
+    cf_names <- paste0(colnames(endo), "_first")
+    colnames(first_resid) <- cf_names
+    colnames(endo) <- paste0("fit_", colnames(endo))
+    x <- cbind(stats::model.matrix(reg, type = "iv.exo"), endo, first_resid)
+  } else {
+    x <- stats::model.matrix(reg, type = "rhs")
+  }
 
-  return(reg_cf)
+  #GLM: working response and IRLS weights
+  if (reg$method_type == "feglm") {
+    eta <- reg$linear.predictors
+    mu <- reg$fitted.values
+    prior_weights <- if (is.null(weights)) 1 else weights
+    y <- eta + (y - mu) / reg$family$mu.eta(eta)
+    weights <- prior_weights * reg$family$mu.eta(eta)^2 / reg$family$variance(mu)
+  }
+
+  new_idid_cf(
+    reg,
+    x = x,
+    y = y,
+    weights = weights,
+    fixef_id = reg$fixef_id,
+    offset = reg$offset,
+    obs = fixest::obs(reg),
+    nobs_origin = reg$nobs_origin,
+    cf_names = cf_names
+  )
 }
 
 #' @describeIn idid_to_cf Method for `ivreg` objects
-#' @family idid_methods
 #' @export
-#' @exportS3Method
 idid_to_cf.ivreg <- function(reg, ...) {
+  x <- stats::model.matrix(reg, component = "regressors")
+  instru <- stats::model.matrix(reg, component = "instruments")
+  endo_vars <- setdiff(colnames(x), colnames(instru))
+
+  #add first stage residuals (control function)
+  first_resid <- x[, endo_vars, drop = FALSE] -
+    stats::model.matrix(reg, component = "projected")[, endo_vars, drop = FALSE]
+  colnames(first_resid) <- paste0(endo_vars, "_first")
+
+  new_idid_cf(
+    reg,
+    x = cbind(x, first_resid),
+    y = reg$y,
+    weights = stats::weights(reg),
+    cf_names = colnames(first_resid)
+  )
+}
+
+#' @describeIn idid_to_cf Method for `lm` objects
+#' @export
+idid_to_cf.lm <- function(reg, ...) {
+  new_idid_cf(
+    reg,
+    x = stats::model.matrix(reg),
+    y = stats::model.response(stats::model.frame(reg)),
+    weights = stats::weights(reg),
+    offset = reg$offset
+  )
+}
+
+#' @describeIn idid_to_cf Method for `glm` objects
+#' @export
+idid_to_cf.glm <- function(reg, ...) {
+  eta <- reg$linear.predictors
+  mu <- reg$fitted.values
+
+  #working response and IRLS weights (recomputed: reg$weights are those of the
+  #previous iteration)
+  new_idid_cf(
+    reg,
+    x = stats::model.matrix(reg),
+    y = eta + stats::residuals(reg, type = "working"),
+    weights = reg$prior.weights * reg$family$mu.eta(eta)^2 / reg$family$variance(mu),
+    offset = reg$offset
+  )
+}
+
+#' @describeIn idid_to_cf Method for `plm` objects
+#' @export
+idid_to_cf.plm <- function(reg, ...) {
+  if (!(reg$args$model %in% c("within", "random", "pooling", "fd"))) {
+    stop("idid_to_cf does not support ", reg$args$model, " plm models")
+  }
   df <- idid_data(reg)
+  x <- stats::model.matrix(reg)
 
-  rhs_vars <- all.vars(reg$terms$regressors)[-1]
-  lhs_var <- all.vars(reg$terms$regressors)[1]
-  instru <- all.vars(reg$terms$instruments)
-  endo_vars <- rhs_vars[!(rhs_vars %in% instru)]
-
-  for (endo_var in endo_vars) {
-    formula_first_stage <-
-      stats::as.formula(paste(
-        endo_var,
-        "~",
-        paste(setdiff(instru, endo_vars), collapse = " + ")
-      ))
-
-    df[[paste0(endo_var, "_first")]] <-
-      stats::update(reg, formula_first_stage, data = df, ...) |>
-      stats::residuals()
+  #plm sorts the data: match its rows with those of df using the panel index
+  index_x <- attr(x, "index")
+  if (inherits(df, "pdata.frame")) {
+    index_df <- plm::index(df)
+  } else if (all(names(index_x) %in% names(df))) {
+    index_df <- df[names(index_x)]
+  } else {
+    #time index created by plm, in the order of the data
+    id <- df[[names(index_x)[1]]]
+    index_df <- list(id, stats::ave(seq_along(id), id, FUN = seq_along))
+  }
+  #fd: no observation for the first period
+  if (reg$args$model == "fd") {
+    index_x <- index_x[duplicated(index_x[[1]]), ]
   }
 
-  formula_second_stage <-
-    stats::as.formula(paste(
-      lhs_var, "~",
-      paste0(rhs_vars, collapse = " + "),
-      " + ",
-      paste0(endo_vars, "_first", collapse = " + ")
-    ))
+  new_idid_cf(
+    reg,
+    x = x,
+    y = plm::pmodel.response(reg),
+    obs = match(paste(index_x[[1]], index_x[[2]]), paste(index_df[[1]], index_df[[2]])),
+    nobs_origin = nrow(df)
+  )
+}
 
-  new_call <- reg$call
-  new_call$formula <- formula_second_stage
-  new_call$data <- df
+#' @describeIn idid_to_cf Method for `felm` objects
+#' @export
+idid_to_cf.felm <- function(reg, ...) {
+  if (!is.null(reg$stage1)) {
+    stop("idid_to_cf does not support felm IV models")
+  }
+  df <- idid_data(reg)
 
-  reg_cf <- eval(new_call, envir = environment(stats::formula(reg)))
-
-  return(reg_cf)
+  new_idid_cf(
+    reg,
+    x = stats::model.matrix(reg),
+    y = reg$response,
+    #felm stores the square root of the weights
+    weights = if (!is.null(reg$weights)) reg$weights^2,
+    fixef_id = if (length(reg$fe) > 0) reg$fe,
+    obs = setdiff(seq_len(nrow(df)), reg$na.action),
+    nobs_origin = nrow(df)
+  )
 }
 
 #' @describeIn idid_to_cf Default method (unsupported model types)
-#' @family idid_methods
 #' @export
-#' @exportS3Method
 idid_to_cf.default <- function(reg, ...) {
-  stop("idid_to_cf only supports fixest::feols or AER::ivreg regressions")
+  stop("idid_to_cf does not support ", class(reg)[1], " objects")
 }

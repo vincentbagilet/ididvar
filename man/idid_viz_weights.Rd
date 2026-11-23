@@ -16,9 +16,11 @@ idid_viz_weights(
 )
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 
-\item{var_interest}{A vector string. The name of the variables of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest
+(coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
 \item{var_x}{A variable in the data set used in \code{reg} to plot on the
 x-axis.}
@@ -38,8 +40,7 @@ between contributing and non contributing observations.}
 \item{keep_labels}{A boolean (optional). If FALSE, removes y labels and ticks.
 This option is useful for panels with a large number of individuals.}
 
-\item{...}{Additional elements to pass to the regression function when
-partialling out controls.}
+\item{...}{Not used.}
 }
 \value{
 A ggplot2 graph of identifying variation weights.

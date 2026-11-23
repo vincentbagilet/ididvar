@@ -7,7 +7,8 @@
 idid_data(reg)
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 }
 \value{
 The data frame used to estimate \code{reg}.

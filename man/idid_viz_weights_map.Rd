@@ -15,9 +15,11 @@ idid_viz_weights_map(
 )
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 
-\item{var_interest}{A vector string. The name of the variables of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest
+(coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
 \item{shape_file}{An \code{sf} object. The shape file to map the weights on.}
 
@@ -32,8 +34,7 @@ I recommend to pass a vector of 3 distinct colors, with a lighter color in
 the middle, constituting a diverging scale. It allows a clear distinction
 between contributing and non contributing observations.}
 
-\item{...}{Additional elements to pass to the regression function when
-partialling out controls.}
+\item{...}{Not used.}
 }
 \value{
 A ggplot object.

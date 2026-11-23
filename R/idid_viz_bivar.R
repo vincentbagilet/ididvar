@@ -30,7 +30,7 @@ idid_viz_bivar <- function(reg,
                            ...) {
 
   df <- idid_data(reg)
-  name_var_y <- all.vars(reg$call[[2]])[[1]]
+  name_var_y <- idid_to_cf(reg)$y_name
 
   df[["y_par"]] <-
     ididvar::idid_partial_out(reg, name_var_y, var_interest, partial_iv = partial_iv, ...)

@@ -13,9 +13,11 @@ idid_contrib_threshold(
 )
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 
-\item{var_interest}{A vector string. The name of the variables of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest
+(coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
 \item{threshold_change}{A double (between 0 and 1). The change threshold in
 estimate and s.e. when dropping observations.}
@@ -23,8 +25,7 @@ estimate and s.e. when dropping observations.}
 \item{search_step}{A double (between 0 and 1). The additional proportion of
 observations to drop in each iteration of the loop.}
 
-\item{...}{Additional elements to pass to the regression function when
-partialling out controls.}
+\item{...}{Not used.}
 }
 \value{
 A numeric. The largest weight below which one can drop observations

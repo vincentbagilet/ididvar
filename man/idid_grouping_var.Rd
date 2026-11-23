@@ -7,16 +7,17 @@
 idid_grouping_var(reg, var_interest, grouping_vars, ...)
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 
-\item{var_interest}{A vector string. The name of the variables of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest
+(coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
 \item{grouping_vars}{A string vector of variable names or \code{"everything"}.
 The set of variables to group weights by. If \code{"everything"} passed,
 group by each of the variables in the data set successively.}
 
-\item{...}{Additional elements to pass to the regression function when
-partialling out controls.}
+\item{...}{Not used.}
 }
 \value{
 A dataframe with 2 columns:

@@ -21,6 +21,7 @@ reference:
   contents:
   - idid_partial_out
   - idid_weights
+  - idid_share_var
   - idid_contrib_threshold
   - idid_contrib_stats
   - idid_drop_reg

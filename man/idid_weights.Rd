@@ -7,9 +7,11 @@
 idid_weights(reg, var_interest, partial_iv = TRUE, tol = 1e-07, ...)
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 
-\item{var_interest}{A vector string. The name of the variables of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest
+(coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
 \item{partial_iv}{A boolean. If TRUE, partials out the part of the
 endogenous variables that are not explained by the instruments. If the
@@ -20,8 +22,7 @@ outcome of the function.}
 \item{tol}{A numeric. Passed to the \code{qr} function. The tolerance for
 detecting linear dependencies in the columns of x_partialled.}
 
-\item{...}{Additional elements to pass to the regression function when
-partialling out controls.}
+\item{...}{Not used.}
 }
 \value{
 A numeric vector of the identifying variation weights for each observation.
@@ -34,17 +35,10 @@ identification.
 The weights correspond to the normalized leverage of each observation for
 the variables of interest after partialling out all controls.
 
-The partailled out version of the design matrix (ie, of the set of variables
-of interest) is computed by re-running the regression provided in \code{reg}
-but sequentially replacing the independent variable by each of the variables
-of interest (and removing them from the set of regressors).
-
-If the nature of the independent variable and of the variable of interest
-are different, one may want to change the estimation.
-For instance, if the independent variable is discrete and estimated via glm
-with the argument \code{family = "binomial"} and the dependent variable is
-continuous, one may want to provide the argument \code{family = "gaussian"}
-to \code{idid_weights}.
+The partialled out version of the variables of interest is computed with
+\code{idid_partial_out}, on the control form of the regression (see
+\code{idid_to_cf}). For weighted regressions (and GLMs), observations are
+weighted by the regression weights.
 }
 \examples{
 reg_ex_lm <- ggplot2::txhousing |>

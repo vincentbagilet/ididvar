@@ -8,17 +8,10 @@
 #' The weights correspond to the normalized leverage of each observation for
 #' the variables of interest after partialling out all controls.
 #'
-#' The partailled out version of the design matrix (ie, of the set of variables
-#' of interest) is computed by re-running the regression provided in \code{reg}
-#' but sequentially replacing the independent variable by each of the variables
-#' of interest (and removing them from the set of regressors).
-#'
-#' If the nature of the independent variable and of the variable of interest
-#' are different, one may want to change the estimation.
-#' For instance, if the independent variable is discrete and estimated via glm
-#' with the argument \code{family = "binomial"} and the dependent variable is
-#' continuous, one may want to provide the argument \code{family = "gaussian"}
-#' to \code{idid_weights}.
+#' The partialled out version of the variables of interest is computed with
+#' \code{idid_partial_out}, on the control form of the regression (see
+#' \code{idid_to_cf}). For weighted regressions (and GLMs), observations are
+#' weighted by the regression weights.
 #'
 #' @inheritParams idid_partial_out
 #' @param tol A numeric. Passed to the \code{qr} function. The tolerance for
@@ -41,31 +34,18 @@ idid_weights <- function(reg,
                          partial_iv = TRUE,
                          tol = 1e-7,
                          ...) {
-
-  if (all.vars(reg$call[[2]])[[1]] %in% var_interest) {
-    #all.vars(reg$call[[2]])[[1]] is y in the reg
-    stop("var_interest should only contain explanatory variables")
-  }
-
-  block_terms <- paste(var_interest, collapse = " - ")
+  reg_cf <- idid_to_cf(reg)
 
   x_partialled <- sapply(var_interest, function(var) {
-    idid_partial_out(
-      reg,
-      var,
-      var_interest = block_terms,
-      partial_iv = partial_iv,
-      ...
-    )
+    idid_partial_out(reg_cf, var, var_interest, partial_iv = partial_iv)
   })
 
-  #note the estimation sample: idid_partial_out pads dropped rows with NA,
-  #which qr() errors on
-  complete_rows <- stats::complete.cases(x_partialled)
+  #only keep the estimation sample (idid_partial_out pads dropped rows with NA)
+  #and weight observations for weighted regressions
+  x_partialled <- x_partialled[reg_cf$obs, , drop = FALSE] * sqrt(reg_cf$weights)
 
-  #decompose the residualised block; `tol` sets how much variation a variable
-  #must retain to count as identified rather than collinear
-  qr_partialled <- qr(x_partialled[complete_rows, , drop = FALSE], tol = tol)
+  #decompose the residualised block
+  qr_partialled <- qr(x_partialled, tol = tol)
 
   if (qr_partialled$rank < length(var_interest)) {
     warning("Rank ", qr_partialled$rank, " of ", length(var_interest),
@@ -77,12 +57,9 @@ idid_weights <- function(reg,
   q_identified <- qr.Q(qr_partialled)[, seq_len(qr_partialled$rank), drop = FALSE]
 
   #leverage = squared length of each row
-  idid_weights <- rep(NA, nrow(x_partialled))
-  idid_weights[complete_rows] <- rowSums(q_identified^2)
+  idid_weights <- rep(NA, reg_cf$nobs_origin)
+  idid_weights[reg_cf$obs] <- rowSums(q_identified^2)
   idid_weights <- idid_weights/sum(idid_weights, na.rm = TRUE)
 
   return(idid_weights)
 }
-
-
-

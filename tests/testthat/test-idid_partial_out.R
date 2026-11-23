@@ -51,7 +51,7 @@ test_that("idid_partial_out produces correct residuals for x", {
   df <- data.frame(
     y = 1:5,
     x = c(1, 2, 3, 4, 5),
-    w = c(5, 4, 3, 2, 1)
+    w = c(5, 3, 4, 1, 2)
   )
 
   reg <- lm(y ~ x + w, data = df)
@@ -60,14 +60,14 @@ test_that("idid_partial_out produces correct residuals for x", {
   # Manually computation of hp partialled out
   x_perp_manual <- residuals(lm(x ~ w, data = df))
 
-  expect_equal(x_perp, x_perp_manual, tolerance = 1e-8)
+  expect_equal(x_perp, unname(x_perp_manual), tolerance = 1e-8)
 })
 
 test_that("idid_partial_out produces correct residuals for y", {
   df <- data.frame(
     y = 1:5,
     x = c(1, 2, 3, 4, 5),
-    w = c(5, 4, 3, 2, 1)
+    w = c(5, 3, 4, 1, 2)
   )
 
   reg <- lm(y ~ x + w, data = df)
@@ -76,5 +76,18 @@ test_that("idid_partial_out produces correct residuals for y", {
   # Manually computation of hp partialled out
   y_perp_manual <- residuals(lm(y ~ w, data = df))
 
-  expect_equal(y_perp, y_perp_manual, tolerance = 1e-8)
+  expect_equal(y_perp, unname(y_perp_manual), tolerance = 1e-8)
+})
+
+test_that("idid_partial_out does not partial out controls dropped by the model", {
+  # w = 6 - x: lm drops w, so x is only partialled out of the intercept
+  df <- data.frame(
+    y = c(1, 3, 2, 5, 4),
+    x = c(1, 2, 3, 4, 5),
+    w = c(5, 4, 3, 2, 1)
+  )
+
+  reg <- lm(y ~ x + w, data = df)
+
+  expect_equal(idid_partial_out(reg, "x"), df$x - mean(df$x))
 })

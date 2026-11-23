@@ -4,8 +4,12 @@
 \alias{idid_to_cf}
 \alias{idid_to_cf.fixest}
 \alias{idid_to_cf.ivreg}
+\alias{idid_to_cf.lm}
+\alias{idid_to_cf.glm}
+\alias{idid_to_cf.plm}
+\alias{idid_to_cf.felm}
 \alias{idid_to_cf.default}
-\title{Transform an IV regression into its control function equivalent}
+\title{Transform a regression into its control form}
 \usage{
 idid_to_cf(reg, ...)
 
@@ -13,67 +17,91 @@ idid_to_cf(reg, ...)
 
 \method{idid_to_cf}{ivreg}(reg, ...)
 
+\method{idid_to_cf}{lm}(reg, ...)
+
+\method{idid_to_cf}{glm}(reg, ...)
+
+\method{idid_to_cf}{plm}(reg, ...)
+
+\method{idid_to_cf}{felm}(reg, ...)
+
 \method{idid_to_cf}{default}(reg, ...)
 }
 \arguments{
-\item{reg}{An IV regression object. Currently supported classes are
-\code{fixest::fixest} and \code{AER::ivreg}.}
+\item{reg}{A regression object. Currently supported classes are \code{lm},
+\code{glm}, \code{fixest}, \code{ivreg} (AER), \code{plm} and \code{felm}.}
 
-\item{...}{Additional arguments passed to \code{stats::update} when refitting
-the model.}
+\item{...}{Not used.}
 }
 \value{
-A model object of the same class as \code{reg} (\code{fixest} or \code{ivreg}),
-representing the equivalent control-function specification. The returned
-model uses the same data, controls, and variance specification as the
-original regression.
+An \code{idid_cf} object, a list with:
+\itemize{
+\item \code{x}: the regressors
+\item \code{y}: the outcome
+\item \code{weights}: the regression weights (1 if none)
+\item \code{fixef_id}: the fixed effects (NULL if none)
+\item \code{obs}: the rows of the data used for estimation
+\item \code{nobs_origin}: the number of rows of the data
+\item \code{coefficients}, \code{y_name}, \code{cf_names} (the control function variables)
+and \code{model_class}
+}
 }
 \description{
-Takes an instrumental variables (IV) regression estimated
-with either \code{fixest::feols} or \code{AER::ivreg} and refits it
-as a \emph{control function} (CF) specification.
+Rewrites a regression as an equivalent linear regression, its control form,
+without re-estimating it.
 }
 \details{
-The resulting model reproduces the second-stage regression where the
-residuals from each first-stage (for endogenous regressors) are added as
-additional controls. These residuals are appended to the data as
-\verb{<var>_first} and added as regressors in the updated model.
+The control form has the same coefficients as \code{reg}. The other
+functions of the package work on it, to handle all models the same way:
+\itemize{
+\item linear models (\code{lm}, \code{feols}, \code{felm}): the regression itself.
+\item IV (\code{ivreg}, \code{feols}): first stage residuals are added as controls
+(control function).
+\item GLM (\code{glm}, \code{feglm}, \code{fepois}): the working response, with the IRLS
+weights (R estimates GLMs by iterating weighted linear regressions of this
+working response).
+\item \code{plm}: the data as transformed by \code{plm} (eg demeaned for a within model).
+}
 
-This function allows to explore the identifying variation of
-IV estimates using the other functions of the \code{ididvar} package.
+The regression can be refitted from its control form. This gives back its
+coefficients but not its standard errors:
 
-The function ensures that covariance options (e.g., clustering, weights)
-and other model arguments are preserved from the original regression where
-possible. If none are provided, the standard errors will be incorrect.
+\if{html}{\out{<div class="sourceCode">}}\preformatted{reg_cf <- idid_to_cf(reg)
+stats::lm.wfit(reg_cf$x, reg_cf$y, reg_cf$weights)$coefficients
+
+# with fixed effects
+fixest::feols.fit(reg_cf$y, reg_cf$x,
+  fixef_df = as.data.frame(reg_cf$fixef_id), weights = reg_cf$weights)
+}\if{html}{\out{</div>}}
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{idid_to_cf(fixest)}: Method for \code{fixest} (feols) objects
+\item \code{idid_to_cf(fixest)}: Method for \code{fixest} objects
 
 \item \code{idid_to_cf(ivreg)}: Method for \code{ivreg} objects
+
+\item \code{idid_to_cf(lm)}: Method for \code{lm} objects
+
+\item \code{idid_to_cf(glm)}: Method for \code{glm} objects
+
+\item \code{idid_to_cf(plm)}: Method for \code{plm} objects
+
+\item \code{idid_to_cf(felm)}: Method for \code{felm} objects
 
 \item \code{idid_to_cf(default)}: Default method (unsupported model types)
 
 }}
 \examples{
-\dontrun{
-library(fixest)
-library(AER)
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = log(sales) ~ median + listings + city)
 
-# feols example
-data(trade)
-reg_feols <- feols(Euros ~ log(dist) | log(dist) ~ log(air) + log(dist), data = trade)
-reg_feols_cf <- idid_to_cf(reg_feols)
+reg_cf <- idid_to_cf(reg_ex)
+reg_cf
 
-# ivreg example
-data("CigarettesSW")
-reg_ivreg <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rtax) + log(rincome),
-                data = CigarettesSW)
-reg_ivreg_cf <- idid_to_cf(reg_ivreg)
-}
+stats::lm.wfit(reg_cf$x, reg_cf$y, reg_cf$weights)$coefficients |>
+  head()
 
+# IV
+reg_iv <- fixest::feols(mpg ~ wt | hp ~ qsec, data = mtcars)
+idid_to_cf(reg_iv)
 }
-\seealso{
-\link[fixest:feols]{fixest::feols}, \link[AER:ivreg]{AER::ivreg}, \link[stats:update]{stats::update}
-}
-\concept{idid_methods}

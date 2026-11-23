@@ -1,7 +1,7 @@
 Package: ididvar
 Type: Package
 Title: Identifying the Identifying Variation in a Regression
-Version: 0.0.1
+Version: 0.0.2
 Authors@R: 
     person("Vincent", "Bagilet", , "vincent.bagilet@ens-lyon.fr", role = c("aut", "cre"))
 Description: Provides a set of tools to identify where 
@@ -13,12 +13,14 @@ RoxygenNote: 7.3.3
 Imports: 
     ggplot2,
     rlang
-Suggests: 
+Suggests:
+    AER,
     dplyr,
     fixest (>= 0.14.1),
     forcats,
     gapminder,
     knitr,
+    lfe,
     plm,
     purrr,
     rmarkdown,

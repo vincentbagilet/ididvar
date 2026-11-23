@@ -17,9 +17,11 @@ idid_viz_drop_change(
 )
 }
 \arguments{
-\item{reg}{A regression object.}
+\item{reg}{A regression object (or its control form, returned by
+\code{idid_to_cf}).}
 
-\item{var_interest}{A vector string. The name of the variables of interest.}
+\item{var_interest}{A vector string. The name of the variables of interest
+(coefficient names, eg \code{treat:post}, or variable names, eg \code{x} for \code{fit_x}).}
 
 \item{threshold_change}{A double (between 0 and 1). The change threshold in
 estimate and s.e. when dropping observations.}
@@ -39,8 +41,7 @@ will be displayed and when equal to "se", only the latter.}
 
 \item{color}{A string. Color of the graph.}
 
-\item{...}{Additional elements to pass to the regression function when
-partialling out controls.}
+\item{...}{Not used.}
 }
 \value{
 A ggplot2 object.
