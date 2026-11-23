@@ -27,8 +27,8 @@ You can install the development version of `ididvar` from
 [GitHub](https://github.com/vincentbagilet/ididvar) with:
 
 ``` r
-# install.packages("devtools")
-devtools::install_github("vincentbagilet/ididvar")
+# install.packages("pak")
+pak::pak("vincentbagilet/ididvar")
 ```
 
 ## Usage

@@ -29,7 +29,7 @@ idid_viz_bivar <- function(reg,
                            partial_iv = TRUE,
                            ...) {
 
-  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
+  df <- idid_data(reg)
   name_var_y <- all.vars(reg$call[[2]])[[1]]
 
   df[["y_par"]] <-

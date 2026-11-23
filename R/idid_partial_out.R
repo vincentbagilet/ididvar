@@ -62,6 +62,10 @@ idid_partial_out <- function(reg,
     }
   }
 
+  #passed to update: otherwise, update looks for the data by name from within
+  #this function, where it does not exist
+  df <- idid_data(reg_fct)
+
   # partial out formula for y
   if (var_to_partial %in% all.vars(reg_fct$call[[2]])[[1]]) {
     formula_partial <-
@@ -83,6 +87,7 @@ idid_partial_out <- function(reg,
     stats::update(
       reg_fct,
       formula_partial,
+      data = df,
       na.action = stats::na.exclude,
       ...
     ) |>
@@ -101,12 +106,10 @@ idid_partial_out <- function(reg,
   #add NAs back for plm and felm
   #(because na.action not fully supported by plm and felm
   if (inherits(reg, "plm")) {
-    df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
     miss_val <- rep(NA, nrow(df))
     miss_val[as.numeric(rownames(reg$model))] <- partialled_out
     partialled_out <- miss_val
   } else if (inherits(reg, "felm")) {
-    df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
     miss_val <- rep(NA, nrow(df))
     miss_val[which(!(1:nrow(df) %in% reg$na.action))] <- partialled_out
     partialled_out <- miss_val

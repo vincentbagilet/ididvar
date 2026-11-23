@@ -23,7 +23,7 @@ idid_drop_reg <- function(reg,
                           var_interest,
                           prop_drop,
                           ...) {
-  df <- eval(reg$call$data, envir = environment(stats::formula(reg)))
+  df <- idid_data(reg)
 
   df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
 
