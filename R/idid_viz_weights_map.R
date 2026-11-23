@@ -37,8 +37,7 @@ idid_viz_weights_map <- function(reg,
                                  facet,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
-  df <- idid_data(reg)
-  df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest)
+  df <- idid_estim_data(reg, var_interest, ...)
 
   #define what to aggregate by, depending on whether use facet or not
   if (missing(facet)) {

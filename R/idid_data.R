@@ -11,7 +11,7 @@
 #' valid even if the data has been modified since. For other objects, the data
 #' is evaluated in the environment of the formula. In both cases, the data is
 #' found even when the regression was estimated inside a function.
-#'
+#'t
 #' The function returns an error if the data cannot be found or if it does not
 #' match the regression anymore, for instance if rows have been dropped after
 #' estimation. For \code{fixest} objects, the number of rows of the data must be
@@ -52,6 +52,31 @@ idid_data <- function(reg) {
   if (!data_match) {
     stop("The data does not match the one used to estimate reg. It may have been modified after estimation")
   }
+
+  return(df)
+}
+
+#' Retrieve the estimation sample and its weights
+#'
+#' @description
+#' Retrieves the data used for estimation, adds the identifying variation
+#' weights in an \code{idid_weight} column and only keeps the observations
+#' used for estimation.
+#'
+#' @inheritParams idid_weights
+#' @param ... Passed to \code{idid_weights}.
+#'
+#' @returns
+#' The data frame used to estimate \code{reg}, restricted to the estimation
+#' sample, with an additional \code{idid_weight} column.
+#'
+#' @keywords internal
+idid_estim_data <- function(reg, var_interest, ...) {
+  df <- idid_data(reg)
+  df[["idid_weight"]] <- idid_weights(reg, var_interest, ...)
+
+  #only keep the estimation sample (weights are NA outside of it)
+  df <- df[!is.na(df[["idid_weight"]]), ]
 
   return(df)
 }

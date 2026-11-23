@@ -44,8 +44,7 @@ idid_viz_contrib_map <- function(reg,
     )
   }
 
-  df <- idid_data(reg)
-  df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
+  df <- idid_estim_data(reg, var_interest, ...)
   df[["contrib"]] <- (df[["idid_weight"]] >= contrib_threshold)
   df[["contrib"]] <- as.integer(df[["contrib"]])
 

@@ -33,8 +33,7 @@ idid_grouping_var <- function(reg,
                               var_interest,
                               grouping_vars,
                               ...) {
-  df <- idid_data(reg)
-  df[["idid_weight"]] = idid_weights(reg, var_interest, ...)
+  df <- idid_estim_data(reg, var_interest, ...)
 
   between_var <- NULL
   for (grouping_var in grouping_vars) {

@@ -57,8 +57,7 @@ idid_viz_weights <- function(reg,
                              colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
-  df <- idid_data(reg)
-  df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)
+  df <- idid_estim_data(reg, var_interest, ...)
   df <- order_axes(df,
                    deparse(substitute(var_x)),
                    deparse(substitute(var_y)),
