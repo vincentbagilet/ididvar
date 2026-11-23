@@ -21,6 +21,7 @@ Suggests:
     gapminder,
     knitr,
     lfe,
+    lwgeom,
     plm,
     purrr,
     rmarkdown,
