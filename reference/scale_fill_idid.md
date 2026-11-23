@@ -47,8 +47,6 @@ idid_viz_weights(reg_ex_fixest, "median", year, city) +
   scale_fill_idid(colors = c("#19304d", "#fae7d3", "#84141e"))
 #> Scale for fill is already present.
 #> Adding another scale for fill, which will replace the existing scale.
-#> Warning: Removed 1434 rows containing non-finite outside the scale range
-#> (`stat_log_weight()`).
 
 
 ggplot2::mpg |>

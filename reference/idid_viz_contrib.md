@@ -97,8 +97,6 @@ reg_ex <- ggplot2::txhousing |>
 
 idid_viz_contrib(reg_ex, "median", year, city, order = "y") +
   ggplot2::labs(x = NULL, y = NULL)
-#> Warning: Removed 1434 rows containing non-finite outside the scale range
-#> (`stat_sum_tile()`).
 
 
 idid_viz_contrib(reg_ex, "median", var_y = city, order = "y") +
