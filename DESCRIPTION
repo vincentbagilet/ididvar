@@ -9,7 +9,6 @@ Description: Provides a set of tools to identify where
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Imports: 
     ggplot2,
     rlang
@@ -37,3 +36,4 @@ Depends:
 LazyData: true
 Config/testthat/edition: 3
 URL: https://vincentbagilet.github.io/ididvar/
+Config/roxygen2/version: 8.1.1

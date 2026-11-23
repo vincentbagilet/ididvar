@@ -23,3 +23,15 @@ test_that("idid_viz_bivar produces correct ggplot mappings and labels", {
   # expect_match(plot_obj$labels$y, "residualized")
   # expect_match(plot_obj$labels$title, "Relationship after partialling out controls")
 })
+
+test_that("idid_viz_bivar labels are single strings", {
+  df <- mtcars
+  f <- mpg ~ hp + wt + qsec + drat + disp + cyl + gear + carb + am + vs
+  regs <- list(lm(f, df))
+
+  plot_obj <- idid_viz_bivar(regs[[1]], c("hp", "wt"))
+
+  expect_equal(plot_obj$labels$subtitle, "In the regs[[1]] model")
+  expect_equal(plot_obj$labels$caption, paste("Full model:", deparse1(f)))
+  expect_equal(plot_obj$labels$x, "hp (residualized)")
+})

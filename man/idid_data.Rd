@@ -24,7 +24,7 @@ For \code{fixest} objects, the data is retrieved with
 valid even if the data has been modified since. For other objects, the data
 is evaluated in the environment of the formula. In both cases, the data is
 found even when the regression was estimated inside a function.
-
+t
 The function returns an error if the data cannot be found or if it does not
 match the regression anymore, for instance if rows have been dropped after
 estimation. For \code{fixest} objects, the number of rows of the data must be

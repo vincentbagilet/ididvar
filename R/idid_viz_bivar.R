@@ -53,9 +53,9 @@ idid_viz_bivar <- function(reg,
     ididvar::theme_idid() +
     ggplot2::labs(
       title = "Relationship after partialling out controls",
-      subtitle = paste("In the", substitute(reg), "model"),
-      caption = paste("Full model:", deparse(reg$call[[2]])),
-      x = paste(var_interest, "(residualized)"),
+      subtitle = paste("In the", deparse1(substitute(reg)), "model"),
+      caption = paste("Full model:", deparse1(stats::formula(reg))),
+      x = paste(var_interest[[1]], "(residualized)"),
       y = paste(name_var_y, "(residualized)")
     )
 }

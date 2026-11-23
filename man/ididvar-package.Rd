@@ -20,5 +20,10 @@ Useful links:
 \author{
 \strong{Maintainer}: Vincent Bagilet \email{vincent.bagilet@ens-lyon.fr}
 
+Authors:
+\itemize{
+  \item Vincent Bagilet \email{vincent.bagilet@ens-lyon.fr}
+}
+
 }
 \keyword{internal}

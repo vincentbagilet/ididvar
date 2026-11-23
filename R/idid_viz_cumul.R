@@ -30,7 +30,7 @@ idid_viz_cumul <- function(reg,
 
   #compute prop of contributing observations
   df_contrib <- subset(df, lorenz > prop_weights)
-  n_contrib <- nrow(df) - df_contrib[[1, "obs_nb"]]
+  n_contrib <- nrow(df) - df_contrib[[1, "obs_nb"]] + 1
   prop_contrib <- n_contrib/nrow(df)
 
   #graph
