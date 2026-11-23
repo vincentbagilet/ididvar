@@ -2,7 +2,7 @@
 % Please edit documentation in R/idid_data.R
 \name{idid_data}
 \alias{idid_data}
-\title{Retrieve the data used to estimate a regression}
+\title{Retrieve the data used for estimation}
 \usage{
 idid_data(reg)
 }
@@ -13,7 +13,7 @@ idid_data(reg)
 The data frame used to estimate \code{reg}.
 }
 \description{
-Retrieves the data set used to estimate a regression and checks that it
+Retrieves the data set used for estimation and checks that it
 still matches the regression.
 }
 \details{

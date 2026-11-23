@@ -1,7 +1,7 @@
-#' Retrieve the data used to estimate a regression
+#' Retrieve the data used for estimation
 #'
 #' @description
-#' Retrieves the data set used to estimate a regression and checks that it
+#' Retrieves the data set used for estimation and checks that it
 #' still matches the regression.
 #'
 #' @details
