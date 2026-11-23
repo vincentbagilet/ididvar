@@ -6,6 +6,8 @@
   : Partial out controls
 - [`idid_weights()`](https://vincentbagilet.github.io/ididvar/reference/idid_weights.md)
   : Compute Identifying Variation Weights
+- [`idid_share_var()`](https://vincentbagilet.github.io/ididvar/reference/idid_share_var.md)
+  : Share of the variance removed by partialling out
 - [`idid_contrib_threshold()`](https://vincentbagilet.github.io/ididvar/reference/idid_contrib_threshold.md)
   : Find a weight threshold below which observations "do not contribute"
 - [`idid_contrib_stats()`](https://vincentbagilet.github.io/ididvar/reference/idid_contrib_stats.md)
@@ -17,7 +19,7 @@
 - [`idid_grouping_var()`](https://vincentbagilet.github.io/ididvar/reference/idid_grouping_var.md)
   : Compute the between-group variances in weights
 - [`idid_to_cf()`](https://vincentbagilet.github.io/ididvar/reference/idid_to_cf.md)
-  : Transform an IV regression into its control function equivalent
+  : Transform a regression into its control form
 
 ## Visualization
 

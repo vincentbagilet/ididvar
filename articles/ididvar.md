@@ -131,6 +131,7 @@ states_sf <- tigris::states(
     cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
   tigris::shift_geometry() |> 
   rename(state = NAME)
+#> Linking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE
 
 idid_viz_weights_map(reg_ex, "Income", states_sf, "state")
 ```
@@ -233,10 +234,10 @@ proportion, *se* 5%:
 ``` r
 
 idid_contrib_threshold(reg_ex, "Income", threshold_change = 0.05)
-#> [1] 0.0004276697
+#> [1] 0.000463745
 ```
 
-All observations with a weight below 4.28^{-4} can be dropped without
+All observations with a weight below 4.64^{-4} can be dropped without
 changing the estimate of interest by more than 5%.
 
 We define the **effective sample** as the set of observations whose

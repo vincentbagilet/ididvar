@@ -141,7 +141,7 @@ dummy.
 gapminder_weights <- gapminder_sample |> 
   mutate(
     idid_weight = idid_weights(reg, "l_gdpPercap"),
-    contrib = idid_weight > idid_contrib_threshold(reg, "l_gdpPercap"),
+    contrib = idid_weight >= idid_contrib_threshold(reg, "l_gdpPercap"),
     contrib_name = ifelse(contrib, 
                           "In the effective sample",
                           "Outside the effective sample")
@@ -265,13 +265,6 @@ gapminder_weights |>
 
 idid_viz_contrib(reg, "l_gdpPercap", var_y = decade) +
   labs(y = NULL)
-#> NOTE: 2 fixed-effect singletons were removed (2 observations).
-#> NOTE: 4 fixed-effect singletons were removed (4 observations).
-#> NOTE: 3 fixed-effect singletons were removed (3 observations).
-#> NOTE: 9 fixed-effect singletons were removed (9 observations).
-#> NOTE: 13 fixed-effect singletons were removed (13 observations).
-#> NOTE: 11 fixed-effect singletons were removed (11 observations).
-#> NOTE: 11 fixed-effect singletons were removed (11 observations).
 ```
 
 ![](own-viz_files/figure-html/idid_contrib_bar_plot-1.png)

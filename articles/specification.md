@@ -246,12 +246,12 @@ purrr::map(regs, idid_contrib_stats, var_interest = "l_gdpPercap") |>
 
 | reg                   | n_initial | n_nominal | n_effective | prop_effective |
 |:----------------------|----------:|----------:|------------:|---------------:|
-| reg_country_fe        |       984 |       984 |         246 |      0.2500000 |
-| reg_continent_year_fe |       984 |       984 |         542 |      0.5508130 |
-| reg_continent_fe      |       984 |       984 |         689 |      0.7002033 |
-| reg_year_fe           |       984 |       984 |         689 |      0.7002033 |
-| reg_twfe              |       984 |       984 |         788 |      0.8008130 |
-| reg_raw               |       984 |       984 |         837 |      0.8506098 |
+| reg_country_fe        |       984 |       984 |         296 |      0.3008130 |
+| reg_continent_year_fe |       984 |       984 |         591 |      0.6006098 |
+| reg_continent_fe      |       984 |       984 |         738 |      0.7500000 |
+| reg_year_fe           |       984 |       984 |         738 |      0.7500000 |
+| reg_twfe              |       984 |       984 |         837 |      0.8506098 |
+| reg_raw               |       984 |       984 |         886 |      0.9004065 |
 
 ## Histograms
 
@@ -333,7 +333,8 @@ world_sf <- rnaturalearth::ne_countries(scale = "medium", returnclass = "sf") |>
 map_contrib <- function(reg) {
   idid_viz_contrib_map(reg, "l_gdpPercap", world_sf, "iso_alpha") +
     coord_sf(crs = "+proj=ortho +lon_0=30 +lat_0=28", expand = FALSE) +
-    theme(panel.grid.major = element_line(colour = "gray90")) 
+    theme(panel.grid.major = element_line(colour = "gray90")) +
+    labs(caption = paste("Model:", deparse(reg$call[[2]])))
 }
 
 purrr::map(regs, map_contrib)

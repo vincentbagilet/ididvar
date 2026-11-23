@@ -24,11 +24,12 @@ idid_viz_drop_change(
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - threshold_change:
 
@@ -42,13 +43,13 @@ idid_viz_drop_change(
 
 - search_start:
 
-  A numeric (between 0 and 1). Proportion of observation to drop in the
-  first step of the loop in `idid_contrib_threshold`.
+  A numeric (between 0 and 1). Proportion of observations dropped in the
+  first point of the graph.
 
 - search_end:
 
-  A numeric (between 0 and 1). Proportion of observation to drop in the
-  last step of the loop in `idid_contrib_threshold`.
+  A numeric (between 0 and 1). Proportion of observations dropped in the
+  last point of the graph.
 
 - facet:
 
@@ -62,8 +63,7 @@ idid_viz_drop_change(
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Passed to `idid_drop_change`, eg `vcov`.
 
 ## Value
 

@@ -43,12 +43,12 @@ where $`x`$ is the variable of interest and $`C`$ the vector of controls
 and fixed effects. These weights are therefore the normalized squared
 residuals of the regression of $`x`$ on the full set of controls.
 
-In the package, they are computed using the same estimation procedure as
-the one used in the main regression, just replacing the outcome variable
-with the dependent variable of interest. The following example
-illustrates how the `idid_partial_out` function works on an example
-model describing the relationship between median price and number of
-housing sales in Texas:
+In the package, the regression is first transformed into an equivalent
+linear regression (its control form, see `idid_to_cf`), whose controls
+are then partialled out of the variable of interest. The following
+example illustrates how the `idid_partial_out` function works on an
+example model describing the relationship between median price and
+number of housing sales in Texas:
 
 ``` r
 

@@ -21,8 +21,8 @@ You can install the development version of `ididvar` from
 
 ``` r
 
-# install.packages("devtools")
-devtools::install_github("vincentbagilet/ididvar")
+# install.packages("pak")
+pak::pak("vincentbagilet/ididvar")
 ```
 
 ## Usage
@@ -32,7 +32,7 @@ regression and the name of the variable of interest. `ididvar` supports
 a breadth of estimation functions (`lm`,
 [`plm::plm`](https://rdrr.io/pkg/plm/man/plm.html),
 [`fixest::feols`](https://lrberge.github.io/fixest/reference/feols.html),
-`AER::ivreg` for instance).
+[`AER::ivreg`](https://rdrr.io/pkg/AER/man/ivreg.html) for instance).
 
 First, the package provides a straightforward function to compute
 identifying variation weights: `idid_weights`.

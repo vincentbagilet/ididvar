@@ -20,11 +20,12 @@ idid_contrib_stats(
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - contrib_threshold:
 
@@ -39,18 +40,17 @@ idid_contrib_stats(
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Passed to `idid_drop_change`, eg `vcov`.
 
 ## Value
 
 A dataframe with 4 columns:
 
-- `n_total`: the total sample size, before dropping observations with
-  missing values
+- `n_initial`: the number of rows in the data, before dropping
+  observations with missing values
 
 - `n_nominal`: the nominal sample size, ie the number of observations in
-  the regression
+  the regression (estimation sample)
 
 - `n_effective`: the effective sample size, after removing non
   contributing observations
@@ -66,5 +66,5 @@ reg_ex <- ggplot2::txhousing |>
 
 idid_contrib_stats(reg_ex, "median")
 #>   n_initial n_nominal n_effective prop_effective
-#> 1      8602      7168        3943      0.5500837
+#> 1      8602      7168        5376           0.75
 ```

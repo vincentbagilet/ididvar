@@ -45,7 +45,6 @@ reg_ex_fixest <- ggplot2::txhousing |>
 idid_viz_weights(reg_ex_fixest, "median", year, city) +
   ggplot2::labs(x = NULL, y = NULL) +
   scale_fill_idid(colors = c("#19304d", "#fae7d3", "#84141e"))
-#> NOTE: 1,434 observations removed because of NA values (LHS: 616, RHS: 1,424).
 #> Scale for fill is already present.
 #> Adding another scale for fill, which will replace the existing scale.
 #> Warning: Removed 1434 rows containing non-finite outside the scale range

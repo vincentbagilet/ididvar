@@ -12,11 +12,12 @@ idid_viz_cumul(reg, var_interest, prop_weights = 0.2, color = "#300D49", ...)
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - prop_weights:
 
@@ -30,8 +31,7 @@ idid_viz_cumul(reg, var_interest, prop_weights = 0.2, color = "#300D49", ...)
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Not used.
 
 ## Value
 

@@ -1,9 +1,7 @@
-# Transform an IV regression into its control function equivalent
+# Transform a regression into its control form
 
-Takes an instrumental variables (IV) regression estimated with either
-[`fixest::feols`](https://lrberge.github.io/fixest/reference/feols.html)
-or `AER::ivreg` and refits it as a *control function* (CF)
-specification.
+Rewrites a regression as an equivalent linear regression, its control
+form, without re-estimating it.
 
 ## Usage
 
@@ -16,6 +14,18 @@ idid_to_cf(reg, ...)
 # S3 method for class 'ivreg'
 idid_to_cf(reg, ...)
 
+# S3 method for class 'lm'
+idid_to_cf(reg, ...)
+
+# S3 method for class 'glm'
+idid_to_cf(reg, ...)
+
+# S3 method for class 'plm'
+idid_to_cf(reg, ...)
+
+# S3 method for class 'felm'
+idid_to_cf(reg, ...)
+
 # Default S3 method
 idid_to_cf(reg, ...)
 ```
@@ -24,67 +34,95 @@ idid_to_cf(reg, ...)
 
 - reg:
 
-  An IV regression object. Currently supported classes are
-  [`fixest::fixest`](https://lrberge.github.io/fixest/reference/fixest-package.html)
-  and `AER::ivreg`.
+  A regression object. Currently supported classes are `lm`, `glm`,
+  `fixest`, `ivreg` (AER), `plm` and `felm`.
 
 - ...:
 
-  Additional arguments passed to
-  [`stats::update`](https://rdrr.io/r/stats/update.html) when refitting
-  the model.
+  Not used.
 
 ## Value
 
-A model object of the same class as `reg` (`fixest` or `ivreg`),
-representing the equivalent control-function specification. The returned
-model uses the same data, controls, and variance specification as the
-original regression.
+An `idid_cf` object, a list with:
+
+- `x`: the regressors
+
+- `y`: the outcome
+
+- `weights`: the regression weights (1 if none)
+
+- `fixef_id`: the fixed effects (NULL if none)
+
+- `obs`: the rows of the data used for estimation
+
+- `nobs_origin`: the number of rows of the data
+
+- `coefficients`, `y_name`, `cf_names` (the control function variables)
+  and `model_class`
 
 ## Details
 
-The resulting model reproduces the second-stage regression where the
-residuals from each first-stage (for endogenous regressors) are added as
-additional controls. These residuals are appended to the data as
-`<var>_first` and added as regressors in the updated model.
+The control form has the same coefficients as `reg`. The other functions
+of the package work on it, to handle all models the same way:
 
-This function allows to explore the identifying variation of IV
-estimates using the other functions of the `ididvar` package.
+- linear models (`lm`, `feols`, `felm`): the regression itself.
 
-The function ensures that covariance options (e.g., clustering, weights)
-and other model arguments are preserved from the original regression
-where possible. If none are provided, the standard errors will be
-incorrect.
+- IV (`ivreg`, `feols`): first stage residuals are added as controls
+  (control function).
+
+- GLM (`glm`, `feglm`, `fepois`): the working response, with the IRLS
+  weights (R estimates GLMs by iterating weighted linear regressions of
+  this working response).
+
+- `plm`: the data as transformed by `plm` (eg demeaned for a within
+  model).
+
+The regression can be refitted from its control form. This gives back
+its coefficients but not its standard errors:
+
+    reg_cf <- idid_to_cf(reg)
+    stats::lm.wfit(reg_cf$x, reg_cf$y, reg_cf$weights)$coefficients
+
+    # with fixed effects
+    fixest::feols.fit(reg_cf$y, reg_cf$x,
+      fixef_df = as.data.frame(reg_cf$fixef_id), weights = reg_cf$weights)
 
 ## Methods (by class)
 
-- `idid_to_cf(fixest)`: Method for `fixest` (feols) objects
+- `idid_to_cf(fixest)`: Method for `fixest` objects
 
 - `idid_to_cf(ivreg)`: Method for `ivreg` objects
 
+- `idid_to_cf(lm)`: Method for `lm` objects
+
+- `idid_to_cf(glm)`: Method for `glm` objects
+
+- `idid_to_cf(plm)`: Method for `plm` objects
+
+- `idid_to_cf(felm)`: Method for `felm` objects
+
 - `idid_to_cf(default)`: Default method (unsupported model types)
-
-## See also
-
-[fixest::feols](https://lrberge.github.io/fixest/reference/feols.html),
-AER::ivreg, [stats::update](https://rdrr.io/r/stats/update.html)
 
 ## Examples
 
 ``` r
-if (FALSE) { # \dontrun{
-library(fixest)
-library(AER)
+reg_ex <- ggplot2::txhousing |>
+  lm(formula = log(sales) ~ median + listings + city)
 
-# feols example
-data(trade)
-reg_feols <- feols(Euros ~ log(dist) | log(dist) ~ log(air) + log(dist), data = trade)
-reg_feols_cf <- idid_to_cf(reg_feols)
+reg_cf <- idid_to_cf(reg_ex)
+reg_cf
+#> Control form of a lm regression: 7168 observations, 48 coefficients
 
-# ivreg example
-data("CigarettesSW")
-reg_ivreg <- ivreg(log(packs) ~ log(rprice) + log(rincome) | log(rtax) + log(rincome),
-                data = CigarettesSW)
-reg_ivreg_cf <- idid_to_cf(reg_ivreg)
-} # }
+stats::lm.wfit(reg_cf$x, reg_cf$y, reg_cf$weights)$coefficients |>
+  head()
+#>   (Intercept)        median      listings  cityAmarillo cityArlington 
+#>  4.520955e+00  4.552992e-06  1.208372e-05  3.802365e-01  8.874377e-01 
+#>    cityAustin 
+#>  2.102869e+00 
+
+# IV
+reg_iv <- fixest::feols(mpg ~ wt | hp ~ qsec, data = mtcars)
+idid_to_cf(reg_iv)
+#> Control form of a fixest regression: 32 observations, 3 coefficients
+#> Control function: hp_first 
 ```

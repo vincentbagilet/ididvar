@@ -23,11 +23,12 @@ idid_viz_weights_map(
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - shape_file:
 
@@ -52,8 +53,7 @@ idid_viz_weights_map(
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Not used.
 
 ## Value
 

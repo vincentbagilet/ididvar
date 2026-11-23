@@ -23,11 +23,12 @@ idid_viz_contrib_map(
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - shape_file:
 
@@ -58,8 +59,7 @@ idid_viz_contrib_map(
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Passed to `idid_drop_change`, eg `vcov`.
 
 ## Value
 
@@ -76,6 +76,7 @@ reg <- state.x77 |>
 states_sf <- tigris::states(
     cb = TRUE, resolution = "20m", year = 2024, progress_bar = FALSE) |>
   tigris::shift_geometry()
+#> Linking to GEOS 3.14.1, GDAL 3.12.2, PROJ 9.7.1; sf_use_s2() is TRUE
 
 idid_viz_contrib_map(reg, "Income", states_sf, "NAME")
 ```

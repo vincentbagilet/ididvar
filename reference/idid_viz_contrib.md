@@ -28,11 +28,12 @@ idid_viz_contrib(
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - var_x:
 
@@ -74,8 +75,7 @@ idid_viz_contrib(
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Passed to `idid_drop_change`, eg `vcov`.
 
 ## Value
 

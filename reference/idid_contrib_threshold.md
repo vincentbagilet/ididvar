@@ -20,11 +20,12 @@ idid_contrib_threshold(
 
 - reg:
 
-  A regression object.
+  A regression object (or its control form, returned by `idid_to_cf`).
 
 - var_interest:
 
-  A vector string. The name of the variables of interest.
+  A vector string. The name of the variables of interest (coefficient
+  names, eg `treat:post`, or variable names, eg `x` for `fit_x`).
 
 - threshold_change:
 
@@ -38,14 +39,13 @@ idid_contrib_threshold(
 
 - ...:
 
-  Additional elements to pass to the regression function when
-  partialling out controls.
+  Passed to `idid_drop_change`, eg `vcov`.
 
 ## Value
 
-A numeric. The largest weight below which one can drop observations
-without altering the estimate by more than a proportion of
-`threshold_change`.
+A numeric. The weight below which one can drop observations without
+altering the estimate by more than a proportion of `threshold_change`.
+Observations with this weight are kept.
 
 ## Details
 
@@ -53,7 +53,9 @@ This function applies
 [`ididvar::idid_drop_change`](https://vincentbagilet.github.io/ididvar/reference/idid_drop_change.md)
 for a series of proportions of observations removed, increasing this
 proportion by `search_step` while the variation in the estimate and s.e.
-as compared to the full sample is less than `threshold_change`.
+as compared to the full sample is less than `threshold_change` (for
+every variable of interest). The threshold corresponds to the last step
+that passes and no observation is dropped if the first step fails.
 
 ## Examples
 
@@ -62,5 +64,5 @@ reg_ex <- ggplot2::economics |>
   lm(formula = unemploy ~ pce + uempmed + psavert + pop)
 
 idid_contrib_threshold(reg_ex, "pce")
-#> [1] 0.0005871943
+#> [1] 0.0002853919
 ```
