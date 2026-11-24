@@ -34,6 +34,16 @@ idid_viz_contrib_map <- function(reg,
                                  threshold_change = 0.05,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
+  if (!inherits(shape_file, "sf") || !(join_by %in% names(shape_file))) {
+    stop("shape_file must be an sf object containing ", join_by)
+  }
+  if (!(join_by %in% names(idid_data(reg)))) {
+    stop("Not in the data: ", join_by)
+  }
+  if (length(colors) < 2) {
+    stop("colors must contain at least 2 colors")
+  }
+
   if (missing(contrib_threshold)) {
     # message("Searching for the contribution threshold")
     contrib_threshold <- ididvar::idid_contrib_threshold(

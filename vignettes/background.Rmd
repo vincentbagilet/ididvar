@@ -95,8 +95,8 @@ data_partial |>
   theme_idid() +
   scale_color_idid() +
   labs(
-    title = "Relationship between life expectancy and log GDP per capita",
-    subtitle = "After partialling out country fixed effects",
+    title = "Weights distribution after partialling out country FEs",
+    subtitle = "Relationship between life expectancy and log GDP per capita",
     x = "Log GDP per capita (residualized)",
     y = "Life expectancy (residualized)",
     color = "Weight, compared to 1/n, the average weight",
@@ -114,8 +114,8 @@ data_partial |>
   scale_color_idid() +
   scale_x_log10() +
   labs(
-    title = "Relationship between life expectancy and GDP per capita",
-    subtitle = "Raw relationship",
+    title = "Weights distribution in the raw relationship",
+    subtitle = "Relationship between life expectancy and GDP per capita",
     x = "GDP per capita",
     y = "Life expectancy",
     color = "Weight, compared to 1/n, the average weight",

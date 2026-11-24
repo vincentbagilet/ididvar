@@ -58,6 +58,10 @@ idid_partial_out <- function(reg,
                              var_interest = var_to_partial,
                              partial_iv = TRUE,
                              ...) {
+  if (!isTRUE(partial_iv) && !isFALSE(partial_iv)) {
+    stop("partial_iv must be TRUE or FALSE")
+  }
+
   reg_cf <- if (inherits(reg, "idid_cf")) reg else idid_to_cf(reg)
   var_interest <- idid_coef_names(reg_cf, var_interest)
   x <- reg_cf$x

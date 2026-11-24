@@ -40,6 +40,10 @@ idid_viz_drop_change <- function(reg,
                                  facet = "both",
                                  color = "#300D49",
                                  ...) {
+  if (!isTRUE(search_step > 0 & search_start <= search_end)) {
+    stop("search_step must be positive and search_start lower than search_end")
+  }
+
   drop_change_df <- seq(search_start, search_end, search_step) |>
     lapply(
       ididvar::idid_drop_change,

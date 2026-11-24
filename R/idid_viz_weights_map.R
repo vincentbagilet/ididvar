@@ -37,7 +37,15 @@ idid_viz_weights_map <- function(reg,
                                  facet,
                                  colors = c("#C25807", "#FBE2C5", "#300D49"),
                                  ...) {
+  if (!inherits(shape_file, "sf") || !(join_by %in% names(shape_file))) {
+    stop("shape_file must be an sf object containing ", join_by)
+  }
+
   df <- idid_estim_data(reg, var_interest, ...)
+  vars <- c(join_by, if (!missing(facet)) facet)
+  if (!all(vars %in% names(df))) {
+    stop("Not in the data: ", paste(setdiff(vars, names(df)), collapse = ", "))
+  }
 
   #define what to aggregate by, depending on whether use facet or not
   if (missing(facet)) {

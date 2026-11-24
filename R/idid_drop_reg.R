@@ -26,6 +26,10 @@ idid_drop_reg <- function(reg,
                           var_interest,
                           prop_drop,
                           ...) {
+  if (!isTRUE(is.numeric(prop_drop) & prop_drop >= 0 & prop_drop < 1)) {
+    stop("prop_drop must be a number between 0 and 1")
+  }
+
   df <- idid_data(reg)
 
   df[["idid_weight"]] <- ididvar::idid_weights(reg, var_interest, ...)

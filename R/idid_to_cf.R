@@ -72,6 +72,12 @@ idid_to_cf.fixest <- function(reg, ...) {
 
   y <- stats::model.matrix(reg, type = "lhs")
   weights <- reg$weights
+
+  #model.matrix uses the current data: check that it has not been modified
+  resid <- if (isTRUE(reg$is_iv)) reg$iv_residuals else reg$residuals
+  if (!isTRUE(all.equal(as.numeric(y), as.numeric(reg$fitted.values + resid)))) {
+    stop("The data does not match the one used to estimate reg. It may have been modified after estimation")
+  }
   cf_names <- NULL
 
   if (isTRUE(reg$is_iv)) {
@@ -197,6 +203,9 @@ idid_to_cf.plm <- function(reg, ...) {
 idid_to_cf.felm <- function(reg, ...) {
   if (!is.null(reg$stage1)) {
     stop("idid_to_cf does not support felm IV models")
+  }
+  if (!is.null(reg$call$subset)) {
+    stop("idid_to_cf does not support felm models estimated with subset")
   }
   df <- idid_data(reg)
 

@@ -100,3 +100,13 @@ test_that("functions work with a regression estimated inside a function", {
     expect_s3_class(idid_viz_bivar(reg, "x"), "ggplot")
   }
 })
+
+test_that("fixest weights error when the data has been reordered after estimation", {
+  skip_if_not_installed("fixest")
+  df <- sim_panel()
+
+  reg <- fixest::feols(y ~ x | endo ~ inst, data = df, notes = FALSE)
+  df <- df[nrow(df):1, ]
+
+  expect_error(idid_weights(reg, "endo"), "does not match")
+})

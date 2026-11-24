@@ -49,6 +49,13 @@ idid_viz_contrib <- function(reg,
                              ...) {
 
   #error handling
+  if (missing(var_x) && missing(var_y)) {
+    stop("Specify var_x, var_y or both")
+  }
+  if (length(colors) < 2) {
+    stop("colors must contain at least 2 colors")
+  }
+
   if (missing(contrib_threshold)) {
     # message("Searching for the contribution threshold")
     contrib_threshold <- ididvar::idid_contrib_threshold(

@@ -34,6 +34,13 @@ idid_weights <- function(reg,
                          partial_iv = TRUE,
                          tol = 1e-7,
                          ...) {
+  if (length(var_interest) == 0) {
+    stop("var_interest must contain at least one variable")
+  }
+  if (!is.numeric(tol)) {
+    stop("tol must be a number")
+  }
+
   reg_cf <- idid_to_cf(reg)
 
   x_partialled <- sapply(var_interest, function(var) {

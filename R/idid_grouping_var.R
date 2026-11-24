@@ -34,6 +34,9 @@ idid_grouping_var <- function(reg,
                               grouping_vars,
                               ...) {
   df <- idid_estim_data(reg, var_interest, ...)
+  if (!all(grouping_vars %in% names(df))) {
+    stop("Not in the data: ", paste(setdiff(grouping_vars, names(df)), collapse = ", "))
+  }
 
   between_var <- NULL
   for (grouping_var in grouping_vars) {

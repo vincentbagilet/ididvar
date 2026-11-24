@@ -21,6 +21,10 @@ idid_viz_cumul <- function(reg,
                            prop_weights = 0.2,
                            color = "#300D49",
                            ...) {
+  if (!isTRUE(is.numeric(prop_weights) & prop_weights >= 0 & prop_weights < 1)) {
+    stop("prop_weights must be a number between 0 and 1")
+  }
+
   weights <- ididvar::idid_weights(reg, var_interest, ...)
   weights_sorted <- sort(weights)
   cum_sum <- cumsum(weights_sorted)

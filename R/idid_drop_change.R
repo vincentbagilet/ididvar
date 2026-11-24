@@ -42,6 +42,13 @@ idid_drop_change <- function(reg,
                              prop_drop,
                              vcov = NULL,
                              ...) {
+  if (!isTRUE(is.numeric(prop_drop) & prop_drop >= 0 & prop_drop < 1)) {
+    stop("prop_drop must be a number between 0 and 1")
+  }
+  if (!is.null(vcov) && !is.function(vcov)) {
+    stop("vcov must be a function, eg sandwich::vcovHC")
+  }
+
   #some regression function "change" the name of the variable of interest
   #for instance for a boolean var "treated", in the coef table the name will be
   #treatedTRUE. Take that into account with var_interest_robust

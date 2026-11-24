@@ -36,6 +36,12 @@ idid_contrib_threshold <- function(reg,
                                    threshold_change = 0.05,
                                    search_step = 0.05,
                                    ...) {
+  if (!isTRUE(is.numeric(c(search_step, threshold_change)) &
+              search_step > 0 & search_step < 1 &
+              threshold_change > 0 & threshold_change < 1)) {
+    stop("search_step and threshold_change must be between 0 and 1 (eg 0.05 for 5%)")
+  }
+
   weights <- ididvar::idid_weights(reg, var_interest, ...)
 
   #compute the prop of obs to keep/drop without changing the estimates

@@ -25,6 +25,14 @@ fwl_estimate <- function(reg, var) {
   return(sum(w * y_partialled / x_partialled, na.rm = TRUE))
 }
 
+#weights computed manually from an auxiliary regression of x on the controls:
+#regression weights times squared residuals (x~), normalized
+manual_weights <- function(aux_reg) {
+  weights <- stats::weights(aux_reg) * stats::residuals(aux_reg)^2
+
+  return(unname(weights / sum(weights)))
+}
+
 #simulated panel used in the tests
 sim_panel <- function(n_id = 10, n_t = 6) {
   set.seed(1)

@@ -82,3 +82,67 @@ test_that("idid_weights errors for variables that are not coefficients", {
     "not a coefficient"
   )
 })
+
+#x~ computed manually: residuals of an auxiliary regression of x on the controls
+test_that("the weights are equal to manually computed weights: lm and glm", {
+  df <- sim_panel()
+  rows <- which(!is.na(df$x))
+
+  reg <- stats::lm(y ~ x + z + factor(t), data = df, weights = w)
+  aux <- stats::lm(x ~ z + factor(t), data = df[rows, ], weights = w)
+  expect_equal(idid_weights(reg, "x")[rows], manual_weights(aux))
+
+  #logit: weighted by the IRLS weights, mu(1 - mu)
+  reg <- stats::glm(binary ~ x + z, data = df, family = stats::binomial)
+  irls <- stats::fitted(reg) * (1 - stats::fitted(reg))
+  aux <- stats::lm(x ~ z, data = df[rows, ], weights = irls)
+  expect_equal(idid_weights(reg, "x")[rows], manual_weights(aux), tolerance = 1e-6)
+})
+
+test_that("the weights are equal to manually computed weights: fixest", {
+  skip_if_not_installed("fixest")
+  df <- sim_panel()
+  rows <- which(!is.na(df$x))
+
+  #IV: weights of the first stage fitted values
+  reg <- fixest::feols(y ~ x | id | endo ~ inst, data = df, weights = ~w, notes = FALSE)
+  df_rows <- df[rows, ]
+  df_rows$endo_fit <- stats::fitted(stats::lm(endo ~ x + inst + factor(id), df_rows, weights = w))
+  aux <- stats::lm(endo_fit ~ x + factor(id), data = df_rows, weights = w)
+  expect_equal(idid_weights(reg, "endo")[rows], manual_weights(aux))
+
+  #Poisson: weighted by the IRLS weights, prior weights times mu
+  reg <- fixest::fepois(count ~ x + z | id, data = df, weights = ~w, notes = FALSE)
+  irls <- df$w[rows] * stats::fitted(reg)
+  aux <- stats::lm(x ~ z + factor(id), data = df[rows, ], weights = irls)
+  expect_equal(idid_weights(reg, "x")[rows], manual_weights(aux), tolerance = 1e-6)
+
+  #two-way fixed effects and subset
+  reg <- fixest::feols(y ~ x + z | id + t, data = df, weights = ~w, subset = ~ t > 1, notes = FALSE)
+  rows <- fixest::obs(reg)
+  aux <- stats::lm(x ~ z + factor(id) + factor(t), data = df[rows, ], weights = w)
+  expect_equal(idid_weights(reg, "x")[rows], manual_weights(aux))
+})
+
+test_that("the weights of several variables are the leverage of their block", {
+  df <- sim_panel()
+
+  #leverage of the full model minus leverage of the model without x and endo
+  reg <- stats::lm(y ~ x + endo + z, data = df, weights = w)
+  leverage <- stats::hatvalues(reg) -
+    stats::hatvalues(stats::lm(y ~ z, data = df[!is.na(df$x), ], weights = w))
+  expect_equal(na.omit(idid_weights(reg, c("x", "endo"))), unname(leverage / sum(leverage)),
+               ignore_attr = TRUE)
+})
+
+test_that("the same model gives the same weights across packages", {
+  skip_if_not_installed("fixest")
+  skip_if_not_installed("lfe")
+  skip_if_not_installed("AER")
+  df <- sim_panel()
+
+  expect_equal(idid_weights(lfe::felm(y ~ x + z | id, data = df, weights = df$w), "x"),
+               idid_weights(fixest::feols(y ~ x + z | id, data = df, weights = ~w, notes = FALSE), "x"))
+  expect_equal(idid_weights(AER::ivreg(y ~ x + endo | x + inst, data = df), "endo"),
+               idid_weights(fixest::feols(y ~ x | endo ~ inst, data = df, notes = FALSE), "endo"))
+})

@@ -57,6 +57,10 @@ idid_viz_weights <- function(reg,
                              colors = c("#C25807", "#FBE2C5", "#300D49"),
                              keep_labels = TRUE,
                              ...) {
+  if (missing(var_x) && missing(var_y)) {
+    stop("Specify var_x, var_y or both")
+  }
+
   df <- idid_estim_data(reg, var_interest, ...)
   df <- order_axes(df,
                    deparse(substitute(var_x)),
